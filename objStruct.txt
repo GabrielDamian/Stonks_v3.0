@@ -1,0 +1,16 @@
+{
+35: [struct gemini{}]
+36:
+37:
+.
+.
+.
+45:
+}
+
+
+struct gemini{
+	values:[point],
+	future_price:
+	
+}
