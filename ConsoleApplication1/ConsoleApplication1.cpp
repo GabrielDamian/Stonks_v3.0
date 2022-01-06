@@ -1,19 +1,11 @@
-
-#include <iostream>
-#include <vector>
-using namespace std;
+#include"Header.h"
 
 int main()
 {
-
-	vector<int> test_vector;
-
-	test_vector.push_back(10);
-	test_vector.push_back(11);
-
-	for (int el : test_vector)
+	vector<double> ceva = readFromFile();
+	for (double c : ceva)
 	{
-		cout << el << " ";
+		cout << c << " ";
 	}
-
+	return 0;
 }
