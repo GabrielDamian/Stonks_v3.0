@@ -100,7 +100,10 @@ void segmentareVariatii_with_future_price(vector<twin>& result, vector<point>& i
 				buffer.push_back(inputData[index_buffer]);
 				index_buffer++;
 			}
-			normalizeazaSegment(buffer);
+			//salveaza aici intr-o prop la fel ca future_price, un last_value_before_normalization
+			//necesara pentru a compara daca pretul a crescut sau a scazut cu valoarea dinainte normalizare
+			
+			//normalizeazaSegment(buffer);
 			twin temp_struct;
 			temp_struct.values = buffer;
 
@@ -114,7 +117,7 @@ void segmentareVariatii_with_future_price(vector<twin>& result, vector<point>& i
 				temp_struct.future_price = NULL;
 			}
 
-			result_data.push_back(temp_struct);
+			result.push_back(temp_struct);
 		}
 		else
 		{

@@ -1,5 +1,5 @@
 {
-35: [struct gemini{}]
+35: [struct twin{}, {}, {}, {}]
 36:
 37:
 .
@@ -9,7 +9,7 @@
 }
 
 
-struct gemini{
+struct twin{
 	values:[point],
 	future_price:
 	

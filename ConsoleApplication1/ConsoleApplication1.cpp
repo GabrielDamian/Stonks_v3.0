@@ -29,16 +29,35 @@ int main()
 	int future_price = 10;
 	map<int, vector<twin>> variatii;
 	seteazaKeyVariatii(variatii, size_seg_unic, min_max_streching);
-	cout << endl << "Verificare chei in variatii:" << endl;
 
-	for (auto a : variatii)
+	cout << endl << "Populez variatii...";
+	for (auto &a : variatii)
 	{
-		cout << "key:" << a.first << endl;
 		segmentareVariatii_with_future_price(a.second, inputData, a.first, future_price);
 	}
+	cout << endl << "Succes populare variatii.(Variatii normalizate)";
 
 
+	//verificare populare variatii
+	 
+	//for (auto& a : variatii)
+	//{
+	//	cout << "key:" << a.first << "size:" << a.second.size() << endl;
+	//	for (auto& b : a.second)
+	//	{
+	//		//b = struct twin
+	//		//cout << endl << "Future price:" << b.future_price << " Values:";
+	//		//cout <<a.first<< "== ?"<<b.values.size()<<endl;
+	//		cout << endl<<"Len=" << b.values.size() << " ";
+	//		for (auto& c : b.values)
+	//		{
+	//			//cout << "(" << c.x<<","<<c.y<<") ";
+	//			cout << "("<<c.y << ","<<c.x<<") ";
+	//		}
+	//	}
+	//}
 
+	cout << endl << "Start interpolare variatii:";
 
 
 	/*for (int i = size_seg_unic - min_max_streching; i <= size_seg_unic + min_max_streching; i++)
