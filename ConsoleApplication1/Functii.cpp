@@ -1,6 +1,5 @@
 #include"Header.h"
-
-
+#include<iomanip>
 vector<point> readFromFile()
 {
 	vector<point> fileData;
@@ -132,6 +131,8 @@ void segmentareVariatii_with_future_price(vector<twin>& result, vector<point>& i
 }
 void printVariatii(map<int, vector<twin>> variatii)
 {
+	cout << setprecision(2);
+	cout << fixed;
 	cout << endl << "Test populare variatii:" << endl;
 	for (auto& a : variatii)
 	{
@@ -158,18 +159,101 @@ void comprimaSegment(vector<point>& result, int comprimed_size)
 	//from size = 5
 	//from size = 15
 
-	double ratio = comprimed_size / result.size();
+	double ratio = comprimed_size / (double)(result.size() - 1);
 	transform(result.begin(), result.end(), result.begin(), [ratio](point el) {
-		point new_el;
-		new_el.x = el.x * ratio;
-		new_el.y = el.y;
-		return new_el;
+		el.x *= ratio;
+		return el;
 		});
 
 }
-void interpoleazaSegment(vector<point>& result, int comprimed_size)
+void interpoleazaSegment(vector<point>& segment_factorizat, int comprimed_size)
 {
+	cout << setprecision(2);
+	cout << fixed;
+
+	vector<point> segment_rezultat;
+
+	vector<double> x_segment_referinta; //range(0,comprimed_size)
+	vector<double> x_segment_factorizat; //doar x's
+
+	int temp_index = 0;
+	while (temp_index < comprimed_size)
+	{
+		x_segment_referinta.push_back(temp_index);
+		temp_index++;
+	}
+
+	for (auto a : segment_factorizat)
+	{
+		x_segment_factorizat.push_back(a.x);
+	}
+
+	for (auto a : x_segment_referinta)
+	{
+		double x_curent = a;
 	
+		auto it = find(x_segment_factorizat.begin(), x_segment_factorizat.end(), x_curent);
+		if (it != x_segment_factorizat.end())
+		{
+			point x_y_factorizat_aferent;
+
+			auto temp_it = find_if(segment_factorizat.begin(), segment_factorizat.end(), [=](point i) { return x_curent == i.x; });
+
+			if (temp_it != segment_factorizat.end()) {
+				point pereche_noua = {};
+				pereche_noua.x = x_curent;
+				pereche_noua.y = temp_it->y;
+				segment_rezultat.push_back(pereche_noua);
+			}
+		}
+		else
+		{
+			point prev_index = segment_factorizat[0];
+			point next_index;
+			int index = 1;
+			while (index < segment_factorizat.size())
+			{
+				next_index = segment_factorizat[index];
+				if (prev_index.x < x_curent && x_curent < next_index.x)
+				{
+					point pereche_noua = {};
+					pereche_noua.x = x_curent;
+					pereche_noua.y = yEcuatieDreapta(prev_index, next_index, x_curent);
+					segment_rezultat.push_back(pereche_noua);
+					break;
+				}
+				else
+				{
+					index += 1;
+					prev_index = next_index;
+				}
+			}
+		}
+	}
+
+
+	if (segment_rezultat.size() < segment_rezultat.size())
+	{
+		point last_item;
+		last_item.x = x_segment_referinta[x_segment_referinta.size() - 1];
+		last_item.y = segment_factorizat[segment_factorizat.size() - 1].y;
+
+		segment_rezultat.push_back(last_item);
+	}
+
+	segment_factorizat = segment_rezultat;
 }
 
+double yEcuatieDreapta(point point_a, point point_b, double x_value)
+{
+	double x0 = point_a.x;
+	double y0 = point_a.y;
+	double x1 = point_b.x;
+	double y1 = point_b.y;
 
+	double x = x_value;
+
+	double y = (y0 * (x1 - x) + y1 * (x - x0)) / (x1 - x0);
+
+	return y;
+}

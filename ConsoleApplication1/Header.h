@@ -8,8 +8,12 @@
 using namespace std;
 
 struct point {
-	int x;
+	double x;
 	double y;
+
+	bool operator==(const point& right) const {
+		return x == right.x && y == right.y;
+	};
 };
 
 struct twin {
@@ -25,4 +29,6 @@ void segmentareVariatii_with_future_price(vector<twin>& result, vector<point>& i
 
 void printVariatii(map<int, vector<twin>> variatii);
 void comprimaSegment(vector<point>& result, int comprimed_size);
-void interpoleazaSegment(vector<point>& result, int comprimed_size);
+void interpoleazaSegment(vector<point>& seg_factorizat, int comprimed_size);
+double yEcuatieDreapta(point a, point b, double x);
+

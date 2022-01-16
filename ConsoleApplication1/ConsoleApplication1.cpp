@@ -59,24 +59,32 @@ int main()
 		37: [{}, {}, {}]
 		38: [{}, {}, {}]
 	}*/
-	cout << "Start comprima interpoleaza handler" << endl;
+	//cout << "Start comprima interpoleaza handler" << endl;
 	for (auto& a : variatii)
 	{
-		cout << endl << "Current key:" << a.first;
+		cout << endl << "current key:" << a.first;
 		for (auto& b : a.second)
 		{
 			//comprima si interpoleaza
 			comprimaSegment(b.values, size_seg_unic);
-			//interpoleazaSegment(b.values, size_seg_unic);
+			//interpoleazasegment(b.values, size_seg_unic);
 		}
 	}
 
+	cout << endl << "---->" << "Before interpolation:" << endl;
 	printVariatii(variatii);
 
 
 	cout << endl << "Start interpolare variatii:";
+	for (auto& a : variatii)
+	{
+		for (auto& b : a.second)
+		{
+			interpoleazaSegment(b.values, size_seg_unic);
+		}
+	}
 
-
+	printVariatii(variatii);
 
 
 
