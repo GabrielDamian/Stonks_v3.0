@@ -18,7 +18,7 @@ vector<point> readFromFile()
 	return fileData;
 }
 
-void segmentareArray(vector<vector<point>>& result, vector<point> inputData, int size_seg_unic)
+void segmentareArray(vector<vector<point>>& result, vector<point>& inputData, int size_seg_unic)
 {
 	int index = 0;
 	int size_arr = inputData.size();
@@ -37,7 +37,20 @@ void segmentareArray(vector<vector<point>>& result, vector<point> inputData, int
 				buffer.push_back(inputData[index_buffer]);
 				index_buffer++;
 			}
+			/*cout << endl << "Before normalizare:" << endl;
+			for (auto a : buffer)
+			{
+				cout << a.x<<"," <<a.y<<" ";
+			}
+			cout << endl << "After normalization:" << endl;*/
+			
 			normalizeazaSegment(buffer);
+			
+			/*for (auto a : buffer)
+			{
+				cout << a.x << "," << a.y << " ";
+			}
+			*/
 			result.push_back(buffer);
 		}
 		else
@@ -129,7 +142,7 @@ void segmentareVariatii_with_future_price(vector<twin>& result, vector<point>& i
 
 	}
 }
-void printVariatii(map<int, vector<twin>> variatii)
+void printVariatii(map<int, vector<twin>>& variatii)
 {
 	cout << setprecision(2);
 	cout << fixed;
@@ -257,3 +270,18 @@ double yEcuatieDreapta(point point_a, point point_b, double x_value)
 
 	return y;
 }
+
+double crosssCorelation(const vector<point>& seg_1, const vector<point>& seg_2)
+{
+	//!! seg_1.size() == seg_2.size();
+	double suma = 0;
+	int i = 0;
+	while (i < seg_1.size())
+	{
+		suma += abs(seg_1[i].y - seg_2[i].y);
+		i++;
+	}
+	return suma;
+}
+
+

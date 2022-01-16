@@ -1,4 +1,5 @@
 #include"Header.h"
+//-->!!!!!<-- MANDATORY -> File data needs to be consecutive by x and start with index 0
 
 int main()
 {
@@ -17,16 +18,16 @@ int main()
 	vector<vector<point>> segmente_baza;
 	segmentareArray(segmente_baza, inputData, size_seg_unic);
 	
-	//cout << "Testare segmente de baza:" << endl;
-	//for (auto a : segmente_baza)
-	//{
-	//	cout << endl << "arr nou:";
-	//	for (auto b : a)
-	//	{
-	//		cout << " " << b.y << ",";
-	//	}
-	//}
-	cout << "Succes.S-au generat:" << segmente_baza.size() << " segment de baza.(+ segmente normalizate)";
+	cout << "Testare segmente de baza:" << endl;
+	for (auto a : segmente_baza)
+	{
+		////cout << endl << "arr nou:";
+		//for (auto b : a)
+		//{
+		//	cout << " " << b.y << ",";
+		//}
+	}
+	cout <<endl<< "Succes.S-au generat:" << segmente_baza.size() << " segment de baza.(+ segmente normalizate)";
 	cout << endl << "Start stage 3:" << endl;
 
 	int future_price = 10;
@@ -72,7 +73,7 @@ int main()
 	}
 
 	cout << endl << "---->" << "Before interpolation:" << endl;
-	printVariatii(variatii);
+	//printVariatii(variatii);
 
 
 	cout << endl << "Start interpolare variatii:";
@@ -84,11 +85,76 @@ int main()
 		}
 	}
 
-	printVariatii(variatii);
+	//printVariatii(variatii);
 
 
 
+	//#TO DO
+	//vector de patterns, pentru fiecare segment de baza
+	//segmente_baza
+	vector<patterns> posibile_patterns;
+	posibile_patterns.reserve(segmente_baza.size());
+	int index_cout = 0;
+	for (auto& a : segmente_baza)
+	{
+		index_cout++;
+		if (index_cout % 50 == 0)
+		{
+			cout << endl << "another +50";
+		}
+		patterns temporary_pattern;
+		temporary_pattern.seg_baza = a;
+		
+		//parcuge mapa de referita cu variatii, si introdu in temporary_pattern doar pe cele care < abatere
+		
+		for (auto& b : variatii)
+		{
+			vector<twin> temp_vector_twin;
+			//#TO DO:adauga variatii filtrare doar acele variatii care sunt < abatere
 
+			for (auto& variatie : variatii.at(b.first))
+			{
+				if (crosssCorelation(a,variatie.values) < abatere)
+				{
+					temp_vector_twin.push_back(variatie);
+				}
+			}
+			temporary_pattern.variatii_filtrate.insert(make_pair(b.first, temp_vector_twin));
+		}
+
+		posibile_patterns.push_back(temporary_pattern);
+	}
+
+	//#TEST posibile patterns;
+	/*
+	cout << endl<<"DAMN BOYY";
+	for (auto& a : posibile_patterns)
+	{
+		cout << endl << "--posibil nou pattern:" << endl;
+		for (auto& b : a.seg_baza)
+		{
+			cout << "(" << b.x << "," << b.y << "), ";
+		}
+		cout << endl << "Cu variatiile:" << endl;
+		for (auto& c : a.variatii_filtrate)
+		{
+			cout << c.first << ":";
+			for (auto& d : c.second)
+			{
+				//bad, but just tesing
+				cout << endl;
+				for (auto& e : d.values)
+				{
+					cout << "(" << e.x << "," << e.y << "), ";
+				}
+			}
+			cout << endl << endl;
+		}
+	}
+
+
+	*/
+	cout << "DAMN BOY, it's done in time.!!!";
 
 
 	//TRASH TESTING
