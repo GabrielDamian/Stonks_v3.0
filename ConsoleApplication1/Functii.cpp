@@ -18,6 +18,7 @@ vector<point> readFromFile()
 
 	return fileData;
 }
+
 void segmentareArray(vector<vector<point>>& result, vector<point> inputData, int size_seg_unic)
 {
 	int index = 0;
@@ -105,7 +106,10 @@ void segmentareVariatii_with_future_price(vector<twin>& result, vector<point>& i
 			
 			//normalizeazaSegment(buffer);
 			twin temp_struct;
+			normalizeazaSegment(buffer);
 			temp_struct.values = buffer;
+
+
 
 			//conditie de extragere future_price
 			if (index + future_price < inputData.size() - 1)
@@ -126,3 +130,46 @@ void segmentareVariatii_with_future_price(vector<twin>& result, vector<point>& i
 
 	}
 }
+void printVariatii(map<int, vector<twin>> variatii)
+{
+	cout << endl << "Test populare variatii:" << endl;
+	for (auto& a : variatii)
+	{
+		cout << endl << "-->key:" << a.first << " size arr variatii:" << a.second.size() << endl;
+		for (auto& b : a.second)
+		{
+			//b = struct twin
+			//cout << endl << "Future price:" << b.future_price << " Values:";
+			//cout <<a.first<< "== ?"<<b.values.size()<<endl;
+			cout << endl << "Len=" << b.values.size() << " ";
+			for (auto& c : b.values)
+			{
+				//cout << "(" << c.x<<","<<c.y<<") ";
+				cout << "(" << c.x << "," << c.y << ") ";
+			}
+			cout << " Future price:" << b.future_price;
+		}
+	}
+}
+void comprimaSegment(vector<point>& result, int comprimed_size)
+{
+	//comprimed_size = 10
+	// 
+	//from size = 5
+	//from size = 15
+
+	double ratio = comprimed_size / result.size();
+	transform(result.begin(), result.end(), result.begin(), [ratio](point el) {
+		point new_el;
+		new_el.x = el.x * ratio;
+		new_el.y = el.y;
+		return new_el;
+		});
+
+}
+void interpoleazaSegment(vector<point>& result, int comprimed_size)
+{
+	
+}
+
+

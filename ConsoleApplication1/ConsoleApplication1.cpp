@@ -2,33 +2,42 @@
 
 int main()
 {
-	vector<point> inputData = readFromFile();
+	vector<point> inputData = readFromFile(); //s-au aplicat deja prelucrari de filtrare candles si candlesToFunction
 	/*for (auto a : inputData)
 	{
 		cout << a.x << " " << a.y << endl;
 	}*/
+	
 	cout << "Start stage 2" << endl;
 	
 	int size_seg_unic = 10;
-	int min_max_streching = 5;
+	int min_max_streching = 2;
 
 	cout << "Start generare segmente de baza..." << endl;
 	vector<vector<point>> segmente_baza;
 	segmentareArray(segmente_baza, inputData, size_seg_unic);
-	/*for (auto a : segmente_baza)
-	{
-		cout << endl << "arr nou:";
-		for (auto b : a)
-		{
-			cout << " " << b.y;
-		}
-	}*/
+	
+	//cout << "Testare segmente de baza:" << endl;
+	//for (auto a : segmente_baza)
+	//{
+	//	cout << endl << "arr nou:";
+	//	for (auto b : a)
+	//	{
+	//		cout << " " << b.y << ",";
+	//	}
+	//}
 	cout << "Succes.S-au generat:" << segmente_baza.size() << " segment de baza.(+ segmente normalizate)";
 	cout << endl << "Start stage 3:" << endl;
 
 	int future_price = 10;
 	map<int, vector<twin>> variatii;
-	seteazaKeyVariatii(variatii, size_seg_unic, min_max_streching);
+	/*{
+		35: [{future_price: x, values:[point, point...]}, {}, {}]
+		36: [{}, {}, {}]
+		37: [{}, {}, {}]
+		38: [{}, {}, {}]
+	}*/
+	seteazaKeyVariatii(variatii, size_seg_unic, min_max_streching); //populeaza doar keys in obiect (35,36,37..)
 
 	cout << endl << "Populez variatii...";
 	for (auto &a : variatii)
@@ -39,27 +48,42 @@ int main()
 
 
 	//verificare populare variatii
-	 
-	//for (auto& a : variatii)
-	//{
-	//	cout << "key:" << a.first << "size:" << a.second.size() << endl;
-	//	for (auto& b : a.second)
-	//	{
-	//		//b = struct twin
-	//		//cout << endl << "Future price:" << b.future_price << " Values:";
-	//		//cout <<a.first<< "== ?"<<b.values.size()<<endl;
-	//		cout << endl<<"Len=" << b.values.size() << " ";
-	//		for (auto& c : b.values)
-	//		{
-	//			//cout << "(" << c.x<<","<<c.y<<") ";
-	//			cout << "("<<c.y << ","<<c.x<<") ";
-	//		}
-	//	}
-	//}
+	//CTRL+K+C	 
+	//CTRL+K+U
+
+//	printVariatii(variatii);
+
+	/*{
+		35: [{future_price: x, values:[point, point...]}, {}, {}]
+		36: [{}, {}, {}]
+		37: [{}, {}, {}]
+		38: [{}, {}, {}]
+	}*/
+	cout << "Start comprima interpoleaza handler" << endl;
+	for (auto& a : variatii)
+	{
+		cout << endl << "Current key:" << a.first;
+		for (auto& b : a.second)
+		{
+			//comprima si interpoleaza
+			comprimaSegment(b.values, size_seg_unic);
+			//interpoleazaSegment(b.values, size_seg_unic);
+		}
+	}
+
+	printVariatii(variatii);
+
 
 	cout << endl << "Start interpolare variatii:";
 
 
+
+
+
+
+
+
+	//TRASH TESTING
 	/*for (int i = size_seg_unic - min_max_streching; i <= size_seg_unic + min_max_streching; i++)
 	{
 		cout << "min max:" << i << endl;
