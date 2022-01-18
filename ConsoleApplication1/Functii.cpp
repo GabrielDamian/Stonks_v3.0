@@ -5,7 +5,7 @@ vector<point> readFromFile()
 	vector<point> fileData;
 
 	int a;
-	double b;
+	floatType b;
 	std::ifstream infile("data.txt");
 	while (infile >> a >> b)
 	{
@@ -63,7 +63,7 @@ void segmentareArray(vector<vector<point>>& result, vector<point>& inputData, in
 void normalizeazaSegment(vector<point>& segment)
 {
 	int min_x = segment[0].x;
-	double min_y = segment[0].y;
+	floatType min_y = segment[0].y;
 
 	for (auto a : segment)
 	{
@@ -142,29 +142,7 @@ void segmentareVariatii_with_future_price(vector<twin>& result, vector<point>& i
 
 	}
 }
-void printVariatii(map<int, vector<twin>>& variatii)
-{
-	cout << setprecision(2);
-	cout << fixed;
-	cout << endl << "Test populare variatii:" << endl;
-	for (auto& a : variatii)
-	{
-		cout << endl << "-->key:" << a.first << " size arr variatii:" << a.second.size() << endl;
-		for (auto& b : a.second)
-		{
-			//b = struct twin
-			//cout << endl << "Future price:" << b.future_price << " Values:";
-			//cout <<a.first<< "== ?"<<b.values.size()<<endl;
-			cout << endl << "Len=" << b.values.size() << " ";
-			for (auto& c : b.values)
-			{
-				//cout << "(" << c.x<<","<<c.y<<") ";
-				cout << "(" << c.x << "," << c.y << ") ";
-			}
-			cout << " Future price:" << b.future_price;
-		}
-	}
-}
+
 void comprimaSegment(vector<point>& result, int comprimed_size)
 {
 	//comprimed_size = 10
@@ -172,7 +150,7 @@ void comprimaSegment(vector<point>& result, int comprimed_size)
 	//from size = 5
 	//from size = 15
 
-	double ratio = comprimed_size / (double)(result.size() - 1);
+	floatType ratio = comprimed_size / (floatType)(result.size() - 1);
 	transform(result.begin(), result.end(), result.begin(), [ratio](point el) {
 		el.x *= ratio;
 		return el;
@@ -186,8 +164,8 @@ void interpoleazaSegment(vector<point>& segment_factorizat, int comprimed_size)
 
 	vector<point> segment_rezultat;
 
-	vector<double> x_segment_referinta; //range(0,comprimed_size)
-	vector<double> x_segment_factorizat; //doar x's
+	vector<floatType> x_segment_referinta; //range(0,comprimed_size)
+	vector<floatType> x_segment_factorizat; //doar x's
 
 	int temp_index = 0;
 	while (temp_index < comprimed_size)
@@ -203,7 +181,7 @@ void interpoleazaSegment(vector<point>& segment_factorizat, int comprimed_size)
 
 	for (auto a : x_segment_referinta)
 	{
-		double x_curent = a;
+		floatType x_curent = a;
 	
 		auto it = find(x_segment_factorizat.begin(), x_segment_factorizat.end(), x_curent);
 		if (it != x_segment_factorizat.end())
@@ -257,24 +235,24 @@ void interpoleazaSegment(vector<point>& segment_factorizat, int comprimed_size)
 	segment_factorizat = segment_rezultat;
 }
 
-double yEcuatieDreapta(point point_a, point point_b, double x_value)
+floatType yEcuatieDreapta(point point_a, point point_b, floatType x_value)
 {
-	double x0 = point_a.x;
-	double y0 = point_a.y;
-	double x1 = point_b.x;
-	double y1 = point_b.y;
+	floatType x0 = point_a.x;
+	floatType y0 = point_a.y;
+	floatType x1 = point_b.x;
+	floatType y1 = point_b.y;
 
-	double x = x_value;
+	floatType x = x_value;
 
-	double y = (y0 * (x1 - x) + y1 * (x - x0)) / (x1 - x0);
+	floatType y = (y0 * (x1 - x) + y1 * (x - x0)) / (x1 - x0);
 
 	return y;
 }
 
-double crosssCorelation(const vector<point>& seg_1, const vector<point>& seg_2)
+floatType crosssCorelation(const vector<point>& seg_1, const vector<point>& seg_2)
 {
 	//!! seg_1.size() == seg_2.size();
-	double suma = 0;
+	floatType suma = 0;
 	int i = 0;
 	while (i < seg_1.size())
 	{
@@ -284,4 +262,48 @@ double crosssCorelation(const vector<point>& seg_1, const vector<point>& seg_2)
 	return suma;
 }
 
+//Test functions:
+void printInputData(vector<point>& inputData)
+{
+	cout << endl << "Test function: Input data:" << endl;
+	for (auto a : inputData)
+	{
+		cout << a.x << " " << a.y << endl;
+	}
+}
 
+
+void printSegmenteBaza(vector<vector<point>>& segmente_baza)
+{
+	cout << "Testare segmente de baza:" << endl;
+	for (auto a : segmente_baza)
+	{
+		for (auto b : a)
+		{
+			cout << "(" << b.x << "," << b.y << ") ";
+		}
+		cout << endl;
+	}
+}
+
+void printVariatii(map<int, vector<twin>>& variatii)
+{
+	cout << endl << "Testare populare variatii:" << endl;
+	cout << setprecision(2);
+	cout << fixed;
+
+	for (auto& a : variatii)
+	{
+		cout << endl << "-->key:" << a.first << " size arr variatii:" << a.second.size() << endl;
+		for (auto& b : a.second)
+		{
+			
+			cout << endl << "Len=" << b.values.size() << " ";
+			for (auto& c : b.values)
+			{
+				cout << "(" << c.x << "," << c.y << ") ";
+			}
+			cout << " Future price:" << b.future_price;
+		}
+	}
+}
