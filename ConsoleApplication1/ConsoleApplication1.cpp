@@ -75,6 +75,13 @@ int main()
 	int index_cout = 0;
 	for (auto& a : segmente_baza)
 	{
+		int scor_cadinal = 0;
+
+		//cout contor
+		//cout << index_cout << endl;
+		index_cout++;
+		//--cout contor
+
 		posibile_patterns.emplace_back();
 		patterns& pattern_ref = posibile_patterns[posibile_patterns.size() - 1];
 
@@ -90,9 +97,11 @@ int main()
 				if (crosssCorelation(a,variatie.values) < abatere)
 				{
 					vector_twin.push_back(variatie);
+					scor_cadinal++;
 				}
 			}
 		}
+		pattern_ref.scor = scor_cadinal;
 	}
 	
 	//#TEST posibile patterns;
@@ -124,6 +133,33 @@ int main()
 
 	*/
 	cout << "DAMN BOY, it's done in time.!!!";
+
+	
+	//sort descending by score
+	std::sort(posibile_patterns.begin(), posibile_patterns.end(), [](patterns const& a, patterns const& b)->bool
+		{
+			return a.scor > b.scor;
+		});
+
+	cout << "TEST SCORES SORTED:" << endl;
+	
+	int how_many = 100;
+	int curent = 0;
+	for (auto& a : posibile_patterns)
+	{
+		if (curent > how_many)
+		{
+			break;
+		}
+		else
+		{
+			curent++;
+		}
+		cout << a.scor << endl;
+	}
+	cout << "SIZE:" << posibile_patterns.size();
+
+
 
 
 	//TRASH TESTING

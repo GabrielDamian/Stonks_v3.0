@@ -24,10 +24,10 @@ struct twin {
 	floatType future_price;
 };
 
-struct patterns { //cate un 'patterns' pentru fiecare segment din 'segmente_baza
+struct patterns { 
 	vector<point> seg_baza;
-	map<int, vector<twin>> variatii_filtrate; //doar variatiile filtrare
-	//rezultate finale = suma cardinalului variatiilor
+	map<int, vector<twin>> variatii_filtrate; 
+	int scor;
 };
 
 
