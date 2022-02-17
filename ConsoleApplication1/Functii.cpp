@@ -1,5 +1,6 @@
 #include"Header.h"
 #include<iomanip>
+
 vector<point> readFromFile()
 {
 	vector<point> fileData;
@@ -17,7 +18,6 @@ vector<point> readFromFile()
 
 	return fileData;
 }
-
 void segmentareArray(vector<vector<point>>& result, vector<point>& inputData, int size_seg_unic)
 {
 	int index = 0;
@@ -62,7 +62,7 @@ void segmentareArray(vector<vector<point>>& result, vector<point>& inputData, in
 }
 void normalizeazaSegment(vector<point>& segment)
 {
-	int min_x = segment[0].x;
+	floatType min_x = segment[0].x;
 	floatType min_y = segment[0].y;
 
 	for (auto a : segment)
@@ -262,6 +262,7 @@ floatType crosssCorelation(const vector<point>& seg_1, const vector<point>& seg_
 	return suma;
 }
 
+
 //Test functions:
 void printInputData(vector<point>& inputData)
 {
@@ -271,21 +272,21 @@ void printInputData(vector<point>& inputData)
 		cout << a.x << " " << a.y << endl;
 	}
 }
-
-
 void printSegmenteBaza(vector<vector<point>>& segmente_baza)
 {
-	cout << "Testare segmente de baza:" << endl;
+	std::cout << std::fixed;
+	std::cout << std::setprecision(1);
+	cout <<endl<< "Testare segmente de baza:" << endl;
 	for (auto a : segmente_baza)
 	{
 		for (auto b : a)
 		{
-			cout << "(" << b.x << "," << b.y << ") ";
+			//cout << "[" << b.x << "," << b.y << "], ";
+			cout << b.y << ",";
 		}
 		cout << endl;
 	}
 }
-
 void printVariatii(map<int, vector<twin>>& variatii)
 {
 	cout << endl << "Testare populare variatii:" << endl;
@@ -295,9 +296,12 @@ void printVariatii(map<int, vector<twin>>& variatii)
 	for (auto& a : variatii)
 	{
 		cout << endl << "-->key:" << a.first << " size arr variatii:" << a.second.size() << endl;
+		int how_many = 10;
+		int now = 0;
 		for (auto& b : a.second)
 		{
-			
+			if (now > how_many) break;
+			now++;
 			cout << endl << "Len=" << b.values.size() << " ";
 			for (auto& c : b.values)
 			{
