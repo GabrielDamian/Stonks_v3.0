@@ -11,7 +11,7 @@ if __name__ == '__main__':
     filter_candles_1 = 0.3
     filter_candles_2 = 0.3
 
-    vector = readDataFromFile('AAPL.csv', linesToRead=50002)
+    vector = readDataFromFile('AAPL.csv', linesToRead=180007)
     # testRawInputData(data=vector, cout=True,limit=10)  # x y
 
     graph.setInputData(vector)

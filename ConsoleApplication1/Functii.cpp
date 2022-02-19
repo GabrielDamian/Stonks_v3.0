@@ -96,7 +96,7 @@ void segmentareVariatii_with_future_price(vector<twin>& result, vector<point>& i
 	//toate segmentele pentru o cheie de variatie (ex:35,36..)
 	vector<twin> result_data;
 
-	int index = 0;
+	//int index = 0;
 	int size_arr = inputData.size();
 
 	for (auto el = inputData.begin(); el != inputData.end(); ++el)
@@ -116,6 +116,7 @@ void segmentareVariatii_with_future_price(vector<twin>& result, vector<point>& i
 			//salveaza aici intr-o prop la fel ca future_price, un last_value_before_normalization
 			//necesara pentru a compara daca pretul a crescut sau a scazut cu valoarea dinainte normalizare
 			
+			floatType last_price_default = buffer[buffer.size() - 1].y;
 			normalizeazaSegment(buffer);
 			twin temp_struct;
 			normalizeazaSegment(buffer);
@@ -127,12 +128,13 @@ void segmentareVariatii_with_future_price(vector<twin>& result, vector<point>& i
 			if (index + future_price < inputData.size() - 1)
 			{
 				temp_struct.future_price = inputData[index].y;
+				temp_struct.last_price = last_price_default;
 			}
 			else
 			{
 				temp_struct.future_price = NULL;
 			}
-
+			temp_struct.index = index;
 			result.push_back(temp_struct);
 		}
 		else
@@ -261,12 +263,36 @@ floatType crosssCorelation(const vector<point>& seg_1, const vector<point>& seg_
 	}
 	return suma;
 }
-
-
+bool checkIfStraightLine(vector<point> segment)
+{
+	floatType sample = abs(segment[0].y - segment[1].y);
+	floatType neighborhood_range = 0.5;
+	
+	for (int i = 0; i < segment.size() - 2; i++)
+	{
+		if (abs(segment[i].y - segment[i + 1].y) > sample + neighborhood_range)
+		{
+			return false;
+		}
+	}
+	return true;
+}
+bool checkSimilarIndex(vector<twin>& vector_twin, twin variatie, int how_far)
+{
+	//cout << "verifica index:" << variatie.index << " in vector twin";
+	for (auto& a : vector_twin)
+	{
+		if (abs(a.index - variatie.index) < how_far)
+		{
+			return true;
+		}
+	}
+	return false;
+}
 //Test functions:
 void printInputData(vector<point>& inputData)
 {
-	int how_many = 200;
+	int how_many = 1000;
 	int now = 0;
 	for (auto a : inputData)
 	{
@@ -304,24 +330,25 @@ void printVariatii(map<int, vector<twin>>& variatii)
 	{
 		cout << endl << endl << "-->key:" << a.first << " size arr variatii:" << a.second.size();
 		
-		int how_many = 10;
+		int how_many = 5;
 		int now = 0;
-
-		//for (auto& b : a.second)
-		//{
-		//	if (now > how_many) break;
-		//	now++;
-		//	cout << endl << "Len=" << b.values.size() << " ";
-		//	for (auto& c : b.values)
-		//	{
-		//		//cout << "[" << c.x << "," << c.y << "], ";
-		//		cout << c.y << ", ";
-		//	}
-		//	cout << " Future price:" << b.future_price;
-		//}
+		
+		for (auto& b : a.second)
+		{
+			if (now > how_many) break;
+			now++;
+			cout << endl << "Len=" << b.values.size() << " ";
+			for (auto& c : b.values)
+			{
+				//cout << "[" << c.x << "," << c.y << "], ";
+				cout << c.y << ", ";
+			}
+			cout << endl <<endl<<"Future price:" << b.future_price;
+			cout << endl << "Last price:" << b.last_price;
+			cout << endl << "index:" << b.index << endl;
+		}
 	}
 }
-
 void printPatterns(vector<patterns> posibile_patterns)
 {
 	int how_many = 100;
@@ -334,8 +361,14 @@ void printPatterns(vector<patterns> posibile_patterns)
 		cout << endl << endl << "----Patten: " << endl;
 		printInputData(a.seg_baza);
 		
+		cout << endl << "score:" << a.scor;
+		cout << endl << "positives:" << a.positives;
+		cout << endl << "index:" << a.index << endl;
+
 		cout << endl << "Variatii filtrate:";
 		printVariatii(a.variatii_filtrate);
+
+		
 
 	}
 
