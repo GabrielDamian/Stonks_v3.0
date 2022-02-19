@@ -1,22 +1,21 @@
 #include"Header.h"
-//-->!!!!!<-- MANDATORY -> File data needs to be consecutive by x and start with index 0
 
 int main()
 {
-	vector<point> inputData = readFromFile(); 
-	//printInputData(inputData); //TEST RAW DATA
-	
-	int size_seg_unic = 50;
+	int size_seg_unic = 30;
 	int min_max_streching = 2;
+	int future_price = 10;
 
+	vector<point> inputData = readFromFile(); 
+	printInputData(inputData); //TEST RAW DATA
+	
 	vector<vector<point>> segmente_baza;
 	segmentareArray(segmente_baza, inputData, size_seg_unic);
+	cout << endl << "S-au generat:" << segmente_baza.size() << " segment de baza.";
 	printSegmenteBaza(segmente_baza);
+
 	
 
-	cout <<endl<< "S-au generat:" << segmente_baza.size() << " segment de baza.(+ segmente normalizate)";
-
-	int future_price = 10;
 	map<int, vector<twin>> variatii;
 	/*{
 		35: [{future_price: x, values:[point, point...]}, {}, {}]
@@ -24,13 +23,15 @@ int main()
 		37: [{}, {}, {}]
 		38: [{}, {}, {}]
 	}*/
-	
+
 	seteazaKeyVariatii(variatii, size_seg_unic, min_max_streching);
-	
 	for (auto &a : variatii)
 	{
 		segmentareVariatii_with_future_price(a.second, inputData, a.first, future_price);
 	}
+	cout << endl << "---Variatii default:" << endl;
+	printVariatii(variatii);
+	
 	
 	for (auto& a : variatii)
 	{
@@ -39,6 +40,8 @@ int main()
 			comprimaSegment(b.values, size_seg_unic);
 		}
 	}
+	cout << endl << "----Variatii comprimate:" << endl;
+	printVariatii(variatii);
 
 
 	for (auto& a : variatii)
@@ -48,7 +51,10 @@ int main()
 			interpoleazaSegment(b.values, size_seg_unic);
 		}
 	}
-	
+	cout << endl << "----Variatii comprimate si interpolate:" << endl;
+	printVariatii(variatii);
+
+
 	vector<patterns> posibile_patterns;
 	posibile_patterns.reserve(segmente_baza.size());
 	int index_cout = 0;
@@ -61,7 +67,9 @@ int main()
 		posibile_patterns.emplace_back();
 		patterns& pattern_ref = posibile_patterns[posibile_patterns.size() - 1];
 
-		pattern_ref.seg_baza = a;
+		vector<point> base_copy_normalized = a;
+		normalizeazaSegment(base_copy_normalized);
+		pattern_ref.seg_baza = base_copy_normalized;
 		
 		for (auto& b : variatii)
 		{
@@ -70,7 +78,7 @@ int main()
 
 			for (auto& variatie : variatii.at(b.first))
 			{
-				if (crosssCorelation(a,variatie.values) < abatere)
+				if (crosssCorelation(base_copy_normalized,variatie.values) < abatere)
 				{
 					vector_twin.push_back(variatie);
 					scor_cadinal++;
@@ -79,12 +87,18 @@ int main()
 		}
 		pattern_ref.scor = scor_cadinal;
 	}
-	
-	//descending
-	std::sort(posibile_patterns.begin(), posibile_patterns.end(), [](patterns const& a, patterns const& b)->bool
+	std::sort(posibile_patterns.begin(), posibile_patterns.end(), [](patterns const& a, patterns const& b)->bool //descending
 		{
 			return a.scor > b.scor;
 		});
+	//TODO - cout variatii filtrate si sortate desc
+	cout << endl << endl << "==== Pattern finale desc ========";
+	printPatterns(posibile_patterns);
+
+
+	//TODO - add index value to the base segment and variations
+	//TODO - fix future price value
+	//TODO - add succes ratio to each final base filtered patter (positive_future_price / variations.size())
 
 	return 0;
 }

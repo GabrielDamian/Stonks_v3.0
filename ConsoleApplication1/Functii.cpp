@@ -44,7 +44,7 @@ void segmentareArray(vector<vector<point>>& result, vector<point>& inputData, in
 			}
 			cout << endl << "After normalization:" << endl;*/
 			
-			normalizeazaSegment(buffer);
+			//normalizeazaSegment(buffer);
 			
 			/*for (auto a : buffer)
 			{
@@ -116,7 +116,7 @@ void segmentareVariatii_with_future_price(vector<twin>& result, vector<point>& i
 			//salveaza aici intr-o prop la fel ca future_price, un last_value_before_normalization
 			//necesara pentru a compara daca pretul a crescut sau a scazut cu valoarea dinainte normalizare
 			
-			//normalizeazaSegment(buffer);
+			normalizeazaSegment(buffer);
 			twin temp_struct;
 			normalizeazaSegment(buffer);
 			temp_struct.values = buffer;
@@ -266,10 +266,14 @@ floatType crosssCorelation(const vector<point>& seg_1, const vector<point>& seg_
 //Test functions:
 void printInputData(vector<point>& inputData)
 {
-	cout << endl << "Test function: Input data:" << endl;
+	int how_many = 200;
+	int now = 0;
 	for (auto a : inputData)
 	{
-		cout << a.x << " " << a.y << endl;
+		if (now > how_many) break;
+		now++;
+		//cout << "[" << a.x << " " << a.y << "], ";
+		cout << a.y << ", ";
 	}
 }
 void printSegmenteBaza(vector<vector<point>>& segmente_baza)
@@ -277,8 +281,12 @@ void printSegmenteBaza(vector<vector<point>>& segmente_baza)
 	std::cout << std::fixed;
 	std::cout << std::setprecision(1);
 	cout <<endl<< "Testare segmente de baza:" << endl;
+	int how_many = 10;
+	int now = 0;
 	for (auto a : segmente_baza)
 	{
+		if (now > how_many) break;
+		now++;
 		for (auto b : a)
 		{
 			//cout << "[" << b.x << "," << b.y << "], ";
@@ -289,25 +297,46 @@ void printSegmenteBaza(vector<vector<point>>& segmente_baza)
 }
 void printVariatii(map<int, vector<twin>>& variatii)
 {
-	cout << endl << "Testare populare variatii:" << endl;
 	cout << setprecision(2);
 	cout << fixed;
 
 	for (auto& a : variatii)
 	{
-		cout << endl << "-->key:" << a.first << " size arr variatii:" << a.second.size() << endl;
+		cout << endl << endl << "-->key:" << a.first << " size arr variatii:" << a.second.size();
+		
 		int how_many = 10;
 		int now = 0;
-		for (auto& b : a.second)
-		{
-			if (now > how_many) break;
-			now++;
-			cout << endl << "Len=" << b.values.size() << " ";
-			for (auto& c : b.values)
-			{
-				cout << "(" << c.x << "," << c.y << ") ";
-			}
-			cout << " Future price:" << b.future_price;
-		}
+
+		//for (auto& b : a.second)
+		//{
+		//	if (now > how_many) break;
+		//	now++;
+		//	cout << endl << "Len=" << b.values.size() << " ";
+		//	for (auto& c : b.values)
+		//	{
+		//		//cout << "[" << c.x << "," << c.y << "], ";
+		//		cout << c.y << ", ";
+		//	}
+		//	cout << " Future price:" << b.future_price;
+		//}
 	}
+}
+
+void printPatterns(vector<patterns> posibile_patterns)
+{
+	int how_many = 100;
+	int now = 0;
+	for (auto& a : posibile_patterns)
+	{
+		if (now > how_many) break;
+		now++;
+
+		cout << endl << endl << "----Patten: " << endl;
+		printInputData(a.seg_baza);
+		
+		cout << endl << "Variatii filtrate:";
+		printVariatii(a.variatii_filtrate);
+
+	}
+
 }

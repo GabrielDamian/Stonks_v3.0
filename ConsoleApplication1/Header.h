@@ -6,7 +6,7 @@
 #include <map>
 #include <algorithm>
 typedef float floatType;
-#define abatere  10
+#define abatere  100
 
 using namespace std;
 
@@ -47,5 +47,5 @@ floatType crosssCorelation(const vector<point>& seg_1, const vector<point>& seg_
 void printInputData(vector<point>& inputData);
 void printSegmenteBaza(vector<vector<point>>& segmente_baza);
 void printVariatii(map<int, vector<twin>>& variatii);
-
+void printPatterns(vector<patterns> posibile_patterns);
 
