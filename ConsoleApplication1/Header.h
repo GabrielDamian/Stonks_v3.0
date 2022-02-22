@@ -6,7 +6,6 @@
 #include <map>
 #include <algorithm>
 typedef float floatType;
-#define abatere  400
 
 using namespace std;
 
@@ -41,11 +40,12 @@ void normalizeazaSegment(vector<point>& segment);
 void seteazaKeyVariatii(map<int, vector<twin>>& variatii, int size_seg_baza, int min_max_streching);
 void segmentareVariatii_with_future_price(vector<twin>& result, vector<point>& inputData, int size_variatie, int future_price);
 
-void comprimaSegment(vector<point>& result, int comprimed_size);
+void comprimaSegment_X(vector<point>& result, int comprimed_size);
+
 void interpoleazaSegment(vector<point>& seg_factorizat, int comprimed_size);
 floatType yEcuatieDreapta(point a, point b, floatType x);
 
-floatType crosssCorelation(const vector<point>& seg_1, const vector<point>& seg_2);
+floatType crosssCorelation(const vector<point>& seg_1, const vector<point>& seg_2, bool yScalerEnabler, bool powerSum);
 bool checkIfStraightLine(vector<point> baseSegment);
 bool checkSimilarIndex(vector<twin>& vector_twin, twin variatie, int how_far);
 

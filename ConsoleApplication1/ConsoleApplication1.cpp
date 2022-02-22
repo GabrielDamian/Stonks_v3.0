@@ -2,9 +2,14 @@
 
 int main()
 {
-	int size_seg_unic = 60;
-	int min_max_streching = 0;
+	int size_seg_unic = 70;
+	int min_max_streching = 4;
 	int future_price = 10;
+	int abatere = 200;
+
+	bool yScalerEnabler = true;
+	bool powerSumCrossCor = false;
+
 
 	vector<point> inputData = readFromFile(); 
 	//printInputData(inputData); //TEST RAW DATA
@@ -13,8 +18,6 @@ int main()
 	segmentareArray(segmente_baza, inputData, size_seg_unic);
 	cout << endl << "S-au generat:" << segmente_baza.size() << " segment de baza.";
 	//printSegmenteBaza(segmente_baza);
-
-	
 
 	map<int, vector<twin>> variatii;
 	/*{
@@ -33,16 +36,24 @@ int main()
 	//printVariatii(variatii);
 	
 	
+	//comprimare X
 	for (auto& a : variatii)
 	{
 		for (auto& b : a.second)
 		{
-			comprimaSegment(b.values, size_seg_unic);
+			comprimaSegment_X(b.values, size_seg_unic);
 		}
 	}
+	//comprimare Y
+	/*for (auto& a : variatii)
+	{
+		for (auto& b : a.second)
+		{
+			comprimaSegment_Y(b.values, size_seg_unic);
+		}
+	}*/
 	cout << endl << "----Variatii comprimate:" << endl;
 	//printVariatii(variatii);
-
 
 	for (auto& a : variatii)
 	{
@@ -53,7 +64,6 @@ int main()
 	}
 	cout << endl << "----Variatii comprimate si interpolate:" << endl;
 	//printVariatii(variatii);
-
 
 	cout << endl << "Start filtrare patterns:" << endl;
 	vector<patterns> posibile_patterns;
@@ -78,10 +88,8 @@ int main()
 
 		if (checkIfStraightLine(a)) continue;
 		
-		//TODO - skip thi base segment if it is a straight line (function to check it)
 		int scor_cadinal = 0;
 		int positives = 0;
-
 
 		posibile_patterns.emplace_back();
 		patterns& pattern_ref = posibile_patterns[posibile_patterns.size() - 1];
@@ -97,10 +105,10 @@ int main()
 
 			for (auto& variatie : variatii.at(b.first))
 			{
-				if (crosssCorelation(base_copy_normalized,variatie.values) < abatere && abs(variatie.index - index_cout) > size_seg_unic )
+				if (crosssCorelation(base_copy_normalized,variatie.values, yScalerEnabler, powerSumCrossCor) < abatere && abs(variatie.index - index_cout) > int(size_seg_unic/2) )
 				{
 					//verifica daca in vector twin nu exista deja o variatie cu index apropiat de al tau inainte de a da push
-					if (checkSimilarIndex(vector_twin, variatie,20))
+					if (checkSimilarIndex(vector_twin, variatie,20)) //20 - nu vr sa am indexes mai apropiate intre ele
 					{
 						//true, daca exista un index apropiat deja existen in vecto_twin
 						//cout << endl << "skip";
@@ -113,8 +121,6 @@ int main()
 						scor_cadinal++;
 						if (variatie.future_price != NULL && variatie.future_price > variatie.last_price) positives++;
 					}
-					
-					
 				}
 			}
 		}
@@ -122,9 +128,6 @@ int main()
 		pattern_ref.positives = positives;
 		pattern_ref.index = index_cout;
 	}
-	//SORT VARIATIONS - if in the x' variation laready exists an items with index close to yours, skip this one (in this case
-	//only the firt variation will be keept in the variations.
-
 
 	std::sort(posibile_patterns.begin(), posibile_patterns.end(), [](patterns const& a, patterns const& b)->bool //descending
 		{
@@ -132,9 +135,6 @@ int main()
 		});
 	cout << endl << endl << "==== Pattern finale desc ========";
 	printPatterns(posibile_patterns);
-
-
-	//TODO - add index value to the base segment and variations
 
 	return 0;
 }

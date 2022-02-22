@@ -145,7 +145,7 @@ void segmentareVariatii_with_future_price(vector<twin>& result, vector<point>& i
 	}
 }
 
-void comprimaSegment(vector<point>& result, int comprimed_size)
+void comprimaSegment_X(vector<point>& result, int comprimed_size)
 {
 	//comprimed_size = 10
 	// 
@@ -251,22 +251,78 @@ floatType yEcuatieDreapta(point point_a, point point_b, floatType x_value)
 	return y;
 }
 
-floatType crosssCorelation(const vector<point>& seg_1, const vector<point>& seg_2)
+floatType crosssCorelation(const vector<point>& base, const vector<point>& seg_2, bool yScalerEnabler, bool powerSum)
 {
 	//!! seg_1.size() == seg_2.size();
-	floatType suma = 0;
-	int i = 0;
-	while (i < seg_1.size())
+	
+	if (yScalerEnabler)
 	{
-		suma += abs(seg_1[i].y - seg_2[i].y);
-		i++;
+		floatType max_y_var = seg_2[0].y;
+		for (auto& a : seg_2)
+		{
+			if (a.y > max_y_var) max_y_var = a.y;
+		}
+
+		floatType max_y_base = base[0].y;
+		for (auto& a : base)
+		{
+			if (a.y > max_y_base) max_y_base = a.y;
+		}
+
+		floatType y_ratio = max_y_base / max_y_var;
+		
+		vector<point> scaled_variation;
+		for (auto& a : seg_2)
+		{
+			point new_point;
+			new_point.x = a.x;
+			new_point.y = a.y * y_ratio;
+			scaled_variation.push_back(new_point);
+		}
+
+		//cross cor with scaled y variation
+		floatType suma_scaled = 0;
+		int i = 0;
+		while (i < base.size())
+		{
+			if (powerSum)
+			{
+				suma_scaled += (base[i].y - scaled_variation[i].y)*(base[i].y - scaled_variation[i].y);
+			}
+			else
+			{
+				suma_scaled += abs(base[i].y - scaled_variation[i].y);
+			}
+			i++;
+		}
+		return suma_scaled;
 	}
-	return suma;
+	else
+	{
+		floatType suma = 0;
+		int i = 0;
+		while (i < base.size())
+		{
+			suma += abs(base[i].y - seg_2[i].y);
+			if (powerSum)
+			{
+				suma += (base[i].y - seg_2[i].y) * (base[i].y - seg_2[i].y);
+			}
+			else
+			{
+				suma += abs(base[i].y - seg_2[i].y);
+			}
+			i++;
+		}
+		return suma;
+
+	}
+	
 }
 bool checkIfStraightLine(vector<point> segment)
 {
 	floatType sample = abs(segment[0].y - segment[1].y);
-	floatType neighborhood_range = 0.5;
+	floatType neighborhood_range = 0.5; //use case-ul in care punctele sunt pe o dreapta este caracterizat de faptul ca y's sunt incrementati cu acelasi offset
 	
 	for (int i = 0; i < segment.size() - 2; i++)
 	{
