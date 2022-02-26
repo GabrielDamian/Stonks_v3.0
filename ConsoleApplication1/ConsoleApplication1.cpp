@@ -2,14 +2,14 @@
 
 int main()
 {
-	int size_seg_unic = 70;
-	int min_max_streching = 4;
+	//config area
+	int size_seg_unic = 40;
+	int abatere = 1500;
+	int min_max_streching = 1;
+
 	int future_price = 10;
-	int abatere = 200;
-
 	bool yScalerEnabler = true;
-	bool powerSumCrossCor = false;
-
+	bool powerSumCrossCor = true;
 
 	vector<point> inputData = readFromFile(); 
 	//printInputData(inputData); //TEST RAW DATA
@@ -32,7 +32,7 @@ int main()
 	{
 		segmentareVariatii_with_future_price(a.second, inputData, a.first, future_price);
 	}
-	cout << endl << "---Variatii default:" << endl;
+	cout << endl << "------------Variatii default:" << endl;
 	//printVariatii(variatii);
 	
 	
@@ -44,15 +44,8 @@ int main()
 			comprimaSegment_X(b.values, size_seg_unic);
 		}
 	}
-	//comprimare Y
-	/*for (auto& a : variatii)
-	{
-		for (auto& b : a.second)
-		{
-			comprimaSegment_Y(b.values, size_seg_unic);
-		}
-	}*/
-	cout << endl << "----Variatii comprimate:" << endl;
+	
+	cout << endl << "------------Variatii comprimate : " << endl;
 	//printVariatii(variatii);
 
 	for (auto& a : variatii)
@@ -62,7 +55,7 @@ int main()
 			interpoleazaSegment(b.values, size_seg_unic);
 		}
 	}
-	cout << endl << "----Variatii comprimate si interpolate:" << endl;
+	cout << endl << "------------Variatii comprimate si interpolate:" << endl;
 	//printVariatii(variatii);
 
 	cout << endl << "Start filtrare patterns:" << endl;

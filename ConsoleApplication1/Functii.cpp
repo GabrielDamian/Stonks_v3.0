@@ -44,7 +44,7 @@ void segmentareArray(vector<vector<point>>& result, vector<point>& inputData, in
 			}
 			cout << endl << "After normalization:" << endl;*/
 			
-			//normalizeazaSegment(buffer);
+			normalizeazaSegment(buffer);
 			
 			/*for (auto a : buffer)
 			{
@@ -119,7 +119,6 @@ void segmentareVariatii_with_future_price(vector<twin>& result, vector<point>& i
 			floatType last_price_default = buffer[buffer.size() - 1].y;
 			normalizeazaSegment(buffer);
 			twin temp_struct;
-			normalizeazaSegment(buffer);
 			temp_struct.values = buffer;
 
 
@@ -280,6 +279,24 @@ floatType crosssCorelation(const vector<point>& base, const vector<point>& seg_2
 			scaled_variation.push_back(new_point);
 		}
 
+
+		/*cout << endl << "BASE:" << endl;
+		for (auto a : base)
+		{
+			cout << a.y << ", ";
+		}
+		cout << endl << "unscaled:" << endl;
+		for (auto a : seg_2)
+		{
+			cout << a.y << ", ";
+		}
+		cout << endl<<"Var scaled:" << endl;
+		for (auto a : scaled_variation)
+		{
+			cout << a.y << ", ";
+		}
+		cout << endl;*/
+
 		//cross cor with scaled y variation
 		floatType suma_scaled = 0;
 		int i = 0;
@@ -295,6 +312,7 @@ floatType crosssCorelation(const vector<point>& base, const vector<point>& seg_2
 			}
 			i++;
 		}
+		//cout << "suma cross:" << suma_scaled << endl;
 		return suma_scaled;
 	}
 	else
@@ -314,7 +332,10 @@ floatType crosssCorelation(const vector<point>& base, const vector<point>& seg_2
 			}
 			i++;
 		}
+		//cout << "suma cross:" << suma << endl;
+
 		return suma;
+
 
 	}
 	

@@ -45,7 +45,7 @@ void comprimaSegment_X(vector<point>& result, int comprimed_size);
 void interpoleazaSegment(vector<point>& seg_factorizat, int comprimed_size);
 floatType yEcuatieDreapta(point a, point b, floatType x);
 
-floatType crosssCorelation(const vector<point>& seg_1, const vector<point>& seg_2, bool yScalerEnabler, bool powerSum);
+floatType crosssCorelation(const vector<point>& base, const vector<point>& seg_2, bool yScalerEnabler, bool powerSum);
 bool checkIfStraightLine(vector<point> baseSegment);
 bool checkSimilarIndex(vector<twin>& vector_twin, twin variatie, int how_far);
 
