@@ -55,3 +55,5 @@ void printSegmenteBaza(vector<vector<point>>& segmente_baza);
 void printVariatii(map<int, vector<twin>>& variatii);
 void printPatterns(vector<patterns> posibile_patterns);
 
+//SUPREME TEST
+void supremeTest(vector<point> input_data, vector<patterns> patterns, int len_pattern, int future_price);

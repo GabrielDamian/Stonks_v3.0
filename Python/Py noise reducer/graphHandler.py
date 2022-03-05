@@ -1,4 +1,4 @@
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import csv
 
 class graphData:
@@ -19,9 +19,9 @@ class graphData:
         for a in self.inputData:
             print(a)
 
-    def plotInputData(self,code):
-        plt.figure(code)
-        plt.plot(self.inputData)
+    # def plotInputData(self,code):
+    #     plt.figure(code)
+    #     plt.plot(self.inputData)
 
     def inputToCandle(self,candleSize):
         if self.inputData == None:
@@ -66,16 +66,19 @@ class graphData:
                     break
             self.candlesData = candles
 
-    def plotCandles(self,code):
-        plt.figure(code)
-        if self.candlesData == None:
-            print("candlesData not generated yet")
-        else:
-            width =2
-            for x in self.candlesData:
-                plt.bar(x[0],x[1],width,x[2],color=x[3],align='center')
+    # def plotCandles(self,code):
+    #     plt.figure(code)
+    #     if self.candlesData == None:
+    #         print("candlesData not generated yet")
+    #     else:
+    #         width =2
+    #         for x in self.candlesData:
+    #             plt.bar(x[0],x[1],width,x[2],color=x[3],align='center')
 
     def filterCandles(self,factor,factor_2):
+
+        filter_1_contor = 0
+        filter_2_contor = 0
         #rezultat tot in candlesData
 
         #factor_1 = vecini stanga_dreapta (lipiti de candle curent)
@@ -110,6 +113,7 @@ class graphData:
 
                     if x[1] < suma_vecini*factor:
                         changeColor = True
+                        filter_1_contor +=1
                     else:
                         #daca vecinii imediati indica sa pastram aceeasi culoare, verifica 2 vecini la stanga si la dreapta
 
@@ -129,6 +133,7 @@ class graphData:
                             suma_vecini_aceeasi_culoare += vecin_dreapta_2[1]
 
                         if x[1] < suma_vecini_aceeasi_culoare *factor_2:
+                            filter_2_contor +=1
                             changeColor = True
 
                     #suplimentar, factor vecin prea mare
@@ -152,6 +157,9 @@ class graphData:
                         else :
                             self.candlesData[index][3] = 'red'
 
+        print("Contor 1:", filter_1_contor)
+
+        print("Contor 2:", filter_2_contor)
 
     def candlesToFunctionWork(self,candleSize):
         #foloseste data din candlesData
@@ -220,21 +228,21 @@ class graphData:
         self.candlesToFunction = points
 
 
-    def plotCandlesToFunction(self,code):
-        plt.figure(code)
-        arr_1 = []
-        arr_2 = []
-        for a in self.candlesToFunction:
-            arr_1.append(a[0])
-            arr_2.append(a[1])
-#upsss
-        # plt.plot(arr_1,arr_2,'r')
-        # plt.plot(self.inputData,'b')
-
-        index = 0
-        while index < len(self.candlesToFunction)-1:
-            plt.scatter(int(self.candlesToFunction[index][0]), int(self.candlesToFunction[index][1]))
-            index +=1
+#     def plotCandlesToFunction(self,code):
+#         plt.figure(code)
+#         arr_1 = []
+#         arr_2 = []
+#         for a in self.candlesToFunction:
+#             arr_1.append(a[0])
+#             arr_2.append(a[1])
+# #upsss
+#         # plt.plot(arr_1,arr_2,'r')
+#         # plt.plot(self.inputData,'b')
+#
+#         index = 0
+#         while index < len(self.candlesToFunction)-1:
+#             plt.scatter(int(self.candlesToFunction[index][0]), int(self.candlesToFunction[index][1]))
+#             index +=1
 
     #util function
     def filter_oven_indexes(self):

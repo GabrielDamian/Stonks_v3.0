@@ -1,18 +1,21 @@
 from utils import *
 from graphHandler import *
-from Tests import *
-
+import sys
 if __name__ == '__main__':
 
     print('-->Start Stage 1:')
 
-    graph = graphData()
-    candleSize = 5
-    filter_candles_1 = 0.3
-    filter_candles_2 = 0.3
+    # candleSize = float(sys.argv[1])
+    # filter_candles_1 = float(sys.argv[2])
+    # filter_candles_2 = float(sys.argv[3])
 
-    vector = readDataFromFile('AAPL.csv', linesToRead=180007)
-    # testRawInputData(data=vector, cout=True,limit=10)  # x y
+    candleSize = 0.5
+    filter_candles_1 = 0.1
+    filter_candles_2 = 0.5
+
+    graph = graphData()
+
+    vector = readDataFromFile('AAPL.csv', linesToRead=500000)
 
     graph.setInputData(vector)
     # graph.printInputData()
@@ -30,7 +33,7 @@ if __name__ == '__main__':
     print("Adaug puncte intermediare...")
     graph.generateInternPoints()
     # graph.plotCandlesToFunction('data')
-    # graph.printCandlesToFunction()
+    graph.printCandlesToFunction()
 
     print("Initializez C++ string...")
     string_file = ''
@@ -42,8 +45,8 @@ if __name__ == '__main__':
         string_file +=f'{a[0]} {a[1]}\n'
         last_x = a[0]
 
-    f = open("Cdata.txt","w")
+    f = open("../..ConsoleApplication1/data.txt","w")
     f.write(string_file)
     f.close()
 
-    plt.show()
+    # plt.show()

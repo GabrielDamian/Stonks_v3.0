@@ -450,3 +450,24 @@ void printPatterns(vector<patterns> posibile_patterns)
 	}
 
 }
+
+//SUPREME TEST
+void supremeTest(vector<point> input_data, vector<patterns> patterns, int len_pattern, int future_price)
+{
+	int how_many = 10000; //10k = 1 week
+	int abatere_hard = 50;	//?? formula based on size_seg_unic
+	int succes_ratio = 80; //x%
+
+	int total_buyed = 0;
+	int succes_buyes = 0;
+
+	//segmenteaza input_data in segmente consecutive de len = len_pattern
+	//itereaza segmentele obtinute
+	//pentru fiecare segment, daca cross_cor cu abatere_hard = OK && ratie_succes = OK	
+	//simuleaza un buy = verifica future_price pentru segmentul curent generat din inpput data
+	//si scrie in total_buyes && succes_buyes
+	//append in fisier cu format:
+	//candle_size factor_1 factor_2 size_seg_unic abatere???
+
+
+}

@@ -3,9 +3,18 @@
 int main()
 {
 	//config area
+	 
+	//PY MODULE:
+	double candleSize = 5;
+	double filter_candles_1 = 0.1;
+	double filter_candles_2 = 0.5;
+
+
+
 	int size_seg_unic = 40;
 	int abatere = 1500;
 	int min_max_streching = 1;
+	
 
 	int future_price = 10;
 	bool yScalerEnabler = true;
@@ -129,5 +138,8 @@ int main()
 	cout << endl << endl << "==== Pattern finale desc ========";
 	printPatterns(posibile_patterns);
 
+	//TODO: filter 
+	//call supreme test function
 	return 0;
 }
+
