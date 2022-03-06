@@ -1,5 +1,6 @@
 #include"Header.h"
 #include<iomanip>
+#include<cmath>
 
 
 void narutoMain(double candleSize, double filter_candles_1, double filter_candles_2, int size_seg_unic, int abatere)
@@ -156,7 +157,7 @@ vector<point> readFromFile(int howMany)
 	//howMany == 1 (read all)
 	vector<point> fileData;
 
-	int a;
+	floatType a;
 	floatType b;
 	std::ifstream infile("data.txt");
 
@@ -438,45 +439,30 @@ floatType crosssCorelation(const vector<point>& base, const vector<point>& seg_2
 
 		floatType y_ratio = max_y_base / max_y_var;
 		
-		vector<point> scaled_variation;
+		/*vector<point> scaled_variation;
+		scaled_variation.reserve(seg_2.size());
 		for (auto& a : seg_2)
 		{
 			point new_point;
 			new_point.x = a.x;
 			new_point.y = a.y * y_ratio;
 			scaled_variation.push_back(new_point);
-		}
-
-
-		/*cout << endl << "BASE:" << endl;
-		for (auto a : base)
-		{
-			cout << a.y << ", ";
-		}
-		cout << endl << "unscaled:" << endl;
-		for (auto a : seg_2)
-		{
-			cout << a.y << ", ";
-		}
-		cout << endl<<"Var scaled:" << endl;
-		for (auto a : scaled_variation)
-		{
-			cout << a.y << ", ";
-		}
-		cout << endl;*/
+		}*/
 
 		//cross cor with scaled y variation
 		floatType suma_scaled = 0;
 		int i = 0;
 		while (i < base.size())
 		{
+			floatType var = base[i].y - seg_2[i].y * y_ratio;
+
 			if (powerSum)
 			{
-				suma_scaled += (base[i].y - scaled_variation[i].y)*(base[i].y - scaled_variation[i].y);
+				suma_scaled += var * var;
 			}
 			else
 			{
-				suma_scaled += abs(base[i].y - scaled_variation[i].y);
+				suma_scaled += abs(var);
 			}
 			i++;
 		}
@@ -489,14 +475,15 @@ floatType crosssCorelation(const vector<point>& base, const vector<point>& seg_2
 		int i = 0;
 		while (i < base.size())
 		{
-			suma += abs(base[i].y - seg_2[i].y);
+			floatType var = abs(base[i].y - seg_2[i].y);
+			suma += var;
 			if (powerSum)
 			{
-				suma += (base[i].y - seg_2[i].y) * (base[i].y - seg_2[i].y);
+				suma += var * var;
 			}
 			else
 			{
-				suma += abs(base[i].y - seg_2[i].y);
+				suma += var;
 			}
 			i++;
 		}
@@ -623,8 +610,8 @@ void printPatterns(vector<patterns> posibile_patterns)
 void supremeTest(vector<patterns> patterns, int size_seg_unic, int future_price)
 {
 	int how_many = 1; //10k = 1 week
-	int abatere_hard = 4000;	//?? formula based on size_seg_unic
-	floatType succes_ratio = 0.8; //x%
+	int abatere_hard = 3000;	//?? formula based on size_seg_unic
+	floatType succes_ratio = 0.9; //x%
 
 	int total_buyed = 0;
 	int succes_buyes = 0;
@@ -706,6 +693,7 @@ void supremeTest(vector<patterns> patterns, int size_seg_unic, int future_price)
 	cout << endl << "Final:" << endl;
 	cout << "Succes:" << succes_buyes << endl;
 	cout << "Total:" << total_buyed << endl;
+	cout << "%" << (succes_buyes * 100) / total_buyed;
 	//cout succes_buyes / total_buyes
 
 }
