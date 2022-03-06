@@ -27,7 +27,7 @@ void narutoMain(double candleSize, double filter_candles_1, double filter_candle
 	bool yScalerEnabler = true;
 	bool powerSumCrossCor = true;
 
-	vector<point> inputData = readFromFile();
+	vector<point> inputData = readFromFile(1);
 	//printInputData(inputData); //TEST RAW DATA
 
 	vector<vector<point>> segmente_baza;
@@ -142,27 +142,47 @@ void narutoMain(double candleSize, double filter_candles_1, double filter_candle
 		{
 			return a.scor > b.scor;
 		});
+
 	cout << endl << endl << "==== Pattern finale desc ========";
 	printPatterns(posibile_patterns);
 
-	//TODO: filter 
-	//call supreme test function
-	cin.ignore();
+	//supreme test naruto run
+	supremeTest(posibile_patterns,  size_seg_unic,  future_price);
+
+	//cin.ignore();
 }
-vector<point> readFromFile()
+vector<point> readFromFile(int howMany)
 {
+	//howMany == 1 (read all)
 	vector<point> fileData;
 
 	int a;
 	floatType b;
 	std::ifstream infile("data.txt");
-	while (infile >> a >> b)
+
+	if (howMany == 1)
 	{
-		point temp_point;
-		temp_point.x = a;
-		temp_point.y = b;
-		fileData.push_back(temp_point);
+		while (infile >> a >> b)
+		{
+			point temp_point;
+			temp_point.x = a;
+			temp_point.y = b;
+			fileData.push_back(temp_point);
+		}
 	}
+	else
+	{
+		int counter = 0;
+		while (counter <= howMany && infile >> a >> b)
+		{
+			point temp_point;
+			temp_point.x = a;
+			temp_point.y = b;
+			fileData.push_back(temp_point);
+			counter++;
+		}
+	}
+	
 
 	return fileData;
 }
@@ -600,22 +620,91 @@ void printPatterns(vector<patterns> posibile_patterns)
 }
 
 //SUPREME TEST
-void supremeTest(vector<point> input_data, vector<patterns> patterns, int len_pattern, int future_price)
+void supremeTest(vector<patterns> patterns, int size_seg_unic, int future_price)
 {
-	int how_many = 10000; //10k = 1 week
-	int abatere_hard = 50;	//?? formula based on size_seg_unic
-	int succes_ratio = 80; //x%
+	int how_many = 1; //10k = 1 week
+	int abatere_hard = 7000;	//?? formula based on size_seg_unic
+	floatType succes_ratio = 80.0; //x%
 
 	int total_buyed = 0;
 	int succes_buyes = 0;
 
 	//segmenteaza input_data in segmente consecutive de len = len_pattern
-	//itereaza segmentele obtinute
-	//pentru fiecare segment, daca cross_cor cu abatere_hard = OK && ratie_succes = OK	
-	//simuleaza un buy = verifica future_price pentru segmentul curent generat din inpput data
-	//si scrie in total_buyes && succes_buyes
-	//append in fisier cu format:
-	//candle_size factor_1 factor_2 size_seg_unic abatere???
+	vector<point> inputData = readFromFile(how_many); //10k = 1 week
+	//printInputData(inputData); //TEST RAW DATA
 
+	vector<vector<point>> segmente_baza;
+	segmentareArray(segmente_baza, inputData, size_seg_unic);
+	cout << endl << "S-au generat:" << segmente_baza.size() << " segment de baza pentru simulare";
+
+	//----TODO---- = shrink pattern to keep only the first 10% of the data
+	int how_many_represents_first_10_percentage = int(0.5 * patterns.size());
+	
+	cout << "how manu 10 %" << how_many_represents_first_10_percentage << endl;
+	patterns.resize(how_many_represents_first_10_percentage);
+	patterns.shrink_to_fit();
+
+	cout << endl << "final size:" << patterns.size() << endl;
+	//itereaza segmentele obtinute
+	int index_global_input_data = -1;
+
+	for (auto& a : segmente_baza)
+	{
+		//cout << "index_global" << index_global_input_data << endl;
+		index_global_input_data++;
+
+		//afla cel mai mic cross corelation dintre toate patterns posibile
+		floatType min_cross_cor = crosssCorelation(a, patterns[0].seg_baza, true, true);
+		//cout << "min cross:" << min_cross_cor << endl;
+		int index_min_cross_cor = 0;
+		int index_iterator = -1;
+
+		for (auto& b : patterns)
+		{
+			index_iterator++;
+			if (crosssCorelation(a, b.seg_baza, true, true) < min_cross_cor)
+			{
+				min_cross_cor = crosssCorelation(a, b.seg_baza, true, true);
+				index_min_cross_cor = index_iterator;
+			}
+		}
+		//daca cel mai mic cross corelation < maxim_abatere & succes_ratio ok:(maxim_abatere extrem de mic in cazul acesta)
+
+		floatType procent_scor = 0.0;
+		if (patterns[index_min_cross_cor].positives == 0)
+		{
+			//evita impartirea la 0
+			procent_scor = 0.0;
+		}
+		else
+		{
+			procent_scor = floatType(patterns[index_min_cross_cor].positives) / floatType(patterns[index_min_cross_cor].scor);
+		}
+		if (min_cross_cor <= abatere_hard && procent_scor > succes_ratio)
+		{
+			//simuleaza o cumparare
+			total_buyed++;
+
+			//check (index + size_seg_unic + future_price) > seg_now[last_index]
+			floatType last_price_live = inputData[index_global_input_data+size_seg_unic].y;
+			
+			//TODO = check out of range case
+			floatType future_price_live = inputData[index_global_input_data + size_seg_unic + future_price].y;
+			
+			//true ? increment succes_buyes
+			if (last_price_live < future_price_live)
+			{
+				succes_buyes++;
+			}
+			
+		}
+
+
+	}
+
+	cout << endl << "Final:" << endl;
+	cout << "Succes:" << succes_buyes << endl;
+	cout << "Total:" << total_buyed << endl;
+	//cout succes_buyes / total_buyes
 
 }
