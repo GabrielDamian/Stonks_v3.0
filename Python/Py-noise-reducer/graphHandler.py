@@ -1,5 +1,7 @@
 # import matplotlib.pyplot as plt
 import csv
+# import matplotlib.pyplot as plt
+
 
 class graphData:
 
@@ -136,17 +138,17 @@ class graphData:
                             filter_2_contor +=1
                             changeColor = True
 
-                    #suplimentar, factor vecin prea mare
-                    # factor_vecin_prea_mare = 4
-                    # # if x[1] * factor_vecin_prea_mare <= self.candlesData[index - 1][1] or x[1] * factor_vecin_prea_mare <= self.candlesData[index + 1][1]:
-                    # #     changeColor = False
-                    # #
-                    # filtru_candles_extrem_de_mici = 10
-                    # if x[1] < filtru_candles_extrem_de_mici:
-                    #     pass
-                    # else:
-                    #     if x[1] * factor_vecin_prea_mare <= self.candlesData[index - 1][1] or x[1] * factor_vecin_prea_mare <= self.candlesData[index + 1][1]:
-                    #         changeColor = False
+                    # suplimentar, factor vecin prea mare
+                    factor_vecin_prea_mare = 4
+                    # if x[1] * factor_vecin_prea_mare <= self.candlesData[index - 1][1] or x[1] * factor_vecin_prea_mare <= self.candlesData[index + 1][1]:
+                    #     changeColor = False
+                    #
+                    filtru_candles_extrem_de_mici = 10
+                    if x[1] < filtru_candles_extrem_de_mici:
+                        pass
+                    else:
+                        if x[1] * factor_vecin_prea_mare <= self.candlesData[index - 1][1] or x[1] * factor_vecin_prea_mare <= self.candlesData[index + 1][1]:
+                            changeColor = False
 
                     if changeColor == True:
                         counter_schimbari += 1

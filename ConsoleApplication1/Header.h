@@ -33,6 +33,8 @@ struct patterns {
 	int index;
 };
 
+//Naruto main
+void narutoMain(double candleSize, double filter_candles_1, double filter_candles_2, int size_seg_unic, int abatere);
 
 vector<point> readFromFile( );
 void segmentareArray(vector<vector<point>>& result,vector<point>& inputData, int size_seg_unic);

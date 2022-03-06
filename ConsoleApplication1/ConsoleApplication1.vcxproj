@@ -148,6 +148,9 @@
   <ItemGroup>
     <Text Include="data.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="ceva.py" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
