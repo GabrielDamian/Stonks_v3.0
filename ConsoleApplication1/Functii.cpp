@@ -144,7 +144,7 @@ void narutoMain(double candleSize, double filter_candles_1, double filter_candle
 		});
 
 	cout << endl << endl << "==== Pattern finale desc ========";
-	printPatterns(posibile_patterns);
+	//printPatterns(posibile_patterns);
 
 	//supreme test naruto run
 	supremeTest(posibile_patterns,  size_seg_unic,  future_price);
@@ -623,8 +623,8 @@ void printPatterns(vector<patterns> posibile_patterns)
 void supremeTest(vector<patterns> patterns, int size_seg_unic, int future_price)
 {
 	int how_many = 1; //10k = 1 week
-	int abatere_hard = 7000;	//?? formula based on size_seg_unic
-	floatType succes_ratio = 80.0; //x%
+	int abatere_hard = 4000;	//?? formula based on size_seg_unic
+	floatType succes_ratio = 0.8; //x%
 
 	int total_buyed = 0;
 	int succes_buyes = 0;
@@ -638,7 +638,7 @@ void supremeTest(vector<patterns> patterns, int size_seg_unic, int future_price)
 	cout << endl << "S-au generat:" << segmente_baza.size() << " segment de baza pentru simulare";
 
 	//----TODO---- = shrink pattern to keep only the first 10% of the data
-	int how_many_represents_first_10_percentage = int(0.5 * patterns.size());
+	int how_many_represents_first_10_percentage = int(0.2 * patterns.size());
 	
 	cout << "how manu 10 %" << how_many_represents_first_10_percentage << endl;
 	patterns.resize(how_many_represents_first_10_percentage);
@@ -680,6 +680,7 @@ void supremeTest(vector<patterns> patterns, int size_seg_unic, int future_price)
 		{
 			procent_scor = floatType(patterns[index_min_cross_cor].positives) / floatType(patterns[index_min_cross_cor].scor);
 		}
+		//cout << "procent scor" << procent_scor << endl;
 		if (min_cross_cor <= abatere_hard && procent_scor > succes_ratio)
 		{
 			//simuleaza o cumparare
