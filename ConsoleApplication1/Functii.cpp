@@ -3,7 +3,7 @@
 #include<cmath>
 
 
-void narutoMain(double candleSize, double filter_candles_1, double filter_candles_2, int size_seg_unic, int abatere)
+void narutoMain(double candleSize, double filter_candles_1, double filter_candles_2, int size_seg_unic, int abatere, int min_max_streching,int abatere_hard, floatType succes_ratio)
 {
 	//config area
 
@@ -21,7 +21,7 @@ void narutoMain(double candleSize, double filter_candles_1, double filter_candle
 	cout << "py return code:" << py_return_code << endl;
 
 
-	int min_max_streching = 1;
+	//int min_max_streching = 1;
 
 
 	int future_price = 10;
@@ -147,8 +147,31 @@ void narutoMain(double candleSize, double filter_candles_1, double filter_candle
 	cout << endl << endl << "==== Pattern finale desc ========";
 	//printPatterns(posibile_patterns);
 
+	//filtrate patterns
+	vector<patterns> patterns_filtrate; //
+	for (auto& a : posibile_patterns)
+	{
+		floatType current_succes_ratio;
+		if (a.positives == 0)
+		{
+			current_succes_ratio = 0;
+		}
+		else
+		{
+			current_succes_ratio = (floatType)(a.positives * 100) / a.scor;
+		}
+		if (current_succes_ratio > succes_ratio)
+		{
+			//std::cout << "ratio:" << current_succes_ratio << " " << a.scor << endl;
+			patterns_filtrate.push_back(a);
+		}
+	}
+
+	//printPatterns(patterns_filtrate);
+
 	//supreme test naruto run
-	supremeTest(posibile_patterns,  size_seg_unic,  future_price);
+	//cout << endl << "TEST:" << patterns_filtrate.size() << endl;
+	supremeTest(patterns_filtrate,  size_seg_unic,  future_price, abatere_hard, succes_ratio);
 
 	//cin.ignore();
 }
@@ -488,12 +511,8 @@ floatType crosssCorelation(const vector<point>& base, const vector<point>& seg_2
 			i++;
 		}
 		//cout << "suma cross:" << suma << endl;
-
 		return suma;
-
-
 	}
-	
 }
 bool checkIfStraightLine(vector<point> segment)
 {
@@ -607,11 +626,11 @@ void printPatterns(vector<patterns> posibile_patterns)
 }
 
 //SUPREME TEST
-void supremeTest(vector<patterns> patterns, int size_seg_unic, int future_price)
+void supremeTest(vector<patterns> patterns, int size_seg_unic, int future_price, int abatere_hard, floatType succes_ratio)
 {
-	int how_many = 1; //10k = 1 week
-	int abatere_hard = 3000;	//?? formula based on size_seg_unic
-	floatType succes_ratio = 0.9; //x%
+	cout << "TEST_2:" << patterns.size() << endl;
+	int how_many = 1; //10k = 1 week, 1 - ALL
+	//floatType succes_ratio = 0.9; //x%
 
 	int total_buyed = 0;
 	int succes_buyes = 0;
@@ -625,12 +644,18 @@ void supremeTest(vector<patterns> patterns, int size_seg_unic, int future_price)
 	cout << endl << "S-au generat:" << segmente_baza.size() << " segment de baza pentru simulare";
 
 	//----TODO---- = shrink pattern to keep only the first 10% of the data
-	int how_many_represents_first_10_percentage = int(0.2 * patterns.size());
+	cout << endl << "patterns:" << patterns.size() << endl;
+	int how_many_represents_first_10_percentage = int(0.1 * patterns.size());
+	if (how_many_represents_first_10_percentage == 0)
+	{
+		// 10% < 10 
+	}
+	else
+	{
+		patterns.resize(how_many_represents_first_10_percentage);
+		patterns.shrink_to_fit();
+	}
 	
-	cout << "how manu 10 %" << how_many_represents_first_10_percentage << endl;
-	patterns.resize(how_many_represents_first_10_percentage);
-	patterns.shrink_to_fit();
-
 	cout << endl << "final size:" << patterns.size() << endl;
 	//itereaza segmentele obtinute
 	int index_global_input_data = -1;
@@ -657,18 +682,18 @@ void supremeTest(vector<patterns> patterns, int size_seg_unic, int future_price)
 		}
 		//daca cel mai mic cross corelation < maxim_abatere & succes_ratio ok:(maxim_abatere extrem de mic in cazul acesta)
 
-		floatType procent_scor = 0.0;
-		if (patterns[index_min_cross_cor].positives == 0)
-		{
-			//evita impartirea la 0
-			procent_scor = 0.0;
-		}
-		else
-		{
-			procent_scor = floatType(patterns[index_min_cross_cor].positives) / floatType(patterns[index_min_cross_cor].scor);
-		}
+		//floatType procent_scor = 0.0;
+		//if (patterns[index_min_cross_cor].positives == 0)
+		//{
+		//	//evita impartirea la 0
+		//	procent_scor = 0.0;
+		//}
+		//else
+		//{
+		//	procent_scor = floatType(patterns[index_min_cross_cor].positives) / floatType(patterns[index_min_cross_cor].scor);
+		//}
 		//cout << "procent scor" << procent_scor << endl;
-		if (min_cross_cor <= abatere_hard && procent_scor > succes_ratio)
+		if (min_cross_cor <= abatere_hard )
 		{
 			//simuleaza o cumparare
 			total_buyed++;
@@ -684,10 +709,7 @@ void supremeTest(vector<patterns> patterns, int size_seg_unic, int future_price)
 			{
 				succes_buyes++;
 			}
-			
 		}
-
-
 	}
 
 	cout << endl << "Final:" << endl;
@@ -696,4 +718,57 @@ void supremeTest(vector<patterns> patterns, int size_seg_unic, int future_price)
 	cout << "%" << (succes_buyes * 100) / total_buyed;
 	//cout succes_buyes / total_buyes
 
+}
+
+vector<vector<floatType>> giveMeCombinations(const string file_name) {
+
+	vector<vector<floatType>> result;
+
+	std::ifstream infile(file_name);
+	string row;
+	while (infile >> row)
+	{
+		vector<floatType> temp_arr;
+
+		//cout << "Row: " << row << endl;
+
+		std::string delimiter = "/";
+
+		size_t pos = 0;
+		std::string token;
+		while ((pos = row.find(delimiter)) != std::string::npos) {
+			token = row.substr(0, pos);
+			
+			//std::cout << token << std::endl;
+
+			temp_arr.push_back(::atof(token.c_str()));
+			row.erase(0, pos + delimiter.length());
+		}
+
+		result.push_back(temp_arr);
+	}
+
+	//print test
+	/*for (auto& a : result)
+	{
+		for (auto& b : a)
+		{
+			cout << b << " ";
+		}
+		cout << endl;
+	}*/
+
+	return result;
+}
+
+void writeResultIntoFile(int a, int b, floatType c, const string where_to_output)
+{
+	std::ofstream outfile;
+	string row = "";
+	row += std::to_string(a);
+	row += std::to_string(b);
+	row += std::to_string(c);
+
+	outfile.open("where_to_output", std::ios_base::app); // append instead of overwrite
+	outfile << row;
 }

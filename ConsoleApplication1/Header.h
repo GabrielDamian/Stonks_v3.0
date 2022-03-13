@@ -34,7 +34,7 @@ struct patterns {
 };
 
 //Naruto main
-void narutoMain(double candleSize, double filter_candles_1, double filter_candles_2, int size_seg_unic, int abatere);
+void narutoMain(double candleSize, double filter_candles_1, double filter_candles_2, int size_seg_unic, int abatere, int min_max_streching, int abatere_hard, floatType succes_ratio);
 
 vector<point> readFromFile(int howMany);
 void segmentareArray(vector<vector<point>>& result,vector<point>& inputData, int size_seg_unic);
@@ -58,4 +58,10 @@ void printVariatii(map<int, vector<twin>>& variatii);
 void printPatterns(vector<patterns> posibile_patterns);
 
 //SUPREME TEST
-void supremeTest(vector<patterns> patterns, int size_seg_unic, int future_price);
+void supremeTest(vector<patterns> patterns, int size_seg_unic, int future_price,int abatere_hard, floatType succes_ratio);
+
+//Combination translator
+vector<vector<floatType>> giveMeCombinations(const string file_name);
+
+//Results writer
+void writeResultIntoFile(int a, int b, floatType c, const string where_to_output);
