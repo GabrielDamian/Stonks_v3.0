@@ -2,7 +2,8 @@
 #include <iostream>
 
 ThreadPool::ThreadPool() :
-    _isRunning(true)
+    _isRunning(true),
+    _threadsRunning(0)
 {
     int thread_count = std::thread::hardware_concurrency();
 
@@ -39,23 +40,33 @@ void ThreadPool::threadLoop()
     {
         // Zona critica
         {
-            std::unique_lock<std::mutex> lock(_mutex);
+            std::unique_lock<std::mutex> waitLock(_waitMutex);
 
             if (_jobs.empty())
             {
-                continue;
+                _condVar.wait(waitLock, [&]() { return !_jobs.empty(); });
             }
 
             // Retrieve job
 
+            std::unique_lock<std::mutex> lock(_mutex);
+
             job = _jobs[0];
             _jobs.erase(_jobs.begin());
+
+            _threadsRunning++;
         }
         // End zona critica
 
         if (job)
         {
             job();
+        }
+
+        {
+            std::unique_lock<std::mutex> lock(_mutex);
+
+            _threadsRunning--;
         }
     }
 }
@@ -65,11 +76,13 @@ void ThreadPool::submitJob(const std::function<void()>& f)
     std::unique_lock<std::mutex> lock(_mutex);
 
     _jobs.push_back(f);
+
+    _condVar.notify_one();
 }
 
-bool ThreadPool::hasJobs()
+bool ThreadPool::isWorking()
 {
     std::unique_lock<std::mutex> lock(_mutex);
 
-    return _jobs.size() > 0;
+    return _jobs.size() + _threadsRunning > 0;
 }

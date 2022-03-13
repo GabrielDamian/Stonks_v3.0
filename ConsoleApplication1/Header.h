@@ -5,6 +5,7 @@
 #include <vector>
 #include <map>
 #include <algorithm>
+#include <mutex>
 typedef float floatType;
 
 using namespace std;
@@ -65,3 +66,7 @@ vector<vector<floatType>> giveMeCombinations(const string file_name);
 
 //Results writer
 void writeResultIntoFile(int a, int b, floatType c, const string where_to_output);
+
+void demoNaruto(std::mutex& mutex, int a, int b);
+
+void demoFile(std::mutex& mutex, int a);

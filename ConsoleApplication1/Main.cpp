@@ -19,50 +19,34 @@ int main()
 
 	ThreadPool threadPool;
 
-	int myWriterObject;
-
 	std::mutex mutex;
-	std::unique_lock<std::mutex> lock(mutex, std::defer_lock);
 
-	threadPool.submitJob(
-		[&lock]() {
-			int count = 100;
+	for (auto& a : main_combination)
 
-			
-		}
-	);
-
-	threadPool.submitJob(
-		[&lock]() {
-			int count = 100;
-
-			while (count--)
-			{
-				std::cout << "[Bitch" << "bitch" << "bitch" << "bitch]";
-			}
-		}
-	);
-
-	while (threadPool.hasJobs())
+	for (int i = 8; i; i--)
 	{
+		threadPool.submitJob(std::bind(demoNaruto, std::ref(mutex), i, i));
+	}
+
+	while (threadPool.isWorking())
+	{
+		std::cout << "Waiting!";
 		std::this_thread::sleep_for(std::chrono::milliseconds(50));
 	}
 
-	return 0;
+	std::cout << "Out!";
+	narutoMain(candleSize, filter_candles_1, filter_candles_2, size_seg_unic, abatere, min_max_streching, abatere_hard, succes_ratio);
 
-	for (auto& a : main_combination)
+	/*for (auto& a : main_combination)
 	{
 		cout << endl<<"apleare main cu:";
 		for (auto& b : a)
 		{
 			cout << b << " ";
 		}
-		//narutoMain(candleSize, filter_candles_1, filter_candles_2, size_seg_unic, abatere, min_max_streching, abatere_hard, succes_ratio);
 
-	}
+	}*/
 
-
-	
 	return 0;
 }
 

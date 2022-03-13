@@ -1,6 +1,7 @@
-#include"Header.h"
-#include<iomanip>
-#include<cmath>
+#include "Header.h"
+#include <iomanip>
+#include <cmath>
+#include <mutex>
 
 
 void narutoMain(double candleSize, double filter_candles_1, double filter_candles_2, int size_seg_unic, int abatere, int min_max_streching,int abatere_hard, floatType succes_ratio)
@@ -771,4 +772,20 @@ void writeResultIntoFile(int a, int b, floatType c, const string where_to_output
 
 	outfile.open("where_to_output", std::ios_base::app); // append instead of overwrite
 	outfile << row;
+}
+
+void demoNaruto(std::mutex& mutex, int a, int b)
+{
+	std::cout << "Demo!";
+	demoFile(mutex, a);
+	std::cout << "DemoEnd!";
+}
+
+void demoFile(std::mutex& mutex, int a)
+{
+	std::unique_lock<std::mutex> lock(mutex);
+
+	auto file = std::ofstream("ligma.txt", std::ofstream::app);
+
+	file << "Lol! " << a << " ";
 }
