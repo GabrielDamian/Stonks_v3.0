@@ -4,7 +4,7 @@
 #include <mutex>
 
 
-void narutoMain(double candleSize, double filter_candles_1, double filter_candles_2, int size_seg_unic, int abatere, int min_max_streching,int abatere_hard, floatType succes_ratio)
+void narutoMain(double candleSize, double filter_candles_1, double filter_candles_2, int size_seg_unic, int min_max_streching, int abatere, floatType succes_ratio, std::mutex& mutex)
 {
 	//config area
 
@@ -16,10 +16,14 @@ void narutoMain(double candleSize, double filter_candles_1, double filter_candle
 	//int abatere = 1500;
 
 
-	std::string command = "python main.py " + std::to_string(candleSize) + " " + std::to_string(filter_candles_1) + " " + std::to_string(filter_candles_2);
-	cout << endl << "comanda:" << command << endl;
-	int py_return_code = system(command.c_str());
-	cout << "py return code:" << py_return_code << endl;
+	{
+		std::unique_lock<std::mutex> lock(mutex);
+
+		std::string command = "python main.py " + std::to_string(candleSize) + " " + std::to_string(filter_candles_1) + " " + std::to_string(filter_candles_2);
+		cout << endl << "comanda:" << command << endl;
+		int py_return_code = system(command.c_str());
+		cout << "py return code:" << py_return_code << endl;
+	}
 
 
 	//int min_max_streching = 1;
@@ -172,7 +176,7 @@ void narutoMain(double candleSize, double filter_candles_1, double filter_candle
 
 	//supreme test naruto run
 	//cout << endl << "TEST:" << patterns_filtrate.size() << endl;
-	supremeTest(patterns_filtrate,  size_seg_unic,  future_price, abatere_hard, succes_ratio);
+	supremeTest(patterns_filtrate,  size_seg_unic,  future_price, 5000, succes_ratio,mutex);
 
 	//cin.ignore();
 }
@@ -627,7 +631,19 @@ void printPatterns(vector<patterns> posibile_patterns)
 }
 
 //SUPREME TEST
-void supremeTest(vector<patterns> patterns, int size_seg_unic, int future_price, int abatere_hard, floatType succes_ratio)
+void supremeTestMaster(vector<patterns> patterns, int size_seg_unic, int future_price)
+{
+	//#TODO
+	vector<vector<floatType>> testCombinations = giveMeCombinations("test_combination.txt");
+
+	//abatere_hard 
+	//succes_ratio 
+	//how_many_represent_10_percetange 
+
+
+}
+
+void supremeTest(vector<patterns> patterns, int size_seg_unic, int future_price, int abatere_hard, floatType succes_ratio, std::mutex& mutex)
 {
 	cout << "TEST_2:" << patterns.size() << endl;
 	int how_many = 1; //10k = 1 week, 1 - ALL
@@ -717,6 +733,7 @@ void supremeTest(vector<patterns> patterns, int size_seg_unic, int future_price,
 	cout << "Succes:" << succes_buyes << endl;
 	cout << "Total:" << total_buyed << endl;
 	cout << "%" << (succes_buyes * 100) / total_buyed;
+	demoFile(mutex, (floatType)(succes_buyes * 100) / total_buyed);
 	//cout succes_buyes / total_buyes
 
 }
@@ -761,7 +778,6 @@ vector<vector<floatType>> giveMeCombinations(const string file_name) {
 
 	return result;
 }
-
 void writeResultIntoFile(int a, int b, floatType c, const string where_to_output)
 {
 	std::ofstream outfile;
@@ -781,11 +797,13 @@ void demoNaruto(std::mutex& mutex, int a, int b)
 	std::cout << "DemoEnd!";
 }
 
-void demoFile(std::mutex& mutex, int a)
+void demoFile(std::mutex& mutex, floatType succes_ratio)
 {
 	std::unique_lock<std::mutex> lock(mutex);
 
 	auto file = std::ofstream("ligma.txt", std::ofstream::app);
 
-	file << "Lol! " << a << " ";
+	file << "Lol! " << succes_ratio << std::endl;
+	
+	file.close();
 }

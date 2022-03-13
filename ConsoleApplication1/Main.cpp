@@ -8,7 +8,7 @@ int main()
 	double filter_candles_1 = 0.5;
 	double filter_candles_2 = 0.5;
 
-	int size_seg_unic = 65;
+	int size_seg_unic = 35;
 	int min_max_streching = 1;
 
 	int abatere = 5000; //1k-10k
@@ -21,21 +21,40 @@ int main()
 
 	std::mutex mutex;
 
-	for (auto& a : main_combination)
+	//for (auto& a : main_combination)
+	//{
+	//	threadPool.submitJob(
+	//		[&]()
+	//		{
+	//			//narutoMain(a[0], a[2], a[3], a[1], a[6], a[5],5000,0.8,std::ref(mutex));
+	//		}
+	//	);
+	//}
 
-	for (int i = 8; i; i--)
+	/*narutoMain(candleSize, filter_candles_1, filter_candles_2, size_seg_unic, min_max_streching, abatere, succes_ratio, std::ref(mutex));
+	narutoMain(candleSize, filter_candles_1, filter_candles_2, size_seg_unic, min_max_streching, abatere, succes_ratio, std::ref(mutex));*/
+
+	for (int i = 0; i < 30; i++)
 	{
-		threadPool.submitJob(std::bind(demoNaruto, std::ref(mutex), i, i));
+		//narutoMain(candleSize, filter_candles_1, filter_candles_2, size_seg_unic, min_max_streching, abatere, succes_ratio, std::ref(mutex));
+		std::cout << "A" << std::endl;
+		threadPool.submitJob(
+			[&]()
+			{
+				narutoMain(candleSize, filter_candles_1, filter_candles_2, size_seg_unic, min_max_streching, abatere, succes_ratio, std::ref(mutex));
+			}
+		);
 	}
+
+	//for (int i = 8; i; i--)
+	//{
+	//	threadPool.submitJob(std::bind(demoNaruto, std::ref(mutex), i, i));
+	//}
 
 	while (threadPool.isWorking())
 	{
-		std::cout << "Waiting!";
 		std::this_thread::sleep_for(std::chrono::milliseconds(50));
 	}
-
-	std::cout << "Out!";
-	narutoMain(candleSize, filter_candles_1, filter_candles_2, size_seg_unic, abatere, min_max_streching, abatere_hard, succes_ratio);
 
 	/*for (auto& a : main_combination)
 	{

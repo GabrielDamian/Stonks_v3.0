@@ -35,10 +35,18 @@ if __name__ == '__main__':
     how_many_represent_10_percentage = [25,15,10,5,3,1]
 
     #FORMAT MAIN:
-    #candleSize / size_seg_unic / filter_1 / filter_2 / future_price / min_max_streching / abatere
+    #  candleSize /
+    #  size_seg_unic /
+    #  filter_1 /
+    #  filter_2 /
+    #  future_price /
+    #  min_max_streching /
+    #  abatere
 
     #FORMAT TEST:
-    #where_to_test / abatere_hard / succes_ratio / how_many_represent_10_percetange /
+    #where_to_test /
+    #  abatere_hard /
+    #  succes_ratio / how_many_represent_10_percetange /
 
     print("candles_size", candles_size)
     print("size_seg_unic", size_seg_unic)
