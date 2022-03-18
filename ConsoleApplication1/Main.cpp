@@ -30,18 +30,19 @@ int main()
 
 	ThreadPool threadPool(8);
 
-	std::mutex mutex;
-	std::mutex mutex_terraForm;
-	std::mutex mutex_Apollo;
+	std::mutex mutex_file_main;
+	std::mutex mutex_file_terraForm;
+	std::mutex mutex_file_Apollo;
+	std::mutex mutex_console;
 
 	for (auto& a : main_combinations)
 	{
-		//cout << std::endl << a[0] << " " << a[1] << " " << a[3] << " " << a[4] << " " << a[5] << " " << a[6] << " " << a[7];
+		//cout << std::endl <<"da:"<< a[0] << " " << a[1] << " " << a[2] << " " << a[3] << " " << a[4] << " " << a[5];
 		threadPool.submitJob(
 				[&]()
 				{
-				cout<<std::endl<<"New Job: "<< a[0] << " " << a[1] << " " << a[3] << " " << a[4] << " " << a[5] << " " << a[6] << " " << a[7];
-				narutoMain(a[0], a[2], a[3], a[1], a[5], a[6], filter_succes_ratio, std::ref(mutex), std::ref(mutex_terraForm), std::ref(mutex_Apollo));
+				//cout << std::endl << a[0] << " " << a[1] << " " << a[3] << " " << a[4] << " " << a[5] << " " << a[6];
+				narutoMain(a[0], a[2], a[3], a[1], a[5], a[6], filter_succes_ratio,std::ref(mutex_file_main), std::ref(mutex_file_terraForm), std::ref(mutex_file_Apollo), std::ref(mutex_console));
 				}
 			);
 	}

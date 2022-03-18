@@ -35,7 +35,7 @@ struct patterns {
 };
 
 //Naruto main
-void narutoMain(double candleSize, double filter_candles_1, double filter_candles_2, int size_seg_unic, int min_max_streching, int abatere, floatType filter_succes_ratio, std::mutex& mutex_main, std::mutex& mutex_terraForm, std::mutex & mutex_Apollo);
+void narutoMain(double candleSize, double filter_candles_1, double filter_candles_2, int size_seg_unic, int min_max_streching, int abatere, floatType filter_succes_ratio, std::mutex& mutex_file_main,std::mutex& mutex_file_terraForm, std::mutex & mutex_file_Apollo, std::mutex& mutex_console);
 
 vector<point> readFromFile(int howMany, string source);
 void segmentareArray(vector<vector<point>>& result,vector<point>& inputData, int size_seg_unic);
@@ -60,7 +60,7 @@ void printPatterns(vector<patterns> posibile_patterns);
 
 //SUPREME TEST
 
-void supremeTestMaster(vector<patterns> patterns, double candleSize, double filter_candles_1, double filter_candles_2,int future_price, int size_seg_unic, int min_max_streching, int abatere, floatType filter_succes_ratio, std::mutex& mutex_terraForm, std::mutex& mutex_Apollo);
+void supremeTestMaster(vector<patterns> patterns, double candleSize, double filter_candles_1, double filter_candles_2,int future_price, int size_seg_unic, int min_max_streching, int abatere, floatType filter_succes_ratio, std::mutex& mutex_file_terraForm, std::mutex& mutex_file_Apollo);
 
 void supremeTest(vector<point> terraFormedInputData,vector<patterns> patterns, int size_seg_unic, int future_price, int abatere_hard, floatType succes_ratio, int procent_how_many, std::mutex& mutex_Apollo);
 //Combination translator
