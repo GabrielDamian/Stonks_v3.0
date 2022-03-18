@@ -2,17 +2,15 @@
 #include <iostream>
 
 ThreadPool::ThreadPool() :
+    ThreadPool(std::thread::hardware_concurrency())
+{
+}
+
+ThreadPool::ThreadPool(int num_cores) :
     _isRunning(true),
     _threadsRunning(0)
 {
-    int thread_count = std::thread::hardware_concurrency();
-
-    if (thread_count == 0)
-    {
-        throw std::exception("Can't get core count.");
-    }
-
-    std::clog << "Creating " << thread_count << " threads." << std::endl;
+    int thread_count = num_cores;
 
     while (thread_count-- > 0)
     {

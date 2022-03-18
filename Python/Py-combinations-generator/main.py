@@ -35,18 +35,18 @@ if __name__ == '__main__':
     how_many_represent_10_percentage = [25,15,10,5,3,1]
 
     #FORMAT MAIN:
-    #  candleSize /
-    #  size_seg_unic /
-    #  filter_1 /
-    #  filter_2 /
-    #  future_price /
-    #  min_max_streching /
-    #  abatere
+    #  a[0] candles_size /
+    #  a[1] size_seg_unic /
+    #  a[2] filter_1 /
+    #  a[3] filter_2 /
+    #  a[4] future_price /
+    #  a[5] min_max_streching /
+    #  a[6] abatere
 
     #FORMAT TEST:
-    #where_to_test /
     #  abatere_hard /
-    #  succes_ratio / how_many_represent_10_percetange /
+    #  succes_ratio / 
+    #  how_many_represent_10_percetange /
 
     print("candles_size", candles_size)
     print("size_seg_unic", size_seg_unic)
@@ -56,7 +56,6 @@ if __name__ == '__main__':
     print("min_max_streching", min_max_streching)
     print("abatere", abatere)
 
-    print("abatere_hard", abatere_hard, len(abatere_hard))
     print("succes_ratio", succes_ratio, len(succes_ratio))
     print("how_many_represent_10_percentage", how_many_represent_10_percentage, len(how_many_represent_10_percentage))
 
@@ -99,7 +98,7 @@ if __name__ == '__main__':
     # print("test comb len:", contor_test);
     # printFirsts(test_combination,1000)
 
-    what_to_export = 1
+    what_to_export = 0
     #0 = main combination
     #1 = test combination
 

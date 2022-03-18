@@ -9,6 +9,8 @@ class ThreadPool
 {
 public:
 	ThreadPool();
+	ThreadPool(int num_threads);
+
 	~ThreadPool();
 
 	void submitJob(const std::function<void()>& f);

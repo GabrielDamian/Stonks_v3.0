@@ -4,41 +4,33 @@
 #include <mutex>
 
 
-void narutoMain(double candleSize, double filter_candles_1, double filter_candles_2, int size_seg_unic, int min_max_streching, int abatere, floatType succes_ratio, std::mutex& mutex)
+void narutoMain(double candleSize, double filter_candles_1, double filter_candles_2, int size_seg_unic, int min_max_streching, int abatere, floatType filter_succes_ratio, std::mutex& mutex_main, std::mutex& mutex_terraForm, std::mutex & mutex_Apollo)
 {
-	//config area
 
-	//PY MODULE:
-	//double candleSize = 3;
-	//double filter_candles_1 = 0.1;
-	//double filter_candles_2 = 0.5;
-	//int size_seg_unic = 40;
-	//int abatere = 1500;
+	vector<point> inputData;
 
-
+	//creeaza raw input data pe baza combinatiilor din iteratia curenta
 	{
-		std::unique_lock<std::mutex> lock(mutex);
-
-		std::string command = "python main.py " + std::to_string(candleSize) + " " + std::to_string(filter_candles_1) + " " + std::to_string(filter_candles_2);
-		cout << endl << "comanda:" << command << endl;
+		/*std::unique_lock<std::mutex> lock(mutex);
+		std::string command = "python main.py " + std::to_string(candleSize) + " " + std::to_string(filter_candles_1) + " " + std::to_string(filter_candles_2) + " " + "AAPL.csv";
+		std::cout << endl << "check comanda:" << command << endl;
 		int py_return_code = system(command.c_str());
-		cout << "py return code:" << py_return_code << endl;
+		std::cout << "py return code:" << py_return_code << endl;*/
+
+		inputData = pythonHandler("AAPL.csv", "main_data.txt", candleSize, filter_candles_1, filter_candles_2);
 	}
-
-
-	//int min_max_streching = 1;
 
 
 	int future_price = 10;
 	bool yScalerEnabler = true;
 	bool powerSumCrossCor = true;
 
-	vector<point> inputData = readFromFile(1);
+	//vector<point> inputData = readFromFile(1);
 	//printInputData(inputData); //TEST RAW DATA
 
 	vector<vector<point>> segmente_baza;
 	segmentareArray(segmente_baza, inputData, size_seg_unic);
-	cout << endl << "S-au generat:" << segmente_baza.size() << " segment de baza.";
+	std::cout << endl << "S-au generat:" << segmente_baza.size() << " segment de baza.";
 	//printSegmenteBaza(segmente_baza);
 
 	map<int, vector<twin>> variatii;
@@ -54,7 +46,7 @@ void narutoMain(double candleSize, double filter_candles_1, double filter_candle
 	{
 		segmentareVariatii_with_future_price(a.second, inputData, a.first, future_price);
 	}
-	cout << endl << "------------Variatii default:" << endl;
+	std::cout << endl << "------------Variatii default:" << endl;
 	//printVariatii(variatii);
 
 
@@ -67,7 +59,7 @@ void narutoMain(double candleSize, double filter_candles_1, double filter_candle
 		}
 	}
 
-	cout << endl << "------------Variatii comprimate : " << endl;
+	std::cout << endl << "------------Variatii comprimate : " << endl;
 	//printVariatii(variatii);
 
 	for (auto& a : variatii)
@@ -77,10 +69,10 @@ void narutoMain(double candleSize, double filter_candles_1, double filter_candle
 			interpoleazaSegment(b.values, size_seg_unic);
 		}
 	}
-	cout << endl << "------------Variatii comprimate si interpolate:" << endl;
+	std::cout << endl << "------------Variatii comprimate si interpolate:" << endl;
 	//printVariatii(variatii);
 
-	cout << endl << "Start filtrare patterns:" << endl;
+	std::cout << endl << "Start filtrare patterns:" << endl;
 	vector<patterns> posibile_patterns;
 	posibile_patterns.reserve(segmente_baza.size());
 	int index_cout = 0;
@@ -94,7 +86,7 @@ void narutoMain(double candleSize, double filter_candles_1, double filter_candle
 		{
 			mycounter = 0;
 			one_percent++;
-			cout << one_percent << "%" << endl;
+			std::cout << one_percent << "%" << endl;
 
 		}
 		mycounter++;
@@ -149,7 +141,7 @@ void narutoMain(double candleSize, double filter_candles_1, double filter_candle
 			return a.scor > b.scor;
 		});
 
-	cout << endl << endl << "==== Pattern finale desc ========";
+	std::cout << endl << endl << "==== Pattern finale desc ========";
 	//printPatterns(posibile_patterns);
 
 	//filtrate patterns
@@ -165,7 +157,7 @@ void narutoMain(double candleSize, double filter_candles_1, double filter_candle
 		{
 			current_succes_ratio = (floatType)(a.positives * 100) / a.scor;
 		}
-		if (current_succes_ratio > succes_ratio)
+		if (current_succes_ratio > filter_succes_ratio)
 		{
 			//std::cout << "ratio:" << current_succes_ratio << " " << a.scor << endl;
 			patterns_filtrate.push_back(a);
@@ -174,20 +166,18 @@ void narutoMain(double candleSize, double filter_candles_1, double filter_candle
 
 	//printPatterns(patterns_filtrate);
 
-	//supreme test naruto run
-	//cout << endl << "TEST:" << patterns_filtrate.size() << endl;
-	supremeTest(patterns_filtrate,  size_seg_unic,  future_price, 5000, succes_ratio,mutex);
-
+	if (patterns_filtrate.size() == 0) return; //if there are not patterns, supremeTest will throw a error bcs of crossCorelation
+	supremeTestMaster(patterns_filtrate,  candleSize,  filter_candles_1,  filter_candles_2, future_price, size_seg_unic,  min_max_streching,  abatere,  filter_succes_ratio, mutex_terraForm, mutex_Apollo);
 	//cin.ignore();
 }
-vector<point> readFromFile(int howMany)
+vector<point> readFromFile(int howMany, const string source)
 {
 	//howMany == 1 (read all)
 	vector<point> fileData;
 
 	floatType a;
 	floatType b;
-	std::ifstream infile("data.txt");
+	std::ifstream infile(source);
 
 	if (howMany == 1)
 	{
@@ -357,8 +347,8 @@ void comprimaSegment_X(vector<point>& result, int comprimed_size)
 }
 void interpoleazaSegment(vector<point>& segment_factorizat, int comprimed_size)
 {
-	cout << setprecision(2);
-	cout << fixed;
+	std::cout << setprecision(2);
+	std::cout << fixed;
 
 	vector<point> segment_rezultat;
 
@@ -555,14 +545,14 @@ void printInputData(vector<point>& inputData)
 		if (now > how_many) break;
 		now++;
 		//cout << "[" << a.x << " " << a.y << "], ";
-		cout << a.y << ", ";
+		std::cout << a.y << ", ";
 	}
 }
 void printSegmenteBaza(vector<vector<point>>& segmente_baza)
 {
 	std::cout << std::fixed;
 	std::cout << std::setprecision(1);
-	cout <<endl<< "Testare segmente de baza:" << endl;
+	std::cout <<endl<< "Testare segmente de baza:" << endl;
 	int how_many = 10;
 	int now = 0;
 	for (auto a : segmente_baza)
@@ -572,19 +562,19 @@ void printSegmenteBaza(vector<vector<point>>& segmente_baza)
 		for (auto b : a)
 		{
 			//cout << "[" << b.x << "," << b.y << "], ";
-			cout << b.y << ",";
+			std::cout << b.y << ",";
 		}
-		cout << endl;
+		std::cout << endl;
 	}
 }
 void printVariatii(map<int, vector<twin>>& variatii)
 {
-	cout << setprecision(2);
-	cout << fixed;
+	std::cout << setprecision(2);
+	std::cout << fixed;
 
 	for (auto& a : variatii)
 	{
-		cout << endl << endl << "-->key:" << a.first << " size arr variatii:" << a.second.size();
+		std::cout << endl << endl << "-->key:" << a.first << " size arr variatii:" << a.second.size();
 		
 		int how_many = 5;
 		int now = 0;
@@ -593,15 +583,15 @@ void printVariatii(map<int, vector<twin>>& variatii)
 		{
 			if (now > how_many) break;
 			now++;
-			cout << endl << "Len=" << b.values.size() << " ";
+			std::cout << endl << "Len=" << b.values.size() << " ";
 			for (auto& c : b.values)
 			{
 				//cout << "[" << c.x << "," << c.y << "], ";
-				cout << c.y << ", ";
+				std::cout << c.y << ", ";
 			}
-			cout << endl <<endl<<"Future price:" << b.future_price;
-			cout << endl << "Last price:" << b.last_price;
-			cout << endl << "index:" << b.index << endl;
+			std::cout << endl <<endl<<"Future price:" << b.future_price;
+			std::cout << endl << "Last price:" << b.last_price;
+			std::cout << endl << "index:" << b.index << endl;
 		}
 	}
 }
@@ -614,38 +604,74 @@ void printPatterns(vector<patterns> posibile_patterns)
 		if (now > how_many) break;
 		now++;
 
-		cout << endl << endl << "----Patten: " << endl;
+		std::cout << endl << endl << "----Patten: " << endl;
 		printInputData(a.seg_baza);
 		
-		cout << endl << "score:" << a.scor;
-		cout << endl << "positives:" << a.positives;
-		cout << endl << "index:" << a.index << endl;
+		std::cout << endl << "score:" << a.scor;
+		std::cout << endl << "positives:" << a.positives;
+		std::cout << endl << "index:" << a.index << endl;
 
-		cout << endl << "Variatii filtrate:";
+		std::cout << endl << "Variatii filtrate:";
 		printVariatii(a.variatii_filtrate);
 
-		
-
 	}
-
 }
 
 //SUPREME TEST
-void supremeTestMaster(vector<patterns> patterns, int size_seg_unic, int future_price)
+void supremeTestMaster(vector<patterns> patterns, double candleSize, double filter_candles_1, double filter_candles_2,int future_price, int size_seg_unic, int min_max_streching, int abatere, floatType filter_succes_ratio, std::mutex& mutex_terraForm, std::mutex& mutex_Apollo)
 {
-	//#TODO
-	vector<vector<floatType>> testCombinations = giveMeCombinations("test_combination.txt");
+	string farm_locations[] = { 
+		"FarmLand/Test_1_0.csv",
+		"FarmLand/Test_2_0.csv",
+		"FarmLand/Test_2_1.csv",
+		"FarmLand/Test_2_2.csv",
+		"FarmLand/Test_2_3.csv",
+		"FarmLand/Test_2_4.csv",
+		"FarmLand/Test_3_0.csv",
+		"FarmLand/Test_3_1.csv",
+		"FarmLand/Test_3_2.csv",
+		"FarmLand/Test_3_3.csv",
+		"FarmLand/Test_3_4.csv",
+	};
+	
+	vector<vector<floatType>> test_combinations = giveMeCombinations("test_combination.txt");
+	
+	for (auto& a : farm_locations)
+	{
 
-	//abatere_hard 
-	//succes_ratio 
-	//how_many_represent_10_percetange 
+		{
+			std::unique_lock<std::mutex> lock(mutex_terraForm);
+			vector<point> testData = pythonHandler(a, "FarmLand/portal_gun.txt", candleSize, filter_candles_1, filter_candles_2);
+			for (auto& b : test_combinations)
+			{
+				supremeTest(testData, patterns, size_seg_unic, future_price, b[0], b[1], b[2], mutex_Apollo);
+			}
+		}
+	}
+}
+vector<point> pythonHandler(string source, string destination,int candleSize, int filter_candles_1, int filter_candles_2)
+{
+	vector<point> inputData;
 
+	std::string command = "python main.py " +
+		std::to_string(candleSize) + " " +
+		std::to_string(filter_candles_1) + " " +
+		std::to_string(filter_candles_2) + " " +
+		source + " " +
+		destination;
 
+	std::cout << endl << "check comanda:" << command << endl;
+	int py_return_code = system(command.c_str());
+	std::cout << "py return code:" << py_return_code << endl;
+
+	inputData = readFromFile(1,source);
+	return inputData;
 }
 
-void supremeTest(vector<patterns> patterns, int size_seg_unic, int future_price, int abatere_hard, floatType succes_ratio, std::mutex& mutex)
+
+void supremeTest(vector<point> terraFormedInputData,vector<patterns> patterns, int size_seg_unic, int future_price, int abatere_hard, floatType succes_ratio, int procent_how_many, std::mutex& mutex_Apollo)
 {
-	cout << "TEST_2:" << patterns.size() << endl;
+	std::cout << "TEST_2:" << patterns.size() << endl;
 	int how_many = 1; //10k = 1 week, 1 - ALL
 	//floatType succes_ratio = 0.9; //x%
 
@@ -653,16 +679,21 @@ void supremeTest(vector<patterns> patterns, int size_seg_unic, int future_price,
 	int succes_buyes = 0;
 
 	//segmenteaza input_data in segmente consecutive de len = len_pattern
-	vector<point> inputData = readFromFile(how_many); //10k = 1 week
+
+	vector<point> inputData = terraFormedInputData; //wtf man
+	
 	//printInputData(inputData); //TEST RAW DATA
 
 	vector<vector<point>> segmente_baza;
 	segmentareArray(segmente_baza, inputData, size_seg_unic);
-	cout << endl << "S-au generat:" << segmente_baza.size() << " segment de baza pentru simulare";
+	std::cout << endl << "S-au generat:" << segmente_baza.size() << " segment de baza pentru simulare";
 
 	//----TODO---- = shrink pattern to keep only the first 10% of the data
-	cout << endl << "patterns:" << patterns.size() << endl;
-	int how_many_represents_first_10_percentage = int(0.1 * patterns.size());
+	std::cout << endl << "patterns:" << patterns.size() << endl;
+
+	int how_many_represents_first_10_percentage = int(procent_how_many * patterns.size());
+
+
 	if (how_many_represents_first_10_percentage == 0)
 	{
 		// 10% < 10 
@@ -673,7 +704,7 @@ void supremeTest(vector<patterns> patterns, int size_seg_unic, int future_price,
 		patterns.shrink_to_fit();
 	}
 	
-	cout << endl << "final size:" << patterns.size() << endl;
+	std::cout << endl << "final size:" << patterns.size() << endl;
 	//itereaza segmentele obtinute
 	int index_global_input_data = -1;
 
@@ -729,13 +760,13 @@ void supremeTest(vector<patterns> patterns, int size_seg_unic, int future_price,
 		}
 	}
 
-	cout << endl << "Final:" << endl;
-	cout << "Succes:" << succes_buyes << endl;
-	cout << "Total:" << total_buyed << endl;
-	cout << "%" << (succes_buyes * 100) / total_buyed;
-	demoFile(mutex, (floatType)(succes_buyes * 100) / total_buyed);
-	//cout succes_buyes / total_buyes
+	std::cout << endl << "Final:" << endl;
+	std::cout << "Succes:" << succes_buyes << endl;
+	std::cout << "Total:" << total_buyed << endl;
+	std::cout << "%" << (succes_buyes * 100) / total_buyed;
 
+	writeResultIntoFile(mutex_Apollo, succes_buyes);
+	
 }
 
 vector<vector<floatType>> giveMeCombinations(const string file_name) {
@@ -778,32 +809,14 @@ vector<vector<floatType>> giveMeCombinations(const string file_name) {
 
 	return result;
 }
-void writeResultIntoFile(int a, int b, floatType c, const string where_to_output)
-{
-	std::ofstream outfile;
-	string row = "";
-	row += std::to_string(a);
-	row += std::to_string(b);
-	row += std::to_string(c);
 
-	outfile.open("where_to_output", std::ios_base::app); // append instead of overwrite
-	outfile << row;
-}
-
-void demoNaruto(std::mutex& mutex, int a, int b)
-{
-	std::cout << "Demo!";
-	demoFile(mutex, a);
-	std::cout << "DemoEnd!";
-}
-
-void demoFile(std::mutex& mutex, floatType succes_ratio)
+void writeResultIntoFile(std::mutex& mutex, int a)
 {
 	std::unique_lock<std::mutex> lock(mutex);
 
-	auto file = std::ofstream("ligma.txt", std::ofstream::app);
+	auto file = std::ofstream("apollo.txt", std::ofstream::app);
 
-	file << "Lol! " << succes_ratio << std::endl;
-	
+	file << "new res comb: " << a << std::endl;
+
 	file.close();
 }

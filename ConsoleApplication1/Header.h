@@ -35,9 +35,9 @@ struct patterns {
 };
 
 //Naruto main
-void narutoMain(double candleSize, double filter_candles_1, double filter_candles_2, int size_seg_unic, int min_max_streching, int abatere, floatType succes_ratio, std::mutex& mutex);
+void narutoMain(double candleSize, double filter_candles_1, double filter_candles_2, int size_seg_unic, int min_max_streching, int abatere, floatType filter_succes_ratio, std::mutex& mutex_main, std::mutex& mutex_terraForm, std::mutex & mutex_Apollo);
 
-vector<point> readFromFile(int howMany);
+vector<point> readFromFile(int howMany, string source);
 void segmentareArray(vector<vector<point>>& result,vector<point>& inputData, int size_seg_unic);
 void normalizeazaSegment(vector<point>& segment);
 void seteazaKeyVariatii(map<int, vector<twin>>& variatii, int size_seg_baza, int min_max_streching);
@@ -59,14 +59,14 @@ void printVariatii(map<int, vector<twin>>& variatii);
 void printPatterns(vector<patterns> posibile_patterns);
 
 //SUPREME TEST
-void supremeTest(vector<patterns> patterns, int size_seg_unic, int future_price, int abatere_hard, floatType succes_ratio, std::mutex& mutex);
 
+void supremeTestMaster(vector<patterns> patterns, double candleSize, double filter_candles_1, double filter_candles_2,int future_price, int size_seg_unic, int min_max_streching, int abatere, floatType filter_succes_ratio, std::mutex& mutex_terraForm, std::mutex& mutex_Apollo);
+
+void supremeTest(vector<point> terraFormedInputData,vector<patterns> patterns, int size_seg_unic, int future_price, int abatere_hard, floatType succes_ratio, int procent_how_many, std::mutex& mutex_Apollo);
 //Combination translator
 vector<vector<floatType>> giveMeCombinations(const string file_name);
+vector<point> pythonHandler(string source, string destination, int candleSize, int filter_candles_1, int filter_candles_2);
 
 //Results writer
-void writeResultIntoFile(int a, int b, floatType c, const string where_to_output);
+void writeResultIntoFile(std::mutex& mutex, int a);
 
-void demoNaruto(std::mutex& mutex, int a, int b);
-
-void demoFile(std::mutex& mutex, floatType succes_ratio);
