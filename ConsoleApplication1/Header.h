@@ -35,7 +35,7 @@ struct patterns {
 };
 
 //Naruto main
-void narutoMain(double candleSize, double filter_candles_1, double filter_candles_2, int size_seg_unic, int min_max_streching, int abatere, floatType filter_succes_ratio, std::mutex& mutex_file_main,std::mutex& mutex_file_terraForm, std::mutex & mutex_file_Apollo, std::mutex& mutex_console);
+void narutoMain(int candles_size, int size_seg_unic, floatType filter_1, floatType filter_2, int future_price, int min_max_streching, int abatere, std::mutex& mutex_file_main,std::mutex& mutex_file_terraForm, std::mutex & mutex_file_Apollo, std::mutex& mutex_console);
 
 vector<point> readFromFile(int howMany, string source);
 void segmentareArray(vector<vector<point>>& result,vector<point>& inputData, int size_seg_unic);
@@ -60,12 +60,15 @@ void printPatterns(vector<patterns> posibile_patterns);
 
 //SUPREME TEST
 
-void supremeTestMaster(vector<patterns> patterns, double candleSize, double filter_candles_1, double filter_candles_2,int future_price, int size_seg_unic, int min_max_streching, int abatere, floatType filter_succes_ratio, std::mutex& mutex_file_terraForm, std::mutex& mutex_file_Apollo);
+void supremeTestMaster(vector<patterns> patterns, floatType possible_succes_ratios, int candles_size, int size_seg_unic, floatType filter_1, floatType filter_2, int future_price, int min_max_streching, int abatere, std::mutex& mutex_file_terraForm, std::mutex& mutex_file_Apollo, std::mutex& mutex_console);
 
-void supremeTest(vector<point> terraFormedInputData,vector<patterns> patterns, int size_seg_unic, int future_price, int abatere_hard, floatType succes_ratio, int procent_how_many, std::mutex& mutex_Apollo);
+vector<patterns> filterBySuccesRatio(int filter_succes_ratio, vector<patterns> posibile_patterns);
+
+void supremeTest(int abatere_hard, int how_many_for_foam, vector<point> testData, vector<patterns> patterns, floatType possible_succes_ratios, int candles_size, int size_seg_unic, floatType filter_1, floatType filter_2, int future_price, int min_max_streching, int abatere, std::mutex& mutex_file_Apollo, std::mutex& mutex_console);
+
 //Combination translator
 vector<vector<floatType>> giveMeCombinations(const string file_name);
-vector<point> pythonHandler(string source, string destination, int candleSize, int filter_candles_1, int filter_candles_2);
+vector<point> pythonHandler(string source, string destination, int candleSize, floatType filter_candles_1, floatType filter_candles_2);
 
 //Results writer
 void writeResultIntoFile(std::mutex& mutex, int a);

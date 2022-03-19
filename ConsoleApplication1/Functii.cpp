@@ -4,28 +4,40 @@
 #include <mutex>
 
 
-void narutoMain(double candleSize, double filter_candles_1, double filter_candles_2, int size_seg_unic, int min_max_streching, int abatere, floatType filter_succes_ratio, std::mutex& mutex_file_main, std::mutex& mutex_file_terraForm, std::mutex& mutex_file_Apollo, std::mutex& mutex_console)
+void narutoMain(int candles_size, int size_seg_unic, floatType filter_1, floatType filter_2, int future_price, int min_max_streching, int abatere, std::mutex& mutex_file_main, std::mutex& mutex_file_terraForm, std::mutex& mutex_file_Apollo, std::mutex& mutex_console)
 {
+	//params checked
+	cout << endl << "step 1";
+	cout << endl << "candle size :" << candles_size;
+	cout << endl << "size_seg_unic :" << size_seg_unic;
+	cout << endl << "filter_1 :" << filter_1;
+	cout << endl << "filter_2 :" << filter_2;
+	cout << endl << "future_price :" << future_price;
+	cout << endl << "min_max_streching :" << min_max_streching;
+	cout << endl << "abatere :" << abatere;
+
 	vector<point> inputData;
 
 	{
 		std::unique_lock<std::mutex> lock(mutex_file_main);
-		cout  <<endl << "candle:" << candleSize << " >>>>>>>>>>>";
-		inputData = pythonHandler("AAPL.csv", "main_data.txt", candleSize, filter_candles_1, filter_candles_2);
+		inputData = pythonHandler("AAPL.csv", "main_data.txt", candles_size, filter_1, filter_2);
 	}
-
-	int future_price = 10;
+	
 	bool yScalerEnabler = true;
 	bool powerSumCrossCor = true;
 
 
 	vector<vector<point>> segmente_baza;
 	segmentareArray(segmente_baza, inputData, size_seg_unic);
-	//std::cout << endl << "S-au generat:" << segmente_baza.size() << " segment de baza.";
+	/*{
+		std::unique_lock<std::mutex> lock(mutex_console);
+		std::cout << endl << "S-au generat:" << segmente_baza.size() << " segment de baza.";
+	}*/
 	//printSegmenteBaza(segmente_baza);
 
 	map<int, vector<twin>> variatii;
 	
+	cout << endl << "step 2";
 
 	seteazaKeyVariatii(variatii, size_seg_unic, min_max_streching);
 	for (auto& a : variatii)
@@ -57,6 +69,7 @@ void narutoMain(double candleSize, double filter_candles_1, double filter_candle
 	}
 	//std::cout << endl << "------------Variatii comprimate si interpolate:" << endl;
 	//printVariatii(variatii);
+	cout << endl << "step 3";
 
 	//std::cout << endl << "Start filtrare patterns:" << endl;
 	vector<patterns> posibile_patterns;
@@ -73,7 +86,6 @@ void narutoMain(double candleSize, double filter_candles_1, double filter_candle
 			mycounter = 0;
 			one_percent++;
 			std::cout << one_percent << "%" << endl;
-
 		}
 		mycounter++;
 
@@ -121,15 +133,71 @@ void narutoMain(double candleSize, double filter_candles_1, double filter_candle
 		pattern_ref.positives = positives;
 		pattern_ref.index = index_cout;
 	}
+	//cout << endl << "step 4";
 
 	std::sort(posibile_patterns.begin(), posibile_patterns.end(), [](patterns const& a, patterns const& b)->bool //descending
 		{
 			return a.scor > b.scor;
 		});
 
-	//printPatterns(posibile_patterns);
+	/*{
+		std::unique_lock<std::mutex> lock(mutex_console);
+		printPatterns(posibile_patterns);
+
+	}*/
+	
 	
 	//filtrate patterns
+	//vector<patterns> patterns_filtrate;
+
+	//for (auto& a : posibile_patterns)
+	//{
+	//	floatType current_succes_ratio;
+	//	if (a.positives == 0)
+	//	{
+	//		current_succes_ratio = 0;
+	//	}
+	//	else
+	//	{
+	//		current_succes_ratio = (floatType)(a.positives * 100) / a.scor;
+	//	}
+	//	/*{
+	//		std::unique_lock<std::mutex> lock(mutex_console);
+	//		cout << endl << "current_succes_ratio" << current_succes_ratio << " -> comparat cu ->" << filter_succes_ratio << " positive:" << a.positives;
+	//	}*/
+	//	if (current_succes_ratio > filter_succes_ratio)
+	//	{
+	//		//std::cout << "ratio:" << current_succes_ratio << " " << a.scor << endl;
+	//		patterns_filtrate.push_back(a);
+	//	}
+	//}
+
+	vector<floatType> possible_succes_ratios = {50.0, 60.0,70.0};
+	for (auto a : possible_succes_ratios)
+	{
+		{
+			std::unique_lock<std::mutex> lock(mutex_console);
+			cout << endl << "Before filteting:" << posibile_patterns.size() << " pentru abatere:" << abatere << endl;
+		}
+		vector<patterns> current_filtered_patterns = filterBySuccesRatio(a, posibile_patterns);
+		
+		{
+			std::unique_lock<std::mutex> lock(mutex_console);
+			cout << endl << "Patterns filtrate:" << current_filtered_patterns.size() << " pentru abatere:" << abatere << endl;
+		}
+
+		if (current_filtered_patterns.size() > 0)//if there are not patterns, supremeTest will throw a error bcs of crossCorelation
+		{
+			supremeTestMaster(current_filtered_patterns, a, candles_size, size_seg_unic, filter_1, filter_2, future_price, min_max_streching, abatere, mutex_file_terraForm, mutex_file_Apollo, mutex_console);
+		}
+		
+
+	}
+	
+	//cin.ignore();
+}
+vector<patterns> filterBySuccesRatio(int filter_succes_ratio, vector<patterns> posibile_patterns)
+{
 	vector<patterns> patterns_filtrate;
 
 	for (auto& a : posibile_patterns)
@@ -143,18 +211,17 @@ void narutoMain(double candleSize, double filter_candles_1, double filter_candle
 		{
 			current_succes_ratio = (floatType)(a.positives * 100) / a.scor;
 		}
+		/*{
+			std::unique_lock<std::mutex> lock(mutex_console);
+			cout << endl << "current_succes_ratio" << current_succes_ratio << " -> comparat cu ->" << filter_succes_ratio << " positive:" << a.positives;
+		}*/
 		if (current_succes_ratio > filter_succes_ratio)
 		{
 			//std::cout << "ratio:" << current_succes_ratio << " " << a.scor << endl;
 			patterns_filtrate.push_back(a);
 		}
 	}
-
-	if (patterns_filtrate.size() == 0) return; //if there are not patterns, supremeTest will throw a error bcs of crossCorelation
-
-	supremeTestMaster(patterns_filtrate,  candleSize,  filter_candles_1,  filter_candles_2, future_price, size_seg_unic,  min_max_streching,  abatere,  filter_succes_ratio, mutex_file_terraForm, mutex_file_Apollo);
-	//cin.ignore();
-
+	return patterns_filtrate;
 }
 vector<point> readFromFile(int howMany, string source)
 {
@@ -164,17 +231,7 @@ vector<point> readFromFile(int howMany, string source)
 	floatType a;
 	floatType b;
 	std::ifstream infile(source);
-	//cout << endl << "Source: " << source;
-	/*
-	if (!infile)
-	{
-		cout << endl << "Eroare deschidere fila";
-	}
-	else
-	{
-		cout << endl << "Fila deschisa cu succes";
-	}
-	*/
+
 	if (howMany == 1)
 	{
 		while (infile >> a >> b)
@@ -612,7 +669,7 @@ void printPatterns(vector<patterns> posibile_patterns)
 }
 
 //SUPREME TEST
-void supremeTestMaster(vector<patterns> patterns, double candleSize, double filter_candles_1, double filter_candles_2,int future_price, int size_seg_unic, int min_max_streching, int abatere, floatType filter_succes_ratio, std::mutex& mutex_file_terraForm, std::mutex& mutex_file_Apollo)
+void supremeTestMaster(vector<patterns> patterns, floatType possible_succes_ratios, int candles_size, int size_seg_unic, floatType filter_1, floatType filter_2, int future_price, int min_max_streching, int abatere, std::mutex& mutex_file_terraForm, std::mutex& mutex_file_Apollo, std::mutex& mutex_console)
 {
 	string farm_locations[] = { 
 		"FarmLand/Test_1_0.csv",
@@ -634,18 +691,20 @@ void supremeTestMaster(vector<patterns> patterns, double candleSize, double filt
 	{
 		{
 			std::unique_lock<std::mutex> lock(mutex_file_terraForm);
-			vector<point> testData = pythonHandler(a, "FarmLand/portal_gun.txt", candleSize, filter_candles_1, filter_candles_2);
+			vector<point> testData = pythonHandler(a, "FarmLand/portal_gun.txt", candles_size,filter_1,filter_2);
 			for (auto& b : test_combinations)
 			{
-				supremeTest(testData, patterns, size_seg_unic, future_price, b[0], b[1], b[2], mutex_file_Apollo);
+				//#  abatere_hard /
+				//#  how_many_for_foam
+				supremeTest(b[0],b[1],testData, patterns, possible_succes_ratios, candles_size,size_seg_unic,filter_1,filter_2,future_price,min_max_streching,abatere,mutex_file_Apollo,mutex_console);
 			}
 		}
 	}
 }
-vector<point> pythonHandler(string source, string destination,int candleSize, int filter_candles_1, int filter_candles_2)
+vector<point> pythonHandler(string source, string destination,int candleSize, floatType filter_candles_1, floatType filter_candles_2)
 {
 	vector<point> inputData;
-	//cout << endl << "python handler:" << source << " " << destination;
+	
 	std::string command = "python main.py " +
 		std::to_string(candleSize) + " " +
 		std::to_string(filter_candles_1) + " " +
@@ -662,7 +721,7 @@ vector<point> pythonHandler(string source, string destination,int candleSize, in
 }
 
 
-void supremeTest(vector<point> terraFormedInputData,vector<patterns> patterns, int size_seg_unic, int future_price, int abatere_hard, floatType succes_ratio, int procent_how_many, std::mutex& mutex_Apollo)
+void supremeTest(int abatere_hard, int how_many_for_foam, vector<point> testData, vector<patterns> patterns, floatType possible_succes_ratios, int candles_size, int size_seg_unic, floatType filter_1, floatType filter_2, int future_price, int min_max_streching, int abatere, std::mutex& mutex_file_Apollo, std::mutex& mutex_console)
 {
 	//std::cout << "TEST_2:" << patterns.size() << endl;
 	int how_many = 1; //10k = 1 week, 1 - ALL
@@ -673,7 +732,7 @@ void supremeTest(vector<point> terraFormedInputData,vector<patterns> patterns, i
 
 	//segmenteaza input_data in segmente consecutive de len = len_pattern
 
-	vector<point> inputData = terraFormedInputData; //wtf man
+	vector<point> inputData = testData; //wtf man
 	
 	//printInputData(inputData); //TEST RAW DATA
 
@@ -683,8 +742,9 @@ void supremeTest(vector<point> terraFormedInputData,vector<patterns> patterns, i
 
 	//----TODO---- = shrink pattern to keep only the first 10% of the data
 	//std::cout << endl << "patterns:" << patterns.size() << endl;
-
-	int how_many_represents_first_10_percentage = int(procent_how_many * patterns.size());
+	
+	floatType procent_foam = floatType(how_many_for_foam) / 100;
+	int how_many_represents_first_10_percentage = int(procent_foam * patterns.size());
 
 
 	if (how_many_represents_first_10_percentage == 0)
@@ -757,8 +817,10 @@ void supremeTest(vector<point> terraFormedInputData,vector<patterns> patterns, i
 	//std::cout << "Succes---------------------------------------------------------------------------------------------------:" << succes_buyes << endl;
 	std::cout << "Total-----------------------------------------------------------------------------------------:" << total_buyed << endl;
 	//std::cout << "%" << (succes_buyes * 100) / total_buyed;
-
-	writeResultIntoFile(mutex_Apollo, succes_buyes);
+	if (succes_buyes > 0)
+	{
+		writeResultIntoFile(mutex_file_Apollo, succes_buyes);
+	}
 	
 }
 
