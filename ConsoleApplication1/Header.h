@@ -64,12 +64,12 @@ void supremeTestMaster(vector<patterns> patterns, floatType possible_succes_rati
 
 vector<patterns> filterBySuccesRatio(int filter_succes_ratio, vector<patterns> posibile_patterns);
 
-void supremeTest(int abatere_hard, int how_many_for_foam, vector<point> testData, vector<patterns> patterns, floatType possible_succes_ratios, int candles_size, int size_seg_unic, floatType filter_1, floatType filter_2, int future_price, int min_max_streching, int abatere, std::mutex& mutex_file_Apollo, std::mutex& mutex_console);
+void supremeTest(int abatere_hard, int how_many_for_foam, vector<point> testData, vector<patterns> patterns, floatType possible_succes_ratios, int candles_size, int size_seg_unic, floatType filter_1, floatType filter_2, int future_price, int min_max_streching, int abatere, std::mutex& mutex_file_Apollo, std::mutex& mutex_console, string test_farm);
 
 //Combination translator
 vector<vector<floatType>> giveMeCombinations(const string file_name);
 vector<point> pythonHandler(string source, string destination, int candleSize, floatType filter_candles_1, floatType filter_candles_2);
 
 //Results writer
-void writeResultIntoFile(std::mutex& mutex, int a);
+void writeResultIntoFile(std::mutex& mutex, string a,string destination);
 
