@@ -39,6 +39,7 @@ int main()
 	{
 		std::this_thread::sleep_for(std::chrono::milliseconds(50));
 	}
+	cout << endl << "DONE" << endl;
 	return 0;
 }
 

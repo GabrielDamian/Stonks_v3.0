@@ -31,10 +31,10 @@ void narutoMain(int candles_size, int size_seg_unic, floatType filter_1, floatTy
 
 	vector<vector<point>> segmente_baza;
 	segmentareArray(segmente_baza, inputData, size_seg_unic);
-	/*{
+	{
 		std::unique_lock<std::mutex> lock(mutex_console);
 		std::cout << endl << "S-au generat:" << segmente_baza.size() << " segment de baza.";
-	}*/
+	}
 	//printSegmenteBaza(segmente_baza);
 
 	map<int, vector<twin>> variatii;
@@ -81,6 +81,8 @@ void narutoMain(int candles_size, int size_seg_unic, floatType filter_1, floatTy
 	int decade = int(segmente_baza.size() / 100);
 	int one_percent = 0;
 	int mycounter = 0;
+
+	
 	for (auto& a : segmente_baza)
 	{
 		if (decade == mycounter)
@@ -138,9 +140,9 @@ void narutoMain(int candles_size, int size_seg_unic, floatType filter_1, floatTy
 	//cout << endl << "step 4";
 
 	std::sort(posibile_patterns.begin(), posibile_patterns.end(), [](patterns const& a, patterns const& b)->bool //descending
-		{
-			return a.scor > b.scor;
-		});
+	{
+		return a.scor > b.scor;
+	});
 
 	/*{
 		std::unique_lock<std::mutex> lock(mutex_console);
@@ -174,7 +176,7 @@ void narutoMain(int candles_size, int size_seg_unic, floatType filter_1, floatTy
 	//	}
 	//}
 
-	vector<floatType> possible_succes_ratios = {50.0, 60.0,70.0};
+	vector<floatType> possible_succes_ratios = {50.0, 60.0, 70.0};
 	for (auto a : possible_succes_ratios)
 	{
 		{

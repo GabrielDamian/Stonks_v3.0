@@ -27,7 +27,7 @@ if __name__ == '__main__':
 
     graph = graphData()
 
-    vector = readDataFromFile(source, linesToRead=10000)
+    vector = readDataFromFile(source, linesToRead=25000)
     #vector = readDataFromFile('AAPL.csv', linesToRead=6000)
 
     graph.setInputData(vector)
