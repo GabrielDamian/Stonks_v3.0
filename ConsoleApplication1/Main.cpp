@@ -16,7 +16,7 @@ int main()
 	#  a[5] min_max_streching /
 	#  a[6] abatere*/
 
-	ThreadPool threadPool(6);
+	ThreadPool threadPool(4);
 
 	std::mutex mutex_file_main;
 	std::mutex mutex_file_terraForm;

@@ -31,7 +31,8 @@ if __name__ == '__main__':
 
     #VARS TEST:----------------
     abatere_hard = [round(i,2) for i in range(1000,11000,1000)]
-    how_many_represent_10_percentage = [25,15,10,5,3,1]  # %
+    succes_ratio = generateRange(0.6,1,0.1)
+    how_many_represent_10_percentage = [1,3,5,10,20,30,50,100,200,300,500,800,1000,1500,2000]
 
     #FORMAT MAIN:
     #  a[0] candles_size /
@@ -42,10 +43,6 @@ if __name__ == '__main__':
     #  a[5] min_max_streching /
     #  a[6] abatere
 
-    #FORMAT TEST:
-    #  abatere_hard /
-    #  how_many_represent_10_percetange /
-
     print("candles_size", candles_size)
     print("size_seg_unic", size_seg_unic)
     print("filter_1", filter_1)
@@ -54,10 +51,8 @@ if __name__ == '__main__':
     print("min_max_streching", min_max_streching)
     print("abatere", abatere)
 
-    print("how_many_represent_10_percentage", how_many_represent_10_percentage, len(how_many_represent_10_percentage))
 
     main_combinations = ''
-    test_combination = ''
 
     contor_main = 0
     for a in candles_size:
@@ -78,31 +73,8 @@ if __name__ == '__main__':
                                 main_combinations += comb_str +'\n'
                                 contor_main += 1
 
-    contor_test = 0
-    for a in abatere_hard:
-            for c in how_many_represent_10_percentage:
-                comb_str = ''
-                comb_str += str(a) + "/"
-                comb_str += str(c) + "/"
-                test_combination += comb_str + '\n'
-                contor_test += 1
 
-    # print("main contor:", contor_main)
-    # printFirsts(main_combinations,1000)
-    #
-    # print("test comb len:", contor_test);
-    # printFirsts(test_combination,1000)
-
-    what_to_export = 1
-    #0 = main combination
-    #1 = test combination
-
-    if what_to_export == 0:
-        f = open("main_combination.txt", "w")
-        f.write(main_combinations)
-        f.close()
-    else:
-        f = open("test_combination.txt", "w")
-        f.write(test_combination)
-        f.close()
+    f = open("main_combination.txt", "w")
+    f.write(main_combinations)
+    f.close()
 

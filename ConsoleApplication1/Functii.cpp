@@ -139,63 +139,33 @@ void narutoMain(int candles_size, int size_seg_unic, floatType filter_1, floatTy
 	}
 	//cout << endl << "step 4";
 
+	{
+		std::unique_lock<std::mutex> lock(mutex_console);
+		cout << endl << "before sort:" << posibile_patterns.size() << endl;
+	}
+
 	std::sort(posibile_patterns.begin(), posibile_patterns.end(), [](patterns const& a, patterns const& b)->bool //descending
 	{
 		return a.scor > b.scor;
 	});
 
-	/*{
+	{
 		std::unique_lock<std::mutex> lock(mutex_console);
-		printPatterns(posibile_patterns);
-
-	}*/
-	
-	
-	//filtrate patterns
-	//vector<patterns> patterns_filtrate;
-
-	//for (auto& a : posibile_patterns)
-	//{
-	//	floatType current_succes_ratio;
-	//	if (a.positives == 0)
-	//	{
-	//		current_succes_ratio = 0;
-	//	}
-	//	else
-	//	{
-	//		current_succes_ratio = (floatType)(a.positives * 100) / a.scor;
-	//	}
-	//	/*{
-	//		std::unique_lock<std::mutex> lock(mutex_console);
-	//		cout << endl << "current_succes_ratio" << current_succes_ratio << " -> comparat cu ->" << filter_succes_ratio << " positive:" << a.positives;
-	//	}*/
-	//	if (current_succes_ratio > filter_succes_ratio)
-	//	{
-	//		//std::cout << "ratio:" << current_succes_ratio << " " << a.scor << endl;
-	//		patterns_filtrate.push_back(a);
-	//	}
-	//}
-
-	vector<floatType> possible_succes_ratios = {50.0, 60.0, 70.0};
+		cout << endl << "after sort:" << posibile_patterns.size() << endl;
+	}
+	vector<floatType> possible_succes_ratios = {50.0, 55.0, 60.0, 65.0, 70.0,75.0, 80.0, 85.0, 90.0, 93.0, 95.0, 97.0, 98.0, 99.0};
 	for (auto a : possible_succes_ratios)
 	{
-		{
-			std::unique_lock<std::mutex> lock(mutex_console);
-			cout << endl << "Before filteting:" << posibile_patterns.size() << " pentru abatere:" << abatere << endl;
-		}
 		vector<patterns> current_filtered_patterns = filterBySuccesRatio(a, posibile_patterns);
-		
 		{
 			std::unique_lock<std::mutex> lock(mutex_console);
-			cout << endl << "Patterns filtrate:" << current_filtered_patterns.size() << " pentru abatere:" << abatere << "possible succ ratio:" << a << endl;
-		}
+			cout << endl << "current_filtered_patterns.size():" << current_filtered_patterns.size() << " succ_ratio:" << a;
 
+		}
 		if (current_filtered_patterns.size() > 0)//if there are not patterns, supremeTest will throw a error bcs of crossCorelation
 		{
 			supremeTestMaster(current_filtered_patterns, a, candles_size, size_seg_unic, filter_1, filter_2, future_price, min_max_streching, abatere, mutex_file_terraForm, mutex_file_Apollo, mutex_console);
 		}
-		
-
 	}
 	
 	//cin.ignore();
@@ -673,15 +643,9 @@ void printPatterns(vector<patterns> posibile_patterns)
 }
 
 //SUPREME TEST
-void supremeTestMaster(vector<patterns> patterns, floatType possible_succes_ratios, int candles_size, int size_seg_unic, floatType filter_1, floatType filter_2, int future_price, int min_max_streching, int abatere, std::mutex& mutex_file_terraForm, std::mutex& mutex_file_Apollo, std::mutex& mutex_console)
+void supremeTestMaster(vector<patterns> patternsParam, floatType succes_ratio_filter, int candles_size, int size_seg_unic, floatType filter_1, floatType filter_2, int future_price, int min_max_streching, int abatere, std::mutex& mutex_file_terraForm, std::mutex& mutex_file_Apollo, std::mutex& mutex_console)
 {
 	string farm_locations[] = { 
-		"FarmLand/Test_1_0.csv",
-		"FarmLand/Test_2_0.csv",
-		"FarmLand/Test_2_1.csv",
-		"FarmLand/Test_2_2.csv",
-		"FarmLand/Test_2_3.csv",
-		"FarmLand/Test_2_4.csv",
 		"FarmLand/Test_3_0.csv",
 		"FarmLand/Test_3_1.csv",
 		"FarmLand/Test_3_2.csv",
@@ -689,24 +653,33 @@ void supremeTestMaster(vector<patterns> patterns, floatType possible_succes_rati
 		"FarmLand/Test_3_4.csv",
 	};
 	
-	vector<vector<floatType>> test_combinations = giveMeCombinations("test_combination.txt");
-	
-	/* {
-		std::unique_lock<std::mutex> lock(mutex_console);
-		cout << "supremeTestMaster:" << endl << "patterns.size:" << patterns.size() << endl << "possible_succes_ratios:" << possible_succes_ratios << endl << "candles_size:" << candles_size << endl << "size_seg_unic:" << size_seg_unic << endl << "filter_1:" << filter_1 << "filter_2:" << filter_2 << endl << "future_price:" << future_price << endl << "abatere:" << abatere;
-	}*/
+	vector<int> foamShrink = { 1,3,5,10,20,30,50,100,200,300,500,800,1000,1500,2000 };
+	vector<int> abatereHard = { 200,500,1000,2000,3000,4000,5000,6000,7000,8000,9000,10000 };
 
-	for (auto& a : farm_locations)
+
+	//1,3,5,10,20,[30],50,100 //realSize = 33
+	int currentSize = patternsParam.size();
+	for (auto& a : foamShrink)
 	{
+		if (a > currentSize)
+			break;
+
+		vector<patterns> shrinked_patterns;
+		
+		for (int i = 0; i < a; i++)
 		{
-			std::unique_lock<std::mutex> lock(mutex_file_terraForm);
-			vector<point> testData = pythonHandler(a, "FarmLand/portal_gun.txt", candles_size,filter_1,filter_2);
-			
-			for (auto& b : test_combinations)
+			shrinked_patterns.push_back(patternsParam[i]);
+		}
+
+		for (auto& c : abatereHard)
+		{
+			for (auto& d : farm_locations)
 			{
-				//#  abatere_hard /
-				//#  how_many_for_foam
-				supremeTest(b[0],b[1],testData, patterns, possible_succes_ratios, candles_size,size_seg_unic,filter_1,filter_2,future_price,min_max_streching,abatere,mutex_file_Apollo,mutex_console, a);
+				{
+					std::unique_lock<std::mutex> lock(mutex_file_terraForm);
+					vector<point> testData = pythonHandler(d, "FarmLand/portal_gun.txt", candles_size, filter_1, filter_2);
+					supremeTest(c, a, testData, shrinked_patterns, succes_ratio_filter, candles_size, size_seg_unic, filter_1, filter_2, future_price, min_max_streching, abatere, mutex_file_Apollo, mutex_console,d);
+				}
 			}
 		}
 	}
@@ -732,15 +705,16 @@ vector<point> pythonHandler(string source, string destination,int candleSize, fl
 }
 
 
-void supremeTest(int abatere_hard, int how_many_for_foam, vector<point> testData, vector<patterns> patterns, floatType possible_succes_ratios, int candles_size, int size_seg_unic, floatType filter_1, floatType filter_2, int future_price, int min_max_streching, int abatere, std::mutex& mutex_file_Apollo, std::mutex& mutex_console, string test_farm)
+void supremeTest(int abatere_hard, int how_many_for_foam, vector<point> testData, vector<patterns> patterns, floatType succes_ratio_filter, int candles_size, int size_seg_unic, floatType filter_1, floatType filter_2, int future_price, int min_max_streching, int abatere, std::mutex& mutex_file_Apollo, std::mutex& mutex_console, string test_farm)
 {
+	//TO USE: b = succesRatio
+
 	/*{
 		std::unique_lock<std::mutex> lock(mutex_console);
 		cout << endl << "supremeTest: " << "patterns size:" << patterns.size() << " testData.size():" << testData.size() << " abatere:" << abatere << endl;
 	}*/
 	int total_buyed = 0;
 	int succes_buyes = 0;
-
 
 	vector<point> inputData = testData; //wtf man
 	
@@ -749,26 +723,7 @@ void supremeTest(int abatere_hard, int how_many_for_foam, vector<point> testData
 	vector<vector<point>> segmente_baza;
 	segmentareArray(segmente_baza, inputData, size_seg_unic);
 	//std::cout << endl << "S-au generat:" << segmente_baza.size() << " segment de baza pentru simulare";
-
-	//----TODO---- = shrink pattern to keep only the first 10% of the data
-	//std::cout << endl << "patterns:" << patterns.size() << endl;
 	
-	floatType procent_foam = floatType(how_many_for_foam) / 100;
-	int how_many_represents_first_10_percentage = int(procent_foam * patterns.size());
-
-
-	if (how_many_represents_first_10_percentage == 0)
-	{
-		// 10% < 10 
-	}
-	else
-	{
-		patterns.resize(how_many_represents_first_10_percentage);
-		patterns.shrink_to_fit();
-	}
-	
-	//std::cout << endl << "final size:" << patterns.size() << endl;
-	//itereaza segmentele obtinute
 	int index_global_input_data = -1;
 
 	for (auto& a : segmente_baza)
@@ -791,19 +746,8 @@ void supremeTest(int abatere_hard, int how_many_for_foam, vector<point> testData
 				index_min_cross_cor = index_iterator;
 			}
 		}
-		//daca cel mai mic cross corelation < maxim_abatere & succes_ratio ok:(maxim_abatere extrem de mic in cazul acesta)
+		//daca cel mai mic cross corelation < abatere_hard
 
-		//floatType procent_scor = 0.0;
-		//if (patterns[index_min_cross_cor].positives == 0)
-		//{
-		//	//evita impartirea la 0
-		//	procent_scor = 0.0;
-		//}
-		//else
-		//{
-		//	procent_scor = floatType(patterns[index_min_cross_cor].positives) / floatType(patterns[index_min_cross_cor].scor);
-		//}
-		//cout << "procent scor" << procent_scor << endl;
 		if (min_cross_cor <= abatere_hard )
 		{
 			//simuleaza o cumparare
@@ -822,47 +766,23 @@ void supremeTest(int abatere_hard, int how_many_for_foam, vector<point> testData
 			}
 		}
 	}
-
-	if (succes_buyes > 0)
-	{
-		floatType succes_percent = (succes_buyes * 100) / total_buyed;
-
-		std::stringstream stream;
-
-		stream << succes_percent << "/" << succes_buyes << "/" << total_buyed << "/" << abatere_hard << "/";
-		stream << how_many_for_foam << "/" << candles_size << "/" << size_seg_unic << "/" << filter_1 << "/";
-		stream << filter_2 << "/" << future_price << "/" << min_max_streching << "/" << abatere << "/";
-		stream << test_farm << "/";
-
-		/*{
-			std::unique_lock<std::mutex> lock(mutex_console);
-
-			cout << endl<<"FINAL:"<< stream.str();
-		}*/
-
-		writeResultIntoFile(mutex_file_Apollo, stream.str(), "apollo.txt");
-		if (succes_percent > 50)
-		{
-			writeResultIntoFile(mutex_file_Apollo, stream.str(), "apolloGold.txt");
-		}
-	}
-	/*
-	succes_percent
-	succes_buyes
-	total_buyed
-	abatere_hard
-	how_many_for_foam
-	possible_succes_ratios
-	candles_size
-	size_seg_unic
-	filter_1
-	filter_2
-	future_price
-	min_max_streching
-	abatere
-	test_farm
-	*/
 	
+	if (total_buyed == 0)
+		return;
+	floatType succes_percent = (succes_buyes * 100) / total_buyed;
+
+	std::stringstream stream;
+
+	stream << succes_percent << "/" << succes_buyes << "/" << total_buyed << "/" << abatere_hard << "/";
+	stream << how_many_for_foam << "/" << candles_size << "/" << size_seg_unic << "/" << filter_1 << "/";
+	stream << filter_2 << "/" << future_price << "/" << min_max_streching << "/" << abatere << "/";
+	stream << test_farm << "/" << succes_ratio_filter << "/";
+
+	writeResultIntoFile(mutex_file_Apollo, stream.str(), "apollo.txt");
+	if (succes_percent > 50)
+	{
+		writeResultIntoFile(mutex_file_Apollo, stream.str(), "apolloGold.txt");
+	}
 }
 
 vector<vector<floatType>> giveMeCombinations(const string file_name) {

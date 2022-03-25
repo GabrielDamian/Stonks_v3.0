@@ -198,9 +198,17 @@ class graphData:
 
                 index += 1
             else:
-                temp_index = index + 1
-                while self.candlesData[temp_index][3] == self.candlesData[temp_index + 1][3] and temp_index < size - 2:
-                    temp_index += 1
+                try:
+                    
+                    temp_index = index + 1
+                    while temp_index < size - 2 and self.candlesData[temp_index][3] == self.candlesData[temp_index + 1][3]:
+                        temp_index += 1
+
+                except:
+                    print("EXCEPT!!!!!!!!!!:")
+                    print("candlesData len:",len(self.candlesData))
+                    print("temp_index:",temp_index)
+                
 
                 # [x, height, bottom, direction]
 
