@@ -53,10 +53,22 @@ def customPrint(arr):
     return result
 
 def giveMeSucces_score(values):
-    score = 0
-    for a in values:
-        score += a["succes_percent"]
-    return score
+    # score = 0
+    # for a in values:
+    #     score += a["succes_percent"]
+    # return score
+
+    total_buyed_local = 0
+    succes_buyes_local = 0
+
+    for b in values:
+        total_buyed_local += int(b["total_buyed"])
+        succes_buyes_local += int(b["succes_buyes"])
+
+    # print("ratio:", (100 * succes_buyes_local) / total_buyed_local)
+
+    ratio =(100 * succes_buyes_local) / total_buyed_local
+    return ratio
 
 if __name__ == '__main__':
     data = readFromFile("apollo.txt")
@@ -92,24 +104,29 @@ if __name__ == '__main__':
 
             grouped_by_params.append(new_struct)
 
-
     #filter 50%+ for all terraforms
     final_list = []
     for a in grouped_by_params:
         check = True
         for b in a["values"]:
-            if b["succes_percent"] < 50:
+            if b["succes_percent"] < 30:
                 check = False
 
         if check:
             final_list.append(a)
-
 
     #sort by best succes_percent result:
 
     final_list_sorted = newlist = sorted(final_list, key=lambda x: giveMeSucces_score(x["values"]), reverse=False)
 
     for a in final_list_sorted:
+        total_buyed = 0
+        succes_buyes = 0
+        for b in a["values"]:
+            total_buyed += int(b["total_buyed"])
+            succes_buyes += int(b["succes_buyes"])
+
+        print("ratio:",(100*succes_buyes) / total_buyed )
 
         print("---->New Group:")
         print("score:",giveMeSucces_score(a["values"]))

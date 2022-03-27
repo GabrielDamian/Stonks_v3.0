@@ -678,6 +678,11 @@ void supremeTestMaster(vector<patterns> patternsParam, floatType succes_ratio_fi
 		"FarmLand/Test_3_2.csv",
 		"FarmLand/Test_3_3.csv",
 		"FarmLand/Test_3_4.csv",
+		"FarmLand/Test_3_5.csv",
+		"FarmLand/Test_3_6.csv",
+		"FarmLand/Test_3_7.csv",
+		"FarmLand/Test_3_8.csv",
+		"FarmLand/Test_3_9.csv",
 	};
 	
 	vector<int> foamShrink = { 1,3,5,10,20,30,50,100,200,300,500,800,1000,1500,2000 };
