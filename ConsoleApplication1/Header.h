@@ -60,7 +60,7 @@ void printPatterns(vector<patterns> posibile_patterns);
 
 //SUPREME TEST
 
-void supremeTestMaster(vector<patterns> patterns, floatType succes_ratio_filter, int candles_size, int size_seg_unic, floatType filter_1, floatType filter_2, int future_price, int min_max_streching, int abatere, std::mutex& mutex_file_terraForm, std::mutex& mutex_file_Apollo, std::mutex& mutex_console);
+void supremeTestMaster(vector<patterns> patternsParam, floatType succes_ratio_filter, int candles_size, int size_seg_unic, floatType filter_1, floatType filter_2, int future_price, int min_max_streching, int abatere, std::mutex& mutex_file_terraForm, std::mutex& mutex_file_Apollo, std::mutex& mutex_console);
 
 vector<patterns> filterBySuccesRatio(int filter_succes_ratio, vector<patterns> posibile_patterns);
 

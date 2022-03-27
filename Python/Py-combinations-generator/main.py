@@ -18,7 +18,7 @@ def printFirsts(who, how_many):
 if __name__ == '__main__':
 
     #VARS:----------------
-    candles_size = [round(i,2) for i in range(1,6,1)]
+    candles_size = [round(i,2) for i in range(1,4,1)]
     size_seg_unic = [round(i,2) for i in range(50,160,10)]
 
     filter_1 = generateRange(0.1,1.0,0.3)
@@ -27,12 +27,7 @@ if __name__ == '__main__':
 
     min_max_streching = [round(i,2) for i in range(1,10,3)]
     abatere = [round(i,2) for i in range(1000,11000,1000)]
-
-
-    #VARS TEST:----------------
-    abatere_hard = [round(i,2) for i in range(1000,11000,1000)]
-    succes_ratio = generateRange(0.6,1,0.1)
-    how_many_represent_10_percentage = [1,3,5,10,20,30,50,100,200,300,500,800,1000,1500,2000]
+    abatere.insert(0,500)
 
     #FORMAT MAIN:
     #  a[0] candles_size /

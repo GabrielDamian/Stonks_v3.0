@@ -4,7 +4,7 @@ from graphHandler import *
 import sys
 if __name__ == '__main__':
 
-    print("new py");
+    #print("new py");
     #print('-->Start Stage 1:')
 
     candleSize = float(sys.argv[1])
@@ -14,11 +14,11 @@ if __name__ == '__main__':
     destination = sys.argv[5]
     
 
-    #print("candle size py:", candleSize)
-    #print("filter_1 py:", filter_candles_1)
-    #print("filter_2 py:", filter_candles_2)
-    #print("source py", source);
-    #print("destination py",destination);
+    #print("-candle size py:", candleSize)
+    #print("-filter_1 py:", filter_candles_1)
+    #print("-filter_2 py:", filter_candles_2)
+    #print("-source py", source);
+    #print("-destination py",destination);
 
 
     #candleSize = 3
@@ -27,7 +27,7 @@ if __name__ == '__main__':
 
     graph = graphData()
 
-    vector = readDataFromFile(source, linesToRead=16000)
+    vector = readDataFromFile(source, linesToRead=20000)
     #vector = readDataFromFile('AAPL.csv', linesToRead=6000)
 
     graph.setInputData(vector)

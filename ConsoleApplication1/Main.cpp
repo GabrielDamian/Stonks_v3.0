@@ -1,9 +1,8 @@
 #include "Header.h"
 #include "ThreadPool.h"
 
-int main()
+int main() //main checked
 {
-
 	vector<vector<floatType>> main_combinations = giveMeCombinations("main_combination.txt"); //checked
 
 	/* 
@@ -25,7 +24,6 @@ int main()
 
 	for (auto& a : main_combinations)
 	{
-		//checked
 		threadPool.submitJob(
 				[&]()
 				{
@@ -41,5 +39,6 @@ int main()
 	}
 	cout << endl << "DONE" << endl;
 	return 0;
+
 }
 
