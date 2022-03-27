@@ -52,6 +52,12 @@ def customPrint(arr):
 
     return result
 
+def giveMeSucces_score(values):
+    score = 0
+    for a in values:
+        score += a["succes_percent"]
+    return score
+
 if __name__ == '__main__':
     data = readFromFile("apollo.txt")
     splitted = splitRow(data)
@@ -65,17 +71,21 @@ if __name__ == '__main__':
     for index_a,a in enumerate(splitted):
 
         inserted = False
-        for index_b,b in enumerate(grouped_by_params):
+        for index_b, b in enumerate(grouped_by_params):
             if compareStructs(b["values"][0], a):
-                grouped_by_params[index_b]["values"].append(b)
-                grouped_by_params[index_b]["occ_index"].append(index_b)
+                # print("object before insertion:",grouped_by_params[index_b] )
+                # print("index to insert:", index_a)
+                # print("value to insert:", a)
+                grouped_by_params[index_b]["values"].append(a)
+                grouped_by_params[index_b]["occ_index"].append(index_a)
                 inserted = True
                 break
 
         if not inserted: #create a new struct and insert
             new_struct = {
                 "occ_index": [],
-                "values": []
+                "values": [],
+                "ceva":"da"
             }
             new_struct["occ_index"].append(index_a)
             new_struct["values"].append(a)
@@ -83,12 +93,27 @@ if __name__ == '__main__':
             grouped_by_params.append(new_struct)
 
 
-
+    #filter 50%+ for all terraforms
+    final_list = []
     for a in grouped_by_params:
+        check = True
+        for b in a["values"]:
+            if b["succes_percent"] < 50:
+                check = False
+
+        if check:
+            final_list.append(a)
+
+
+    #sort by best succes_percent result:
+
+    final_list_sorted = newlist = sorted(final_list, key=lambda x: giveMeSucces_score(x["values"]), reverse=False)
+
+    for a in final_list_sorted:
+
         print("---->New Group:")
+        print("score:",giveMeSucces_score(a["values"]))
         print(a["occ_index"])
         for b in a["values"]:
             print(b)
-
-
 
