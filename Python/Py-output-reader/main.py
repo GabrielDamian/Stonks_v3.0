@@ -68,7 +68,7 @@ def giveMeSucces_score(values):
     # print("ratio:", (100 * succes_buyes_local) / total_buyed_local)
 
     ratio =(100 * succes_buyes_local) / total_buyed_local
-    return ratio
+    return total_buyed_local
 
 if __name__ == '__main__':
     data = readFromFile("apollo.txt")
@@ -109,7 +109,7 @@ if __name__ == '__main__':
     for a in grouped_by_params:
         check = True
         for b in a["values"]:
-            if b["succes_percent"] < 30:
+            if b["succes_percent"] < 10:
                 check = False
 
         if check:

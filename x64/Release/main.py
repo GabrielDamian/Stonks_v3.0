@@ -27,7 +27,7 @@ if __name__ == '__main__':
 
     graph = graphData()
 
-    vector = readDataFromFile(source, linesToRead=40000)
+    vector = readDataFromFile(source, linesToRead=25000)
     #vector = readDataFromFile('AAPL.csv', linesToRead=6000)
 
     graph.setInputData(vector)
@@ -55,7 +55,7 @@ if __name__ == '__main__':
     for a in graph.candlesToFunction:
         if a[0] == last_x:
             continue
-        string_file +=f'{a[0]} {a[1]}\n'
+        string_file +='{} {}\n'.format(a[0],a[1])
         last_x = a[0]
 
     # f = open("Cdata.txt","w")

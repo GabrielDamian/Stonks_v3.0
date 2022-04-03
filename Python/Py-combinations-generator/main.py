@@ -18,16 +18,16 @@ def printFirsts(who, how_many):
 if __name__ == '__main__':
 
     #VARS:----------------
-    candles_size = [round(i,2) for i in range(1,4,1)]
-    size_seg_unic = [round(i,2) for i in range(50,160,10)]
+    candles_size = [round(i,2) for i in range(1,3,1)]
+    size_seg_unic = [40, 50, 60, 70, 80, 100, 120, 140]
 
-    filter_1 = generateRange(0.1,1.0,0.3)
-    filter_2 = generateRange(0.1,0.9,0.4)
-    future_price = [5,10,20]
+    filter_1 = [0.3, 0.4, 0.7]
+    filter_2 = [0.5, 0.1, 0.9]
+    future_price = [5, 10, 20]
 
     min_max_streching = [round(i,2) for i in range(1,10,3)]
-    abatere = [round(i,2) for i in range(1000,11000,1000)]
-    abatere.insert(0,500)
+    # abatere = [round(i,2) for i in range(1000,11000,1000)]
+    # abatere.insert(0,500)
 
     #FORMAT MAIN:
     #  a[0] candles_size /
@@ -44,7 +44,7 @@ if __name__ == '__main__':
     print("filter_2", filter_2)
     print("future_price", future_price)
     print("min_max_streching", min_max_streching)
-    print("abatere", abatere)
+    # print("abatere", abatere)
 
 
     main_combinations = ''
@@ -56,7 +56,14 @@ if __name__ == '__main__':
                 for d in filter_2:
                     for e in future_price:
                         for f in min_max_streching:
-                            for g in abatere:
+                            buffer_bidirectional = 30
+                            # print("b=",b)
+                            min_abatere = (b - buffer_bidirectional) * 100
+                            max_abatere =  (b + buffer_bidirectional) * 100
+                            vector_abatere = [x for x in range(min_abatere,max_abatere,1000)]
+                            # print("size_seg_unic:",b)
+                            # print("abateri:", vector_abatere)
+                            for g in vector_abatere:
                                 comb_str = ''
                                 comb_str +=str(a) +"/"
                                 comb_str +=str(b) +"/"

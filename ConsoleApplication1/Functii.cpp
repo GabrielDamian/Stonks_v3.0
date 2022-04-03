@@ -3,7 +3,6 @@
 #include <cmath>
 #include <mutex>
 #include <sstream>
-#include <format>
 
 
 void narutoMain(int candles_size, int size_seg_unic, floatType filter_1, floatType filter_2, int future_price, int min_max_streching, int abatere, std::mutex& mutex_file_main, std::mutex& mutex_file_terraForm, std::mutex& mutex_file_Apollo, std::mutex& mutex_console)
@@ -142,7 +141,7 @@ void narutoMain(int candles_size, int size_seg_unic, floatType filter_1, floatTy
 						//push in vector_twin
 						vector_twin.push_back(variatie);
 						scor_cadinal++;
-						if (variatie.future_price != NULL && variatie.future_price > variatie.last_price) positives++;
+						if (variatie.future_price != 0 && variatie.future_price > variatie.last_price) positives++;
 					}
 				}
 			}
@@ -368,7 +367,7 @@ void segmentareVariatii_with_future_price(vector<twin>& result, vector<point>& i
 			}
 			else
 			{
-				temp_struct.future_price = NULL;
+				temp_struct.future_price = 0;
 			}
 			temp_struct.index = index;
 			result.push_back(temp_struct);
@@ -673,7 +672,7 @@ void printPatterns(vector<patterns> posibile_patterns)
 void supremeTestMaster(vector<patterns> patternsParam, floatType succes_ratio_filter, int candles_size, int size_seg_unic, floatType filter_1, floatType filter_2, int future_price, int min_max_streching, int abatere, std::mutex& mutex_file_terraForm, std::mutex& mutex_file_Apollo, std::mutex& mutex_console)
 {
 	string farm_locations[] = { 
-		"FarmLand/Test_3_0.csv",
+		/*"FarmLand/Test_3_0.csv",
 		"FarmLand/Test_3_1.csv",
 		"FarmLand/Test_3_2.csv",
 		"FarmLand/Test_3_3.csv",
@@ -682,11 +681,12 @@ void supremeTestMaster(vector<patterns> patternsParam, floatType succes_ratio_fi
 		"FarmLand/Test_3_6.csv",
 		"FarmLand/Test_3_7.csv",
 		"FarmLand/Test_3_8.csv",
-		"FarmLand/Test_3_9.csv",
+		"FarmLand/Test_3_9.csv",*/
+		"FarmLand/Test_4_0.csv"
 	};
 	
 	vector<int> foamShrink = { 1,3,5,10,20,30,50,100,200,300,500,800,1000,1500,2000 };
-	vector<int> abatereHard = { 200,500,1000,2000,3000,4000,5000,6000,7000,8000,9000,10000 };
+	vector<int> abatereHard = { 200,500,1000,2000,3000/*,4000,5000,6000,7000,8000,9000,10000*/ };
 
 
 	//1,3,5,10,20,[30],50,100 //realSize = 33
