@@ -12,13 +12,13 @@ void narutoMain(int candles_size, int size_seg_unic, floatType filter_1, floatTy
 
 	{
 		std::unique_lock<std::mutex> lock(mutex_console);
-		cout << endl << "candle size :" << candles_size;
-		cout << endl << "size_seg_unic :" << size_seg_unic;
-		cout << endl << "filter_1 :" << filter_1;
-		cout << endl << "filter_2 :" << filter_2;
-		cout << endl << "future_price :" << future_price;
-		cout << endl << "min_max_streching :" << min_max_streching;
-		cout << endl << "abatere :" << abatere;
+		std::cout << endl << "candle size :" << candles_size;
+		std::cout << endl << "size_seg_unic :" << size_seg_unic;
+		std::cout << endl << "filter_1 :" << filter_1;
+		std::cout << endl << "filter_2 :" << filter_2;
+		std::cout << endl << "future_price :" << future_price;
+		std::cout << endl << "min_max_streching :" << min_max_streching;
+		std::cout << endl << "abatere :" << abatere;
 	}
 
 	vector<point> inputData;
@@ -39,10 +39,10 @@ void narutoMain(int candles_size, int size_seg_unic, floatType filter_1, floatTy
 
 	vector<vector<point>> segmente_baza;
 	segmentareArray(segmente_baza, inputData, size_seg_unic);
-	{
+	/*{
 		std::unique_lock<std::mutex> lock(mutex_console);
 		std::cout << endl << "S-au generat:" << segmente_baza.size() << " segment de baza.";
-	}
+	}*/
 
 	/*{
 		std::unique_lock<std::mutex> lock(mutex_console);
@@ -51,7 +51,7 @@ void narutoMain(int candles_size, int size_seg_unic, floatType filter_1, floatTy
 
 	map<int, vector<twin>> variatii;
 	
-	cout << endl << "step 2";
+	std::cout << endl << "step 2";
 
 	seteazaKeyVariatii(variatii, size_seg_unic, min_max_streching);
 	for (auto& a : variatii)
@@ -83,7 +83,7 @@ void narutoMain(int candles_size, int size_seg_unic, floatType filter_1, floatTy
 	//std::cout << endl << "------------Variatii comprimate si interpolate:" << endl;
 	//printVariatii(variatii);
 	
-	cout << endl << "step 3";
+	std::cout << endl << "step 3";
 	
 	//std::cout << endl << "Start filtrare patterns:" << endl;
 
@@ -153,10 +153,10 @@ void narutoMain(int candles_size, int size_seg_unic, floatType filter_1, floatTy
 	//cout << endl << "step 4";
 	//!!! CHECK POINT
 
-	{
+	/*{
 		std::unique_lock<std::mutex> lock(mutex_console);
-		cout << endl << "before sort length:" << posibile_patterns.size() << endl;
-	}
+		std::cout << endl << "before sort length:" << posibile_patterns.size() << endl;
+	}*/
 
 	std::sort(posibile_patterns.begin(), posibile_patterns.end(), [](patterns const& a, patterns const& b)->bool //descending
 	{
@@ -166,22 +166,25 @@ void narutoMain(int candles_size, int size_seg_unic, floatType filter_1, floatTy
 	//printPatterns(posibile_patterns);
 	//!!! CHECK POINT
 
-	{
+	/*{
 		std::unique_lock<std::mutex> lock(mutex_console);
-		cout << endl << "after sort:" << posibile_patterns.size() << endl;
-	}
+		std::cout << endl << "after sort:" << posibile_patterns.size() << endl;
+	}*/
 
-	vector<floatType> possible_succes_ratios = {50.0, 55.0, 60.0, 65.0, 70.0,75.0, 80.0, 85.0, 90.0, 93.0, 95.0, 97.0, 98.0, 99.0};
+	//vector<floatType> possible_succes_ratios = {50.0, 55.0, 60.0, 65.0, 70.0, 75.0, 80.0, 85.0, 90.0};
+
+	vector<floatType> possible_succes_ratios = {50.0};
+	
 	for (auto a : possible_succes_ratios)
 	{
 		
 		vector<patterns> current_filtered_patterns = filterBySuccesRatio(a, posibile_patterns);
-		cout << endl << "au intrat:" << posibile_patterns.size();
-		cout << endl << "au iesit:" << current_filtered_patterns.size();
+		std::cout << endl << "au intrat:" << posibile_patterns.size();
+		std::cout << endl << "au iesit:" << current_filtered_patterns.size();
 
 		{
 			std::unique_lock<std::mutex> lock(mutex_console);
-			cout << endl << "current_filtered_patterns.size():" << current_filtered_patterns.size() << " succ_ratio:" << a;
+			std::cout << endl << "current_filtered_patterns.size():" << current_filtered_patterns.size() << " succ_ratio:" << a;
 			//printPatterns(current_filtered_patterns);
 		}
 
@@ -190,7 +193,7 @@ void narutoMain(int candles_size, int size_seg_unic, floatType filter_1, floatTy
 			supremeTestMaster(current_filtered_patterns, a, candles_size, size_seg_unic, filter_1, filter_2, future_price, min_max_streching, abatere, mutex_file_terraForm, mutex_file_Apollo, mutex_console);
 		}
 	}
-	cout << endl << "end of possible succes ratios";
+	std::cout << endl << "end of possible succes ratios";
 	
 	//cin.ignore();
 }
@@ -682,39 +685,58 @@ void supremeTestMaster(vector<patterns> patternsParam, floatType succes_ratio_fi
 		"FarmLand/Test_3_7.csv",
 		"FarmLand/Test_3_8.csv",
 		"FarmLand/Test_3_9.csv",*/
-		"FarmLand/Test_4_0.csv"
+		//"FarmLand/Test_4_0.csv",
+
+		/*"FarmLand/LastWeek.csv",
+		"FarmLand/LastWeek2.csv",
+		"FarmLand/LastWeek3.csv",
+		"FarmLand/LastWeek4.csv",
+		*/
+		"FarmLand/LastWeek5.csv",
 	};
 	
-	vector<int> foamShrink = { 1,3,5,10,20,30,50,100,200,300,500,800,1000,1500,2000 };
-	vector<int> abatereHard = { 200,500,1000,2000,3000/*,4000,5000,6000,7000,8000,9000,10000*/ };
+	//vector<int> foamShrink = { 10,20,30,50,100,200,300,500,800,1000,1500,2000 };
+	vector<int> foamShrink = { 2000};
+	//vector<int> abatereHard = { 200,500,1000,2000,3000,4000,5000/*,6000,7000,8000,9000,10000*/ };
+	vector<int> abatereHard = { 5000};
 
+	vector<point> testData;
+	/*{
+		std::unique_lock<std::mutex> lock(mutex_file_terraForm);
+		testData = pythonHandler("FarmLand/LastWeek1.csv", "FarmLand/portal_gun.txt", candles_size, filter_1, filter_2);
+	}*/
 
-	//1,3,5,10,20,[30],50,100 //realSize = 33
-	int currentSize = patternsParam.size();
-	cout << endl << "current size:" << currentSize;
-	for (auto& a : foamShrink)
+	for (auto &farm_location_el : farm_locations)
 	{
-		if (a > currentSize) //maybe currentSize - 1 
-			break;
-
-		vector<patterns> shrinked_patterns;
-		
-		for (int i = 0; i < a; i++)
 		{
-			shrinked_patterns.push_back(patternsParam[i]);
+			std::unique_lock<std::mutex> lock(mutex_file_terraForm);
+			testData = pythonHandler(farm_location_el, "FarmLand/portal_gun.txt", candles_size, filter_1, filter_2);
 		}
-		cout << endl << "check point";
-		for (auto& c : abatereHard)
+		//1,3,5,10,20,[30],50,100 //realSize = 33
+		int currentSize = patternsParam.size();
+		std::cout << endl << "current size:" << currentSize;
+		for (auto& a : foamShrink)
 		{
-			for (auto& d : farm_locations)
+			cout << "before break" << endl;
+			if (a > currentSize) //maybe currentSize - 1 
+				break;
+
+			cout << "after break" << endl;
+			vector<patterns> shrinked_patterns;
+
+			for (int i = 0; i < a; i++)
 			{
-				{
-					std::unique_lock<std::mutex> lock(mutex_file_terraForm);
-					vector<point> testData = pythonHandler(d, "FarmLand/portal_gun.txt", candles_size, filter_1, filter_2);
-					supremeTest(c, a, testData, shrinked_patterns, succes_ratio_filter, candles_size, size_seg_unic, filter_1, filter_2, future_price, min_max_streching, abatere, mutex_file_Apollo, mutex_console,d);
-				}
+				shrinked_patterns.push_back(patternsParam[i]);
+			}
+			std::cout << endl << "check point";
+			for (auto& c : abatereHard)
+			{
+				cout << endl << "HERE BITCH" << endl;
+				writePatternsIntoFile(shrinked_patterns);
+				//supremeTest(c, a, testData, shrinked_patterns, succes_ratio_filter, candles_size, size_seg_unic, filter_1, filter_2, future_price, min_max_streching, abatere, mutex_file_Apollo, mutex_console, farm_location_el);
 			}
 		}
+
 	}
 }
 
@@ -864,6 +886,28 @@ void writeResultIntoFile(std::mutex& mutex, string a,string destination)
 	auto file = std::ofstream(destination, std::ofstream::app);
 
 	file << a << std::endl;
+
+	file.close();
+}
+
+
+void writePatternsIntoFile(vector<patterns> patternsParam)
+{
+	cout << endl << "MA-ta mare:" << patternsParam.size() << endl;
+	std::stringstream file_stream;
+	for (auto& a : patternsParam)
+	{
+		std::stringstream new_row_stream;
+		for (auto& b : a.seg_baza)
+		{
+			new_row_stream << b.x << "," << b.y << "/";
+		}
+		file_stream << new_row_stream.str() + "\n";
+	}
+	file_stream << "\n\n";
+	auto file = std::ofstream("outputPatterns.txt", std::ofstream::app);
+
+	file << file_stream.str() << std::endl;
 
 	file.close();
 }

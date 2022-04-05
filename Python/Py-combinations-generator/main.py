@@ -18,14 +18,16 @@ def printFirsts(who, how_many):
 if __name__ == '__main__':
 
     #VARS:----------------
-    candles_size = [round(i,2) for i in range(1,3,1)]
-    size_seg_unic = [40, 50, 60, 70, 80, 100, 120, 140]
+    candles_size = [2,1,3]
+    # size_seg_unic = [40, 50, 60, 70, 80, 100, 120, 140]
+    size_seg_unic = [25,30,35]
 
-    filter_1 = [0.3, 0.4, 0.7]
-    filter_2 = [0.5, 0.1, 0.9]
-    future_price = [5, 10, 20]
 
-    min_max_streching = [round(i,2) for i in range(1,10,3)]
+    filter_1 = [0.3]
+    filter_2 = [0.5]
+    future_price = [10,20]
+
+    min_max_streching = [0,4,7]
     # abatere = [round(i,2) for i in range(1000,11000,1000)]
     # abatere.insert(0,500)
 
@@ -56,7 +58,7 @@ if __name__ == '__main__':
                 for d in filter_2:
                     for e in future_price:
                         for f in min_max_streching:
-                            buffer_bidirectional = 30
+                            buffer_bidirectional = 20
                             # print("b=",b)
                             min_abatere = (b - buffer_bidirectional) * 100
                             max_abatere =  (b + buffer_bidirectional) * 100

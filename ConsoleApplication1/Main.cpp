@@ -1,9 +1,9 @@
 #include "Header.h"
 #include "ThreadPool.h"
 
-int main() //main checked
+int main() 
 {
-	vector<vector<floatType>> main_combinations = giveMeCombinations("main_combination.txt"); //checked
+	vector<vector<floatType>> main_combinations = giveMeCombinations("main_combination.txt");
 
 	/* 
 	#FORMAT MAIN :
@@ -15,7 +15,7 @@ int main() //main checked
 	#  a[5] min_max_streching /
 	#  a[6] abatere*/
 
-	ThreadPool threadPool(4);
+	ThreadPool threadPool(3);
 
 	std::mutex mutex_file_main;
 	std::mutex mutex_file_terraForm;

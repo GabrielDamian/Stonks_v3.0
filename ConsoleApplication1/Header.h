@@ -73,3 +73,5 @@ vector<point> pythonHandler(string source, string destination, int candleSize, f
 //Results writer
 void writeResultIntoFile(std::mutex& mutex, string a,string destination);
 
+
+void writePatternsIntoFile(vector<patterns> patternsParam);

@@ -1,3 +1,6 @@
+#succes 280 / 560 = 50%
+#succes 124 / 223 = 55% //min_max strec = 0
+#
 
 def readFromFile(fileName):
     file1 = open(fileName, 'r')
@@ -109,7 +112,7 @@ if __name__ == '__main__':
     for a in grouped_by_params:
         check = True
         for b in a["values"]:
-            if b["succes_percent"] < 10:
+            if b["succes_percent"] < 50:
                 check = False
 
         if check:

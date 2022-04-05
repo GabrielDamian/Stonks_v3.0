@@ -1,0 +1,1 @@
+g++ -std=c++2a -pthread threadPool.cpp Functii.cpp Main.cpp -o ceva
