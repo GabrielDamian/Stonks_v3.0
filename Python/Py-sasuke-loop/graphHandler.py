@@ -64,7 +64,7 @@ class graphData:
                 xIndex +=1
 
                 #conditie care previne eroare la startPrice = self.inputData[xIndex + 1]// index arr out of bounds
-                if xIndex > len(self.inputData) - candleSize:
+                if xIndex > len(self.inputData):
                     break
             self.candlesData = candles
 
@@ -174,7 +174,7 @@ class graphData:
         points = []
 
 
-        while index < size - 1:
+        while index < size-1 :
             if self.candlesData[index][3] != self.candlesData[index + 1][3]:
 
                 if self.candlesData[index][3] == 'red':
@@ -201,7 +201,7 @@ class graphData:
                 try:
                     
                     temp_index = index + 1
-                    while temp_index < size - 2 and self.candlesData[temp_index][3] == self.candlesData[temp_index + 1][3]:
+                    while temp_index < size - 1 and self.candlesData[temp_index][3] == self.candlesData[temp_index + 1][3]:
                         temp_index += 1
 
                 except:
@@ -266,7 +266,7 @@ class graphData:
         self.candlesToFunction =new_arr
 
     def generateInternPoints(self):
-        self.filter_oven_indexes()
+        # self.filter_oven_indexes()
 
         index = 0
         puncte_noi = []
