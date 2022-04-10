@@ -1,6 +1,7 @@
 #succes 280 / 560 = 50%
 #succes 124 / 223 = 55% //min_max strec = 0
 #
+import sys
 
 def readFromFile(fileName):
     file1 = open(fileName, 'r')
@@ -74,6 +75,12 @@ def giveMeSucces_score(values):
     return total_buyed_local
 
 if __name__ == '__main__':
+    # succes_param = float(sys.argv[1])
+    succes_param = 70
+
+
+    print("succes:", succes_param);
+
     data = readFromFile("apollo.txt")
     splitted = splitRow(data)
 
@@ -112,7 +119,7 @@ if __name__ == '__main__':
     for a in grouped_by_params:
         check = True
         for b in a["values"]:
-            if b["succes_percent"] < 50:
+            if b["succes_percent"] < succes_param:
                 check = False
 
         if check:
@@ -121,7 +128,6 @@ if __name__ == '__main__':
     #sort by best succes_percent result:
 
     final_list_sorted = newlist = sorted(final_list, key=lambda x: giveMeSucces_score(x["values"]), reverse=False)
-
     for a in final_list_sorted:
         total_buyed = 0
         succes_buyes = 0
@@ -136,4 +142,3 @@ if __name__ == '__main__':
         print(a["occ_index"])
         for b in a["values"]:
             print(b)
-

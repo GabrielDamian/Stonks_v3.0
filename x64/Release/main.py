@@ -2,6 +2,7 @@ from utils import *
 from graphHandler import *
 # import matplotlib.pyplot as plt
 import sys
+
 if __name__ == '__main__':
 
     #print("new py");
@@ -27,7 +28,7 @@ if __name__ == '__main__':
 
     graph = graphData()
 
-    vector = readDataFromFile(source, linesToRead=30000)
+    vector = readDataFromFile(source, linesToRead=40000)
     #vector = readDataFromFile('AAPL.csv', linesToRead=6000)
 
     graph.setInputData(vector)

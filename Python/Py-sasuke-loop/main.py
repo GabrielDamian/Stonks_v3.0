@@ -2,6 +2,13 @@ import time
 import random
 from utils import *
 from graphHandler import *
+import datetime
+import time
+#TODO: check future price custom based on the current patterns
+#GLOBALS
+decisions = None
+global_buffer = []
+
 
 def integratedNarutoMain(points, candleSize,filter_candles_1,filter_candles_2):
     graph = graphData()
@@ -39,16 +46,7 @@ def readFromFile(fileName):
     return patterns
 
 def terraFormPatterns(referinteTerraForm, size_seg_unic, candleSize, filter_1, filter_2, abatere_hard):
-    # obj = {
-    #     values: [..],
-    #     size: 10,
-    #     pythonTerraForm:{
-    #         candle_size: 10,
-    #         filter_1: 20,
-    #         filter_2: 30
-    #     }
-    # }
-
+    #citeste pattern din fisier si adauga in structura template pentru patterns
     patterns = readFromFile(referinteTerraForm)
 
     obj = {}
@@ -64,8 +62,61 @@ def terraFormPatterns(referinteTerraForm, size_seg_unic, candleSize, filter_1, f
 
     return obj
 
+def findMinSizePattern(patterns):
+    min = patterns[0]["size"]
+    for a in patterns:
+        if(a["size"]<min):
+            min = a["size"]
+    return min
+def initFormatDecisions(referinteTerraForm):
+    final = {}
+    for a in referinteTerraForm:
+        final[a["fileName"]] = []
+    return final
+
 def fakeApi():
     return round(random.random()*100,2)
+
+def crossCorelation(base, seg_2):
+    print("cross cor:")
+    print("base:", base)
+    print("seg_2:", seg_2)
+
+    #yScallerEnaber and powerSum are default here
+    max_y_var = seg_2[0][1];
+
+    for a  in seg_2:
+        if a[1] > max_y_var:
+            max_y_var = a[1]
+
+    max_y_base = base[0]
+    for a in base:
+        if a > max_y_base:
+           max_y_base = a
+
+    y_ratio = max_y_base / max_y_var
+
+    suma_scaled = 0
+    i = 0
+    while i < len(base):
+        var = base[i] - seg_2[i][1] * y_ratio
+        suma_scaled += var * var
+        i += 1
+
+    return suma_scaled
+
+
+def completeOldDeicisions(currentStockPrice):
+    for a in decisions:
+        for b in decisions[a]:
+            curentTimeStamp = round(time.time() * 1000)
+
+            if curentTimeStamp - b["start_date"] < 600000 and b["end_data"] == None:
+                decisions[a][b]["end_date"] = curentTimeStamp
+                decisions[a][b]["end_price"] = currentStockPrice
+
+    #TODO:
+    #overrwrite new decision into file (! not append)
 
 if __name__ == '__main__':
 
@@ -101,46 +152,56 @@ if __name__ == '__main__':
     for a in referinteTerraForm:
         final_patterns.append(terraFormPatterns(a["fileName"],a["seg_seg_unic"],a["candle_size"],a["filter_1"],a["filter_2"],a["abatere_hard"]))
 
-    global_buffer = []
-    decisions = []
+    decisions = initFormatDecisions(referinteTerraForm)
 
-    for a in final_patterns:
-        print("\n\nnew patt")
-        print("source:",a["source"])
-        print("values:")
-        for index,b in enumerate(a["values"]):
-            if(index < 20):
-                print(b)
+    # for a in final_patterns:
+    #     print("\n\nnew patt")
+    #     print("source:",a["source"])
+    #     print("values:")
+    #     for index,b in enumerate(a["values"]):
+    #         if(index < 20):
+    #             print(b)
+
+
+    min_patt_size_seg_unic = findMinSizePattern(final_patterns)
+
 
     while True:
         print("new clock")
+
         time.sleep(0.1)
-        #TODO:
-        #fetch api
         new_fetch_value = fakeApi()
         global_buffer.append(new_fetch_value)
+
         print("global_buffer update:", global_buffer)
 
-        #iterate final_patterns and generate new custom buffer based on candleSize, filter_1, filter_2
         for a in final_patterns:
-            #temp structure
+            if len(global_buffer) > min_patt_size_seg_unic: #40 = maxim of the size_seg_unic use cases
 
-            if len(global_buffer) > 40: #40 = maxim of the size_seg_unic use cases
-                print("caz 1")
-                last_40_points = global_buffer[:a["size"]]
+                last_x_points = global_buffer[:a["size"]]
                 candle_size = float(a["pytonTerraForm"]["candle_size"])
                 filter_1 = float(a["pytonTerraForm"]["filter_1"])
                 filter_2 = float(a["pytonTerraForm"]["filter_2"])
 
-                last_snap_format = integratedNarutoMain(last_40_points,candle_size, filter_1,filter_2)
-                print("last_snap_format:",last_snap_format)
+                last_snap_format = integratedNarutoMain(last_x_points,candle_size, filter_1,filter_2)
 
-                #TODO:
-                #cross corelation with all pattern in the "value"
-                #if current_cross < specific_abatere_hard, simulate a buy
+                min_cross_cor = crossCorelation(a["values"][0], last_snap_format)
+                for b in a["values"]:
+                    if crossCorelation(b, last_snap_format) < min_cross_cor:
+                        min_cross_cor = crossCorelation(b, last_snap_format)
+
+                if min_cross_cor < a["pytonTerraForm"]["abatere_hard"]:
+                    #DECIZIE CUMPARARE
+                    entitate_decizie = {
+                        "start_date": round(time.time() * 1000),
+                        "start_price": global_buffer[len(global_buffer)-1], #ultimul element din buffer
+                        "end_data": None,
+                        "end_price": None
+                    }
+                    decisions[a["source"]].append(entitate_decizie)
             else:
                 print("buffer loading")
 
-    #iterate decision and decide if is the correct time to complete a decision (buyed_time + 10m = NOW)
-
+        #completare decizii in asteptare
+        completeOldDeicisions(new_fetch_value)
 

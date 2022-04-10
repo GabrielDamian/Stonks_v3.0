@@ -1,0 +1,18 @@
+let succes = [23,3,16,16]
+let total = [32,4,29,21]
+
+let suma_1 = 0
+let suma_2 = 0
+succes.forEach((el)=>{
+    suma_1 += el
+})
+
+total.forEach((el)=>{
+    suma_2 +=el
+})
+
+console.log(suma_1)
+console.log(suma_2)
+
+let ratio = (suma_1*100)/suma_2
+console.log("ratio:", ratio)
