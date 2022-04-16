@@ -14,7 +14,6 @@ time_check_old_decisions = 600000
 global_fake_api_next = []
 last_used = 0
 
-
 def readDataFromExcelFile(fileName, linesToRead):
     # print("Citesc date din fisier...")
 
@@ -162,7 +161,7 @@ def completeOldDecisions(currentStockPrice):
                 decisions[a][b]["end_date"] = curentTimeStamp
                 decisions[a][b]["end_price"] = currentStockPrice
 
-    #TODO:
+    #TODO: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     #overrwrite new decision into file (! not append)
 
 def printFinalPattern(final_patterns):
@@ -218,7 +217,6 @@ if __name__ == '__main__':
 
     min_patt_size_seg_unic = findMinSizePattern(final_patterns)
 
-
     while True:
         print("new clock")
 
@@ -260,7 +258,7 @@ if __name__ == '__main__':
                         "start_price": global_buffer[len(global_buffer)-1], #ultimul element din buffer
                         "end_data": None,
                         "end_price": None,
-                        "more":{
+                        "more": {
                             "which_one_pattern_var": which_one_pattern_var,
                             "min_cross_cor": min_cross_cor
                         }
