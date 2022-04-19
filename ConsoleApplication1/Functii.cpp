@@ -735,7 +735,6 @@ void supremeTestMaster(vector<patterns> patternsParam, floatType succes_ratio_fi
 				supremeTest(c, a, testData, shrinked_patterns, succes_ratio_filter, candles_size, size_seg_unic, filter_1, filter_2, future_price, min_max_streching, abatere, mutex_file_Apollo, mutex_console, farm_location_el);
 			}
 		}
-
 	}
 }
 

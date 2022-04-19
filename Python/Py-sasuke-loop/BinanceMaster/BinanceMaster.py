@@ -1,13 +1,8 @@
-
-import json
 import time
 from datetime import datetime
-import os
 from binance import Client
-import pandas as pd
 import datetime, time
 
-import requests
 
 key = "https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT"
 
@@ -55,18 +50,3 @@ class BiananceMaster:
             howManyConsumer -=1
 
         return raw_prices
-
-
-if __name__ == '__main__':
-
-    test = BiananceMaster()
-    while True:
-        test.GetHistoricalData(1)
-
-        # key = "https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT"
-        #
-        # data = requests.get(key)
-        # data = data.json()
-        # print(f"{data['symbol']} price is {data['price']}")
-
-        time.sleep(1)

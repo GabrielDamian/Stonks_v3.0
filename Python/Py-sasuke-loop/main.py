@@ -1,20 +1,23 @@
-import time
 import random
-from utils import *
-from graphHandler import *
-import datetime
+
+from BinanceMaster.BinanceMaster import *
+from GraphHandler.graphHandler import *
 import time
+import matplotlib.pyplot as plt
+
 #TODO: check future price custom based on the current patterns
 #GLOBALS
 decisions = None
-global_buffer = []
 tik_tok = 0.1 #clock intervals
 time_check_old_decisions = 600000
 
 global_fake_api_next = []
 last_used = 0
 
-def readDataFromExcelFile(fileName, linesToRead):
+#temp declarations
+fake_current_time_stamp = 110  #magic number bcs you need offset
+
+def readDataFromExcelFile(fileName):
     # print("Citesc date din fisier...")
 
     vector = []
@@ -35,9 +38,6 @@ def readDataFromExcelFile(fileName, linesToRead):
 
                 vector.append(row[3])
                 line_count += 1
-            linesToRead -= 1
-            if linesToRead < 0:
-                break
         # print(f'Processed {line_count} lines.')
 
         # primul elem din arr este un header de tip string (trash de la citire)
@@ -50,6 +50,27 @@ def readDataFromExcelFile(fileName, linesToRead):
             float_arr.append(float(x))
         return float_arr
 
+def fakeApi(last_x):
+    test_location = 'LastWeek2.csv'
+    raw_data = readDataFromExcelFile('LastWeeks/'+test_location)
+
+    add_time_stamp = []
+    for index, a in enumerate(raw_data):
+        add_time_stamp.append([a,index])
+
+    temp_state = add_time_stamp[fake_current_time_stamp-last_x:fake_current_time_stamp ]
+    just_y = []
+    for a in temp_state:
+        just_y.append(a[0])
+    return just_y
+
+def plotArr(arr, id):
+    #arr, just y's
+    plt.figure(id)
+    plt.plot(arr)
+
+#end of temp declarations
+
 def integratedNarutoMain(points, candleSize,filter_candles_1,filter_candles_2):
     graph = graphData()
 
@@ -58,10 +79,10 @@ def integratedNarutoMain(points, candleSize,filter_candles_1,filter_candles_2):
     graph.setInputData(vector)
 
     graph.inputToCandle(candleSize=candleSize)
-    print("input to candle:",len(graph.candlesData))
+    # print("input to candle:",len(graph.candlesData))
 
     graph.filterCandles(filter_candles_1, filter_candles_2)
-    print("input to candle filtered:",len(graph.candlesData))
+    # print("input to candle filtered:",len(graph.candlesData))
 
     graph.candlesToFunctionWork(candleSize)
 
@@ -71,11 +92,15 @@ def integratedNarutoMain(points, candleSize,filter_candles_1,filter_candles_2):
     # for a in graph.candlesToFunction:
     #     print(a)
 
-    print("intern:")
-    print("one:",len(graph.inputData))
-    print("three:",len(graph.candlesToFunction))
+    # print("intern:")
+    # print("one:",len(graph.inputData))
+    # print("three:",len(graph.candlesToFunction))
 
-    return graph.candlesToFunction
+    just_y = []
+    for a in graph.candlesToFunction:
+        just_y.append(a[1])
+
+    return just_y
 
 def readFromFile(fileName):
     file1 = open(fileName, 'r')
@@ -94,6 +119,8 @@ def readFromFile(fileName):
 def terraFormPatterns(referinteTerraForm, size_seg_unic, candleSize, filter_1, filter_2, abatere_hard):
     #citeste pattern din fisier si adauga in structura template pentru patterns
     patterns = readFromFile(referinteTerraForm)
+
+    print("len test:",len(patterns))
 
     obj = {}
 
@@ -121,45 +148,54 @@ def initFormatDecisions(referinteTerraForm):
         final[a["fileName"]] = []
     return final
 
-def fakeApi():
-    return round(random.random()*100,2)
-
-def crossCorelation(base, seg_2):
-    print("cross cor:")
-    print("base:", base)
-    print("seg_2:", seg_2)
-
+def crossCorelation(pattern, lastSnapTerraFormed):
     #yScallerEnaber and powerSum are default here
-    max_y_var = seg_2[0][1];
 
-    for a  in seg_2:
-        if a[1] > max_y_var:
-            max_y_var = a[1]
+    # print("inside cros cor:")
+    # print("patt:", pattern)
+    # print("last_snap:", lastSnapTerraFormed)
 
-    max_y_base = base[0]
-    for a in base:
-        if a > max_y_base:
-           max_y_base = a
+    max_y_snap = max(lastSnapTerraFormed)
+    max_y_patt = max(pattern)
 
-    y_ratio = max_y_base / max_y_var
+    # print("max_y_snap:",max_y_snap)
+    # print("max_y_base:",max_y_patt)
+    # print("min spnap:",min(lastSnapTerraFormed))
+
+
+    #test
+    minus_min = [a-min(lastSnapTerraFormed) for a in lastSnapTerraFormed]
+
+    y_ratio = max_y_patt / max(minus_min)
+    test = [a*y_ratio for a in minus_min]
+
+    # print("ratio:", y_ratio)
+
+    # print("test:",test)
+
+    # plotArr(test,'ceva')
+    # plotArr(pattern,'ceva')
+    # plt.show()
+
 
     suma_scaled = 0
-    i = 0
-    while i < len(base):
-        var = base[i] - seg_2[i][1] * y_ratio
-        suma_scaled += var * var
-        i += 1
+    for index, a in enumerate(pattern):
+        var = a - test[index]*y_ratio
+        suma_scaled += var*var
 
     return suma_scaled
 
 def completeOldDecisions(currentStockPrice):
+    #TODO: function to fetch the current stock price
+    # currentStockPrice = None
+
     for a in decisions:
-        for b in decisions[a]:
+        for index,b in enumerate(decisions[a]):
             curentTimeStamp = round(time.time() * 1000)
 
-            if curentTimeStamp - b["start_date"] < time_check_old_decisions and b["end_data"] == None:
-                decisions[a][b]["end_date"] = curentTimeStamp
-                decisions[a][b]["end_price"] = currentStockPrice
+            if b.getEndDate() == None and curentTimeStamp - b.getStartDate() < time_check_old_decisions :
+                print("decision completed")
+                decisions[a][index].completeazaEndMomentum(curentTimeStamp,currentStockPrice)
 
     #TODO: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     #overrwrite new decision into file (! not append)
@@ -177,95 +213,126 @@ def printFinalPattern(final_patterns):
             if index < 5:
                 print(b)
 
+class EntityDecizie:
+    def __init__(self,startDate,startPrice,endDate,endPrice,whichPatt,minCross):
+            self.start_date = startDate
+            self.start_price = startPrice
+            self.end_date = endDate
+            self.end_price = endPrice
+            self.which_one_pattern_var = whichPatt
+            self.min_cross_cor = minCross
+
+    def print(self):
+        print("todo print patt")
+    def completeazaEndMomentum(self,endDate,endPrice):
+        self.end_date = endDate
+        self.end_price = endPrice
+
+    def getStartDate(self):
+        return self.start_date
+
+    def getEndDate(self):
+        return self.end_date
+
+    def priceDiff(self):
+        return self.end_price - self.start_price
+    def printMe(self):
+        print(self.start_price,self.end_price,self.start_date,self.end_date)
+
+def judgeDecisions(decisionsParam):
+    total = len(decisionsParam)
+    success = 0
+    for a in decisionsParam:
+        if a.priceDiff() > 0:
+            success +=1
+    print("Judge Decisions:")
+    print("Total:",total)
+    print("Success:",success)
+    print("Ratio:",(success*100)/total)
+
 if __name__ == '__main__':
 
+    #------initializare patterns------
     referinteTerraForm = [
         {
-            "fileName": "pattern_1.txt",
-            "seg_seg_unic":40,
-            "candle_size": 2,
-            "filter_1": 0.3,
-            "filter_2": 0.5,
-            "abatere_hard": 500
-        },
-        {
-            "fileName": "pattern_2.txt",
-            "seg_seg_unic": 40,
+            "fileName": "Patterns/pattern_1.txt",
+            "size_seg_unic": 30,
             "candle_size": 2,
             "filter_1": 0.3,
             "filter_2": 0.5,
             "abatere_hard": 1000
         },
-        {
-            "fileName": "pattern_3.txt",
-            "seg_seg_unic": 40,
-            "candle_size": 2,
-            "filter_1": 0.3,
-            "filter_2": 0.5,
-            "abatere_hard": 2000
-        }
 ]
-
-    final_patterns = []
-
+    patterns = []
     for a in referinteTerraForm:
-        final_patterns.append(terraFormPatterns(a["fileName"],a["seg_seg_unic"],a["candle_size"],a["filter_1"],a["filter_2"],a["abatere_hard"]))
-
+        patterns.append(terraFormPatterns(a["fileName"],a["size_seg_unic"],a["candle_size"],a["filter_1"],a["filter_2"],a["abatere_hard"]))
     decisions = initFormatDecisions(referinteTerraForm)
+    # printFinalPattern(patterns)
+    # print("len main:",len(patterns[0]["values"]))
 
-    # printFinalPattern(final_patterns);
+    #------initializare Binance------ // not used yet // first pass old values iterator test
+    test = BiananceMaster()
 
-    min_patt_size_seg_unic = findMinSizePattern(final_patterns)
-
+    clock_time = 3
     while True:
-        print("new clock")
+        print(clock_time)
+        clock_time+=1
 
-        time.sleep(tik_tok)
-        new_fetch_value = fakeApi()
-        global_buffer.append(new_fetch_value)
+        fake_current_time_stamp +=2
+        if fake_current_time_stamp == 7000:
+            break
 
-        print("global_buffer update:", global_buffer)
+        #TODO: check how y is extracted inside fakeAPi
+        last_100_min = fakeApi(100)   #just_y
 
-        for a in final_patterns:
+        temp_last_x  = last_100_min[0:29]
+        completeOldDecisions(temp_last_x[-1])
 
-            #parcuge toate patterns
-            # terraForm update buffer
-            # verifica daca daca ultime x element trec crossCor cu abatere hard pentru fiecare din patterns
+        for index, a in enumerate(patterns):
+            candle_size = float(a["pytonTerraForm"]["candle_size"])
+            filter_1 = float(a["pytonTerraForm"]["filter_1"])
+            filter_2 = float(a["pytonTerraForm"]["filter_2"])
 
-            if len(global_buffer) > min_patt_size_seg_unic:
+            last_100_min_terraFormed = integratedNarutoMain(last_100_min,candle_size,filter_1,filter_2)
 
-                last_x_points = global_buffer[:a["size"]+10]
-                candle_size = float(a["pytonTerraForm"]["candle_size"])
-                filter_1 = float(a["pytonTerraForm"]["filter_1"])
-                filter_2 = float(a["pytonTerraForm"]["filter_2"])
+            last_x_points = last_100_min_terraFormed[0:a["size"]] #x custom based on pattern specification
 
-                #terraForm last x from buffer for this custom pattern format
-                last_snap_format = integratedNarutoMain(last_x_points,candle_size, filter_1,filter_2)
+            # plotArr(last_100_min,index)
+            # plotArr(last_100_min_terraFormed,index)
+            # plotArr(last_x_points, index)
+            # plt.show()
 
-                #pentru gruparea pattern_x, afla care este cel mai mic cross Corr si compara cu abatere hard
-                min_cross_cor = crossCorelation(a["values"][0], last_snap_format)
-                which_one_pattern_var = None
+            # print("a 0 len:",len(a["values"][0]))
+            # print("last x len:",len(last_x_points))
 
-                for b in a["values"]:
-                    if crossCorelation(b, last_snap_format) < min_cross_cor:
-                        min_cross_cor = crossCorelation(b, last_snap_format)
-                        which_one_pattern_var = b
+            min_cross_cor = crossCorelation(a["values"][0], last_x_points)
 
-                if min_cross_cor < a["pytonTerraForm"]["abatere_hard"]:
-                    #DECIZIE CUMPARARE pentru gruparea de pattern_x
-                    entitate_decizie = {
-                        "start_date": round(time.time() * 1000),
-                        "start_price": global_buffer[len(global_buffer)-1], #ultimul element din buffer
-                        "end_data": None,
-                        "end_price": None,
-                        "more": {
-                            "which_one_pattern_var": which_one_pattern_var,
-                            "min_cross_cor": min_cross_cor
-                        }
-                    }
-                    decisions[a["source"]].append(entitate_decizie)
-            else:
-                print("buffer loading")
+            which_one_pattern_var = None
+            for index_b,b in enumerate(a["values"]):
 
-        #completare decizii in asteptare
-        completeOldDecisions(new_fetch_value)
+
+                if crossCorelation(b, last_x_points) < min_cross_cor:
+                    min_cross_cor = crossCorelation(b, last_x_points)
+                    which_one_pattern_var = b
+
+            print("min cross", min_cross_cor)
+
+            if min_cross_cor < a["pytonTerraForm"]["abatere_hard"]:
+                print('patt found')
+                entitate_decizie = EntityDecizie(
+                    round(time.time() * 1000),
+                    last_x_points[-1],
+                    None,
+                    None,
+                    which_one_pattern_var,
+                    min_cross_cor
+                )
+                decisions[a["source"]].append(entitate_decizie)
+
+    print("decision:",len(decisions))
+    print(decisions)
+
+    for a in decisions:
+        for b in decisions[a]:
+            b.printMe()
+    judgeDecisions(decisions['Patterns/pattern_1.txt'])

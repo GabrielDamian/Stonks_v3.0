@@ -266,7 +266,7 @@ class graphData:
         self.candlesToFunction =new_arr
 
     def generateInternPoints(self):
-        # self.filter_oven_indexes()
+        self.filter_oven_indexes()
 
         index = 0
         puncte_noi = []
