@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 #GLOBALS
 decisions = None
 tik_tok = 0.1 #clock intervals
-time_check_old_decisions = 600000
+time_check_old_decisions = 10
 
 global_fake_api_next = []
 last_used = 0
@@ -51,7 +51,7 @@ def readDataFromExcelFile(fileName):
         return float_arr
 
 def fakeApi(last_x):
-    test_location = 'LastWeek2.csv'
+    test_location = 'LastWeek3.csv'
     raw_data = readDataFromExcelFile('LastWeeks/'+test_location)
 
     add_time_stamp = []
@@ -185,15 +185,16 @@ def crossCorelation(pattern, lastSnapTerraFormed):
 
     return suma_scaled
 
-def completeOldDecisions(currentStockPrice):
+def completeOldDecisions(currentStockPrice,currentTime):
     #TODO: function to fetch the current stock price
     # currentStockPrice = None
 
     for a in decisions:
         for index,b in enumerate(decisions[a]):
-            curentTimeStamp = round(time.time() * 1000)
+            # curentTimeStamp = round(time.time() * 1000)
+            curentTimeStamp = currentTime
 
-            if b.getEndDate() == None and curentTimeStamp - b.getStartDate() < time_check_old_decisions :
+            if b.getEndDate() == None and curentTimeStamp - b.getStartDate() > time_check_old_decisions :
                 print("decision completed")
                 decisions[a][index].completeazaEndMomentum(curentTimeStamp,currentStockPrice)
 
@@ -212,6 +213,17 @@ def printFinalPattern(final_patterns):
         for index,b in enumerate(a["values"]):
             if index < 5:
                 print(b)
+
+def judgeDecisions(decisionsParam):
+    total = len(decisionsParam)
+    success = 0
+    for a in decisionsParam:
+        if a.priceDiff() > 0:
+            success +=1
+    print("Judge Decisions:")
+    print("Total:",total)
+    print("Success:",success)
+    print("Ratio:",(success*100)/total)
 
 class EntityDecizie:
     def __init__(self,startDate,startPrice,endDate,endPrice,whichPatt,minCross):
@@ -239,17 +251,6 @@ class EntityDecizie:
     def printMe(self):
         print(self.start_price,self.end_price,self.start_date,self.end_date)
 
-def judgeDecisions(decisionsParam):
-    total = len(decisionsParam)
-    success = 0
-    for a in decisionsParam:
-        if a.priceDiff() > 0:
-            success +=1
-    print("Judge Decisions:")
-    print("Total:",total)
-    print("Success:",success)
-    print("Ratio:",(success*100)/total)
-
 if __name__ == '__main__':
 
     #------initializare patterns------
@@ -271,22 +272,21 @@ if __name__ == '__main__':
     # print("len main:",len(patterns[0]["values"]))
 
     #------initializare Binance------ // not used yet // first pass old values iterator test
-    test = BiananceMaster()
+    # test = BiananceMaster()
 
     clock_time = 3
     while True:
-        print(clock_time)
+        # print(clock_time)
         clock_time+=1
 
-        fake_current_time_stamp +=2
-        if fake_current_time_stamp == 7000:
+        fake_current_time_stamp += 1
+        if fake_current_time_stamp > 7000:
             break
 
-        #TODO: check how y is extracted inside fakeAPi
         last_100_min = fakeApi(100)   #just_y
 
         temp_last_x  = last_100_min[0:29]
-        completeOldDecisions(temp_last_x[-1])
+        completeOldDecisions(temp_last_x[-1],fake_current_time_stamp)
 
         for index, a in enumerate(patterns):
             candle_size = float(a["pytonTerraForm"]["candle_size"])
@@ -295,7 +295,22 @@ if __name__ == '__main__':
 
             last_100_min_terraFormed = integratedNarutoMain(last_100_min,candle_size,filter_1,filter_2)
 
-            last_x_points = last_100_min_terraFormed[0:a["size"]] #x custom based on pattern specification
+            size = a["size"]
+            offset = 10
+            start_index = len(last_100_min_terraFormed)-size-offset-1
+            end_index = start_index + size
+
+            # last_x_points = last_100_min_terraFormed[0:a["size"]] #x custom based on pattern specification
+
+            last_x_points = last_100_min_terraFormed[start_index:end_index]
+
+            add_fake_zeros = [39000 for a in range(0,start_index)] + last_x_points
+
+            # plotArr(last_100_min_terraFormed,index)
+            # plotArr(last_x_points, index)
+            # plotArr(add_fake_zeros,index)
+
+            # plt.show()
 
             # plotArr(last_100_min,index)
             # plotArr(last_100_min_terraFormed,index)
@@ -310,17 +325,17 @@ if __name__ == '__main__':
             which_one_pattern_var = None
             for index_b,b in enumerate(a["values"]):
 
-
                 if crossCorelation(b, last_x_points) < min_cross_cor:
                     min_cross_cor = crossCorelation(b, last_x_points)
                     which_one_pattern_var = b
 
-            print("min cross", min_cross_cor)
+            # print("min cross", min_cross_cor)
 
             if min_cross_cor < a["pytonTerraForm"]["abatere_hard"]:
                 print('patt found')
                 entitate_decizie = EntityDecizie(
-                    round(time.time() * 1000),
+                    # round(time.time() * 1000),
+                    fake_current_time_stamp,
                     last_x_points[-1],
                     None,
                     None,
