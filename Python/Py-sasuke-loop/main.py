@@ -1,5 +1,4 @@
 import random
-
 from BinanceMaster.BinanceMaster import *
 from GraphHandler.graphHandler import *
 import time
@@ -75,6 +74,7 @@ def integratedNarutoMain(points, candleSize,filter_candles_1,filter_candles_2):
     graph = graphData()
 
     vector = points #wtf man
+    # plotArr(vector,'ceva');
 
     graph.setInputData(vector)
 
@@ -85,6 +85,8 @@ def integratedNarutoMain(points, candleSize,filter_candles_1,filter_candles_2):
     # print("input to candle filtered:",len(graph.candlesData))
 
     graph.candlesToFunctionWork(candleSize)
+    # plotArr(graph.candlesToFunction,'ceva')
+    # plt.show()
 
     graph.generateInternPoints()
 
@@ -223,7 +225,7 @@ def judgeDecisions(decisionsParam):
     print("Judge Decisions:")
     print("Total:",total)
     print("Success:",success)
-    print("Ratio:",(success*100)/total)
+    # print("Ratio:",(success*100)/total)
 
 class EntityDecizie:
     def __init__(self,startDate,startPrice,endDate,endPrice,whichPatt,minCross):
@@ -261,9 +263,10 @@ if __name__ == '__main__':
             "candle_size": 2,
             "filter_1": 0.3,
             "filter_2": 0.5,
-            "abatere_hard": 1000
+            "abatere_hard": 3000
         },
-]
+
+    ]
     patterns = []
     for a in referinteTerraForm:
         patterns.append(terraFormPatterns(a["fileName"],a["size_seg_unic"],a["candle_size"],a["filter_1"],a["filter_2"],a["abatere_hard"]))
@@ -276,14 +279,20 @@ if __name__ == '__main__':
 
     clock_time = 3
     while True:
-        # print(clock_time)
-        clock_time+=1
+        print(clock_time)
+        clock_time += 1
 
         fake_current_time_stamp += 1
-        if fake_current_time_stamp > 7000:
+        if fake_current_time_stamp > 4000:
             break
 
         last_100_min = fakeApi(100)   #just_y
+        #cu offset
+        # last_100_min = [38991.11, 38969.7, 38978.67, 38998.08, 39000.57, 39013.83, 38991.98, 39007.43, 39015.68, 39016.62, 39009.29, 39016.84, 39016.1, 39008.17, 38996.75, 38973.26, 38996.36, 39012.07, 39043.11, 39055.01, 39054.44, 39050.87, 39050.09, 39060.59, 39085.52, 39097.88, 39076.16, 39092.67, 39080.77, 39100.0, 39097.75, 39059.1, 39045.0, 39041.93, 39012.35, 39018.75, 39025.4, 39058.71, 39017.98, 39015.06, 39027.67, 39049.01, 39041.9, 39036.99, 39052.55, 39032.8, 39014.96, 39029.86, 39025.47, 39076.96, 39113.7, 39108.11, 39094.62, 39108.26, 39103.33, 39103.69, 39070.01, 39069.08, 39083.67, 39097.58, 39044.72, 39092.96, 39081.2, 39075.27, 39058.98, 39066.43, 39059.25, 39035.74, 39050.15, 39054.73, 39047.76, 39029.99, 39035.03, 39010.03, 38953.0, 39004.2, 39000.01, 39029.57, 39065.4, 39050.67, 39055.91, 39077.46, 39092.23, 39070.47, 39050.02, 39030.98, 39031.13, 39063.29, 39025.26, 39000.01, 39023.69, 39013.92, 39005.45, 39152.21, 39181.15, 39217.55, 39233.44, 39217.0, 39210.72, 39228.08]
+
+
+        #fara offset
+        # last_100_min = [38938.75, 38935.04, 38991.11, 38969.7, 38978.67, 38998.08, 39000.57, 39013.83, 38991.98, 39007.43, 39015.68, 39016.62, 39009.29, 39016.84, 39016.1, 39008.17, 38996.75, 38973.26, 38996.36, 39012.07, 39043.11, 39055.01, 39054.44, 39050.87, 39050.09, 39060.59, 39085.52, 39097.88, 39076.16, 39092.67, 39080.77, 39100.0, 39097.75, 39059.1, 39045.0, 39041.93, 39012.35, 39018.75, 39025.4, 39058.71, 39017.98, 39015.06, 39027.67, 39049.01, 39041.9, 39036.99, 39052.55, 39032.8, 39014.96, 39029.86, 39025.47, 39076.96, 39113.7, 39108.11, 39094.62, 39108.26, 39103.33, 39103.69, 39070.01, 39069.08, 39083.67, 39097.58, 39044.72, 39092.96, 39081.2, 39075.27, 39058.98, 39066.43, 39059.25, 39035.74, 39050.15, 39054.73, 39047.76, 39029.99, 39035.03, 39010.03, 38953.0, 39004.2, 39000.01, 39029.57, 39065.4, 39050.67, 39055.91, 39077.46, 39092.23, 39070.47, 39050.02, 39030.98, 39031.13, 39063.29, 39025.26, 39000.01, 39023.69, 39013.92, 39005.45, 39152.21, 39181.15, 39217.55, 39233.44, 39217.0]
 
         temp_last_x  = last_100_min[0:29]
         completeOldDecisions(temp_last_x[-1],fake_current_time_stamp)
@@ -293,12 +302,17 @@ if __name__ == '__main__':
             filter_1 = float(a["pytonTerraForm"]["filter_1"])
             filter_2 = float(a["pytonTerraForm"]["filter_2"])
 
+            # print("len--------:", len(last_100_min))
+            # print("last:", last_100_min[-1])
+            # print("last 100 min:", last_100_min)
+            # print("fake time stmp-----:",fake_current_time_stamp)
             last_100_min_terraFormed = integratedNarutoMain(last_100_min,candle_size,filter_1,filter_2)
+            # print("last 100 terrra:",last_100_min_terraFormed)
 
             size = a["size"]
-            offset = 10
+            offset = 1
             start_index = len(last_100_min_terraFormed)-size-offset-1
-            end_index = start_index + size
+            end_index = start_index + size + 1
 
             # last_x_points = last_100_min_terraFormed[0:a["size"]] #x custom based on pattern specification
 
@@ -306,14 +320,10 @@ if __name__ == '__main__':
 
             add_fake_zeros = [39000 for a in range(0,start_index)] + last_x_points
 
-            # plotArr(last_100_min_terraFormed,index)
-            # plotArr(last_x_points, index)
-            # plotArr(add_fake_zeros,index)
-
-            # plt.show()
-
             # plotArr(last_100_min,index)
             # plotArr(last_100_min_terraFormed,index)
+            # plotArr(add_fake_zeros,index)
+
             # plotArr(last_x_points, index)
             # plt.show()
 

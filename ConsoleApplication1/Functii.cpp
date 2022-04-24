@@ -173,7 +173,7 @@ void narutoMain(int candles_size, int size_seg_unic, floatType filter_1, floatTy
 
 	//vector<floatType> possible_succes_ratios = {50.0, 55.0, 60.0, 65.0, 70.0, 75.0, 80.0, 85.0, 90.0};
 
-	vector<floatType> possible_succes_ratios = {90.0};
+	vector<floatType> possible_succes_ratios = {85.0};
 	
 	for (auto a : possible_succes_ratios)
 	{
@@ -685,19 +685,21 @@ void supremeTestMaster(vector<patterns> patternsParam, floatType succes_ratio_fi
 		"FarmLand/Test_3_7.csv",
 		"FarmLand/Test_3_8.csv",
 		"FarmLand/Test_3_9.csv",*/
-		//"FarmLand/Test_4_0.csv",
+
+		"FarmLand/Test_4_0.csv",
 
 		"FarmLand/LastWeek.csv",
 		"FarmLand/LastWeek2.csv",
 		"FarmLand/LastWeek3.csv",
 		"FarmLand/LastWeek4.csv",
 		"FarmLand/LastWeek5.csv",
+		"FarmLand/Last_data_2022.csv"
 	};
 	
 	//vector<int> foamShrink = { 10,20,30,50,100,200,300,500,800,1000,1500,2000 };
-	vector<int> foamShrink = { 100};
+	vector<int> foamShrink = {500};
 	//vector<int> abatereHard = { 200,500,1000,2000,3000,4000,5000/*,6000,7000,8000,9000,10000*/ };
-	vector<int> abatereHard = { 500};
+	vector<int> abatereHard = {5000};
 
 	vector<point> testData;
 	/*{

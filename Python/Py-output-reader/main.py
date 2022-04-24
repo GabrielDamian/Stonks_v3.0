@@ -35,7 +35,7 @@ def splitRow(rows):
         obj["filter_1"] = splittedRow[8]
         obj["filter_2"] = splittedRow[9]
         obj["future_price"] = splittedRow[10]
-        obj["min_max_streching"] = splittedRow[11]
+        obj["min_max_streching"] = int(splittedRow[11])
         obj["abatere"] = splittedRow[12]
         obj["test_farm"] = splittedRow[14]
 
@@ -75,11 +75,11 @@ def giveMeSucces_score(values):
     return total_buyed_local
 
 if __name__ == '__main__':
-    # succes_param = float(sys.argv[1])
-    succes_param = 70
+    succes_param = float(sys.argv[1])
+    print("succes param:",int(succes_param))
+    # succes_param = 70
 
-
-    print("succes:", succes_param);
+    print("succes:", succes_param)
 
     data = readFromFile("apollo.txt")
     splitted = splitRow(data)
@@ -91,7 +91,7 @@ if __name__ == '__main__':
     # }
     used_indexes = []
     for index_a,a in enumerate(splitted):
-
+        print("index:",index_a,"/",len(splitted))
         inserted = False
         for index_b, b in enumerate(grouped_by_params):
             if compareStructs(b["values"][0], a):
@@ -102,7 +102,6 @@ if __name__ == '__main__':
                 grouped_by_params[index_b]["occ_index"].append(index_a)
                 inserted = True
                 break
-
         if not inserted: #create a new struct and insert
             new_struct = {
                 "occ_index": [],
@@ -119,7 +118,7 @@ if __name__ == '__main__':
     for a in grouped_by_params:
         check = True
         for b in a["values"]:
-            if b["succes_percent"] < succes_param:
+            if b["succes_percent"] < succes_param or b["min_max_streching"] == 4 or b["min_max_streching"] == 7:
                 check = False
 
         if check:

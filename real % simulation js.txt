@@ -1,0 +1,39 @@
+let ratio_plus_minus = [0.2,0.3,0.4]
+
+let generateFacts = (succes, defeat)=>{
+    var arr = []
+    for(let i=0;i<succes;i++)
+    {
+        arr.push(1);
+    }
+    for(let i=0;i<defeat;i++)
+    {
+        arr.push(0);
+    }
+    return arr;
+}
+
+let calc_percentage = (sum)=>{
+    percentage = ratio_plus_minus[Math.floor(Math.random()*ratio_plus_minus.length)];
+    return (percentage*sum)/100;
+}
+
+let succes = 58;
+let defeat = 42;
+let facts = generateFacts(succes,defeat)
+let scrambled_facts = facts.sort((a, b) => 0.5 - Math.random());
+
+let money = 100;
+
+scrambled_facts.forEach((fact)=>{
+    if(fact == 1)
+    {
+        money += calc_percentage(money)
+    }
+    else 
+    {
+        money -= calc_percentage(money)
+    }
+})
+
+console.log("money:",money);

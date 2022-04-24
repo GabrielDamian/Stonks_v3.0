@@ -1,18 +1,21 @@
-let succes = [23,3,16,16]
-let total = [32,4,29,21]
+let str = `55/1501/2729/5000/1500/75/2/30/0.3/0.5/10/7/1000/FarmLand/LastWeek.csv/
+52/791/1501/5000/1500/75/2/30/0.3/0.5/10/7/1000/FarmLand/LastWeek2.csv/
+52/1294/2477/5000/1500/75/2/30/0.3/0.5/10/7/1000/FarmLand/LastWeek3.csv/
+51/1874/3608/5000/1500/75/2/30/0.3/0.5/10/7/1000/FarmLand/LastWeek4.csv/
+49/1501/3046/5000/1500/75/2/30/0.3/0.5/10/7/1000/FarmLand/LastWeek5.csv/`
 
-let suma_1 = 0
-let suma_2 = 0
-succes.forEach((el)=>{
-    suma_1 += el
+let arr = str.split("\n")
+console.log(arr)
+
+let succes = 0;
+let total = 0;
+
+arr.forEach((el)=>{
+    let elems = el.split("/")
+
+    succes += Number(elems[1])
+    total += Number(elems[2])
 })
 
-total.forEach((el)=>{
-    suma_2 +=el
-})
-
-console.log(suma_1)
-console.log(suma_2)
-
-let ratio = (suma_1*100)/suma_2
-console.log("ratio:", ratio)
+let ratio = (succes * 100) / total
+console.log(ratio)

@@ -1,0 +1,118 @@
+1.Run py module to check differetne % rates:
+-53%;
+-55%;
+-57%;
+-60%;
+-63%;
+
+-65%;
+-70%;
+-75%;
+-80%;
+-85%;
+
+Data:
+ID: naruto_1
+{'succes_percent': 53, 'succes_buyes': 3266, 'total_buyed': '6162', 'abatere_hard': '5000', 'how_many_for_foam': '1500', 'succes_ratio_filter': '75', 'candles_size': '2', 'size_seg_unic': '30', 'filter_1': '0.3', 'filter_2': '0.5', 'future_price': '10', 'min_max_streching': '7', 'abatere': '1000', 'test_farm': 'Test_4_0.csv'}
+53/3260/6146/5000/1500/75/2/30/0.3/0.5/10/7/1000/FarmLand/Test_4_0.csv/
+55/1501/2729/5000/1500/75/2/30/0.3/0.5/10/7/1000/FarmLand/LastWeek.csv/
+52/791/1501/5000/1500/75/2/30/0.3/0.5/10/7/1000/FarmLand/LastWeek2.csv/
+52/1294/2477/5000/1500/75/2/30/0.3/0.5/10/7/1000/FarmLand/LastWeek3.csv/
+51/1874/3608/5000/1500/75/2/30/0.3/0.5/10/7/1000/FarmLand/LastWeek4.csv/
+49/1501/3046/5000/1500/75/2/30/0.3/0.5/10/7/1000/FarmLand/LastWeek5.csv/
+
+
+ID: naruto_2
+{'succes_percent': 55, 'succes_buyes': 2193, 'total_buyed': '3979', 'abatere_hard': '5000', 'how_many_for_foam': '500', 'succes_ratio_filter': '80', 'candles_size': '2', 'size_seg_unic': '30', 'filter_1': '0.3', 'filter_2': '0.5', 'future_price': '10', 'min_max_streching': '7', 'abatere': '1000', 'test_farm': 'Test_4_0.csv'}
+55/2194/3981/5000/500/80/2/30/0.3/0.5/10/7/1000/FarmLand/Test_4_0.csv/
+54/1070/1974/5000/500/80/2/30/0.3/0.5/10/7/1000/FarmLand/LastWeek.csv/
+52/470/893/5000/500/80/2/30/0.3/0.5/10/7/1000/FarmLand/LastWeek2.csv/
+48/815/1671/5000/500/80/2/30/0.3/0.5/10/7/1000/FarmLand/LastWeek3.csv/
+50/1283/2562/5000/500/80/2/30/0.3/0.5/10/7/1000/FarmLand/LastWeek4.csv/
+50/1028/2036/5000/500/80/2/30/0.3/0.5/10/7/1000/FarmLand/LastWeek5.csv/
+
+ID: naruto_3
+{'succes_percent': 57, 'succes_buyes': 1668, 'total_buyed': '2920', 'abatere_hard': '5000', 'how_many_for_foam': '300', 'succes_ratio_filter': '90', 'candles_size': '2', 'size_seg_unic': '30', 'filter_1': '0.3', 'filter_2': '0.5', 'future_price': '10', 'min_max_streching': '7', 'abatere': '1000', 'test_farm': 'Test_4_0.csv'}
+57/1668/2920/5000/300/90/2/30/0.3/0.5/10/7/1000/FarmLand/Test_4_0.csv/
+52/786/1485/5000/300/90/2/30/0.3/0.5/10/7/1000/FarmLand/LastWeek.csv/
+53/345/641/5000/300/90/2/30/0.3/0.5/10/7/1000/FarmLand/LastWeek2.csv/
+47/597/1259/5000/300/90/2/30/0.3/0.5/10/7/1000/FarmLand/LastWeek3.csv/
+48/936/1915/5000/300/90/2/30/0.3/0.5/10/7/1000/FarmLand/LastWeek4.csv/
+50/775/1529/5000/300/90/2/30/0.3/0.5/10/7/1000/FarmLand/LastWeek5.csv/
+
+
+ID: naruto_4
+{'succes_percent': 60, 'succes_buyes': 1017, 'total_buyed': '1693', 'abatere_hard': '3000', 'how_many_for_foam': '200', 'succes_ratio_filter': '90', 'candles_size': '2', 'size_seg_unic': '30', 'filter_1': '0.3', 'filter_2': '0.5', 'future_price': '10', 'min_max_streching': '7', 'abatere': '1000', 'test_farm': 'Test_4_0.csv'}
+60/1017/1693/3000/200/90/2/30/0.3/0.5/10/7/1000/FarmLand/Test_4_0.csv/
+54/437/802/3000/200/90/2/30/0.3/0.5/10/7/1000/FarmLand/LastWeek.csv/
+60/186/307/3000/200/90/2/30/0.3/0.5/10/7/1000/FarmLand/LastWeek2.csv/
+49/324/654/3000/200/90/2/30/0.3/0.5/10/7/1000/FarmLand/LastWeek3.csv/
+48/500/1037/3000/200/90/2/30/0.3/0.5/10/7/1000/FarmLand/LastWeek4.csv/
+56/439/772/3000/200/90/2/30/0.3/0.5/10/7/1000/FarmLand/LastWeek5.csv/
+
+
+ID: naruto_5
+{'succes_percent': 63, 'succes_buyes': 740, 'total_buyed': '1165', 'abatere_hard': '5000', 'how_many_for_foam': '30', 'succes_ratio_filter': '50', 'candles_size': '2', 'size_seg_unic': '30', 'filter_1': '0.3', 'filter_2': '0.5', 'future_price': '10', 'min_max_streching': '7', 'abatere': '3000', 'test_farm': 'Test_4_0.csv'}
+63/740/1165/5000/30/50/2/30/0.3/0.5/10/7/3000/FarmLand/Test_4_0.csv/
+52/481/909/5000/30/50/2/30/0.3/0.5/10/7/3000/FarmLand/LastWeek.csv/
+58/170/290/5000/30/50/2/30/0.3/0.5/10/7/3000/FarmLand/LastWeek2.csv/
+49/279/565/5000/30/50/2/30/0.3/0.5/10/7/3000/FarmLand/LastWeek3.csv/
+51/547/1071/5000/30/50/2/30/0.3/0.5/10/7/3000/FarmLand/LastWeek4.csv/
+50/388/766/5000/30/50/2/30/0.3/0.5/10/7/3000/FarmLand/LastWeek5.csv/
+
+ID: naruto_6
+{'succes_percent': 65, 'succes_buyes': 504, 'total_buyed': '765', 'abatere_hard': '4000', 'how_many_for_foam': '20', 'succes_ratio_filter': '50', 'candles_size': '2', 'size_seg_unic': '30', 'filter_1': '0.3', 'filter_2': '0.5', 'future_price': '10', 'min_max_streching': '7', 'abatere': '2000', 'test_farm': 'Test_4_0.csv'}
+65/504/765/4000/20/50/2/30/0.3/0.5/10/7/2000/FarmLand/Test_4_0.csv/
+57/295/514/4000/20/50/2/30/0.3/0.5/10/7/2000/FarmLand/LastWeek.csv/
+63/96/151/4000/20/50/2/30/0.3/0.5/10/7/2000/FarmLand/LastWeek2.csv/
+52/165/315/4000/20/50/2/30/0.3/0.5/10/7/2000/FarmLand/LastWeek3.csv/
+52/334/633/4000/20/50/2/30/0.3/0.5/10/7/2000/FarmLand/LastWeek4.csv/
+56/251/445/4000/20/50/2/30/0.3/0.5/10/7/2000/FarmLand/LastWeek5.csv/
+
+53/808/1509/4000/20/50/2/30/0.3/0.5/10/7/2000/FarmLand/Last_data_2022.csv/
+
+ID: naruto_7
+{'succes_percent': 70, 'succes_buyes': 236, 'total_buyed': '337', 'abatere_hard': '500', 'how_many_for_foam': '100', 'succes_ratio_filter': '90', 'candles_size': '2', 'size_seg_unic': '30', 'filter_1': '0.3', 'filter_2': '0.5', 'future_price': '10', 'min_max_streching': '4', 'abatere': '3000', 'test_farm': 'Test_4_0.csv'}
+70/236/337/500/100/90/2/30/0.3/0.5/10/4/3000/FarmLand/Test_4_0.csv/
+61/82/134/500/100/90/2/30/0.3/0.5/10/4/3000/FarmLand/LastWeek.csv/
+72/29/40/500/100/90/2/30/0.3/0.5/10/4/3000/FarmLand/LastWeek2.csv/
+45/69/152/500/100/90/2/30/0.3/0.5/10/4/3000/FarmLand/LastWeek3.csv/
+51/103/201/500/100/90/2/30/0.3/0.5/10/4/3000/FarmLand/LastWeek4.csv/
+57/107/187/500/100/90/2/30/0.3/0.5/10/4/3000/FarmLand/LastWeek5.csv/
+
+52/287/547/500/100/90/2/30/0.3/0.5/10/4/3000/FarmLand/Last_data_2022.csv/
+
+
+ID: naruto_8
+{'succes_percent': 75/76, 'succes_buyes': 122, 'total_buyed': '159', 'abatere_hard': '1000', 'how_many_for_foam': '1000', 'succes_ratio_filter': '75', 'candles_size': '1', 'size_seg_unic': '25', 'filter_1': '0.3', 'filter_2': '0.5', 'future_price': '10', 'min_max_streching': '4', 'abatere': '1500', 'test_farm': 'Test_4_0.csv'}
+76/121/159/1000/1000/75/1/25/0.3/0.5/10/4/1500/FarmLand/Test_4_0.csv/
+54/128/233/1000/1000/75/1/25/0.3/0.5/10/4/1500/FarmLand/LastWeek.csv/
+50/39/77/1000/1000/75/1/25/0.3/0.5/10/4/1500/FarmLand/LastWeek2.csv/
+65/60/92/1000/1000/75/1/25/0.3/0.5/10/4/1500/FarmLand/LastWeek3.csv/
+47/160/335/1000/1000/75/1/25/0.3/0.5/10/4/1500/FarmLand/LastWeek4.csv/
+51/73/141/1000/1000/75/1/25/0.3/0.5/10/4/1500/FarmLand/LastWeek5.csv/
+
+54/366/673/1000/1000/75/1/25/0.3/0.5/10/4/1500/FarmLand/Last_data_2022.csv/
+ 
+
+ID: naruto_9
+{'succes_percent': 80, 'succes_buyes': 64, 'total_buyed': '80', 'abatere_hard': '1000', 'how_many_for_foam': '300', 'succes_ratio_filter': '80', 'candles_size': '1', 'size_seg_unic': '25', 'filter_1': '0.3', 'filter_2': '0.5', 'future_price': '10', 'min_max_streching': '7', 'abatere': '2500', 'test_farm': 'Test_4_0.csv'}
+80/66/82/1000/300/80/1/25/0.3/0.5/10/7/2500/FarmLand/Test_4_0.csv/
+56/70/124/1000/300/80/1/25/0.3/0.5/10/7/2500/FarmLand/LastWeek.csv/
+50/20/40/1000/300/80/1/25/0.3/0.5/10/7/2500/FarmLand/LastWeek2.csv/
+72/32/44/1000/300/80/1/25/0.3/0.5/10/7/2500/FarmLand/LastWeek3.csv/
+50/86/172/1000/300/80/1/25/0.3/0.5/10/7/2500/FarmLand/LastWeek4.csv/
+54/39/72/1000/300/80/1/25/0.3/0.5/10/7/2500/FarmLand/LastWeek5.csv/
+
+56/203/361/1000/300/80/1/25/0.3/0.5/10/7/2500/FarmLand/Last_data_2022.csv/
+
+ID: naruto_10
+{'succes_percent': 85, 'succes_buyes': 30, 'total_buyed': '35', 'abatere_hard': '200', 'how_many_for_foam': '1000', 'succes_ratio_filter': '60', 'candles_size': '1', 'size_seg_unic': '25', 'filter_1': '0.3', 'filter_2': '0.5', 'future_price': '10', 'min_max_streching': '7', 'abatere': '1500', 'test_farm': 'Test_4_0.csv'}
+85/29/34/200/1000/60/1/25/0.3/0.5/10/7/1500/FarmLand/Test_4_0.csv/
+72/13/18/200/1000/60/1/25/0.3/0.5/10/7/1500/FarmLand/LastWeek.csv/
+25/2/8/200/1000/60/1/25/0.3/0.5/10/7/1500/FarmLand/LastWeek2.csv/
+57/4/7/200/1000/60/1/25/0.3/0.5/10/7/1500/FarmLand/LastWeek3.csv/
+48/15/31/200/1000/60/1/25/0.3/0.5/10/7/1500/FarmLand/LastWeek4.csv/
+33/6/18/200/1000/60/1/25/0.3/0.5/10/7/1500/FarmLand/LastWeek5.csv/
+
+53/34/64/200/1000/60/1/25/0.3/0.5/10/7/1500/FarmLand/Last_data_2022.csv/
