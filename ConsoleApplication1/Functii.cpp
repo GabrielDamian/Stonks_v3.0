@@ -173,7 +173,7 @@ void narutoMain(int candles_size, int size_seg_unic, floatType filter_1, floatTy
 
 	//vector<floatType> possible_succes_ratios = {50.0, 55.0, 60.0, 65.0, 70.0, 75.0, 80.0, 85.0, 90.0};
 
-	vector<floatType> possible_succes_ratios = {85.0};
+	vector<floatType> possible_succes_ratios = {65.0};
 	
 	for (auto a : possible_succes_ratios)
 	{
@@ -693,13 +693,13 @@ void supremeTestMaster(vector<patterns> patternsParam, floatType succes_ratio_fi
 		"FarmLand/LastWeek3.csv",
 		"FarmLand/LastWeek4.csv",
 		"FarmLand/LastWeek5.csv",
-		"FarmLand/Last_data_2022.csv"
+		//"FarmLand/Last_data_2022.csv"
 	};
 	
 	//vector<int> foamShrink = { 10,20,30,50,100,200,300,500,800,1000,1500,2000 };
-	vector<int> foamShrink = {500};
+	vector<int> foamShrink = {1500};
 	//vector<int> abatereHard = { 200,500,1000,2000,3000,4000,5000/*,6000,7000,8000,9000,10000*/ };
-	vector<int> abatereHard = {5000};
+	vector<int> abatereHard = {1000};
 
 	vector<point> testData;
 	/*{
@@ -713,6 +713,13 @@ void supremeTestMaster(vector<patterns> patternsParam, floatType succes_ratio_fi
 			std::unique_lock<std::mutex> lock(mutex_file_terraForm);
 			testData = pythonHandler(farm_location_el, "FarmLand/portal_gun.txt", candles_size, filter_1, filter_2);
 		}
+
+		/*cout << endl << "TEST 1:, raw data from csv:"<<farm_location_el << endl;
+		for (auto& a : testData)
+		{
+			cout << endl << a.x << "," << a.y;
+		}*/
+
 		//1,3,5,10,20,[30],50,100 //realSize = 33
 		int currentSize = patternsParam.size();
 		std::cout << endl << "current size:" << currentSize;
@@ -761,15 +768,43 @@ vector<point> pythonHandler(string source, string destination,int candleSize, fl
 }
 void supremeTest(int abatere_hard, int how_many_for_foam, vector<point> testData, vector<patterns> patterns, floatType succes_ratio_filter, int candles_size, int size_seg_unic, floatType filter_1, floatType filter_2, int future_price, int min_max_streching, int abatere, std::mutex& mutex_file_Apollo, std::mutex& mutex_console, string test_farm)
 {
+	//test
+	//cout << endl << "entry point supremeTest:" << endl;
+
+
 	int total_buyed = 0;
 	int succes_buyes = 0;
 
 	vector<point> inputData = testData; //wtf man
-	
+
 	//printInputData(inputData); //TEST RAW DATA
 
 	vector<vector<point>> segmente_baza;
 	segmentareArray(segmente_baza, inputData, size_seg_unic);
+	//test
+	//cout << endl << "segmente array:" << endl;
+	//int index_time_stamp = 0;
+	/*for(auto & a:segmente_baza)
+	{
+		cout << endl << "time stamp:" << index_time_stamp << endl;
+		index_time_stamp++;
+		for (auto& b : a)
+		{
+			cout << b.x << "," << b.y << "/";
+		}
+		cout << endl;
+	}*/
+
+	/*cout << endl << "patterns:" << endl;
+	for (auto& a : patterns)
+	{
+		for (auto& b : a.seg_baza)
+		{
+			cout << b.x << "," << b.y << "/";
+		}
+		cout << endl;
+	}*/
+
 	//std::cout << endl << "S-au generat:" << segmente_baza.size() << " segment de baza pentru simulare";
 	
 	int index_global_input_data = -1;
@@ -798,6 +833,9 @@ void supremeTest(int abatere_hard, int how_many_for_foam, vector<point> testData
 
 		if (min_cross_cor <= abatere_hard )
 		{
+			//test with python
+			//cout << endl<< "new patt at:" << index_global_input_data << endl;
+
 			//simuleaza o cumparare
 			total_buyed++;
 

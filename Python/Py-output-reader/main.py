@@ -30,7 +30,7 @@ def splitRow(rows):
         obj["abatere_hard"] = splittedRow[3]
         obj["how_many_for_foam"] = splittedRow[4]
         obj["succes_ratio_filter"] = splittedRow[5]
-        obj["candles_size"] = splittedRow[6]
+        obj["candles_size"] = int(splittedRow[6])
         obj["size_seg_unic"] = splittedRow[7]
         obj["filter_1"] = splittedRow[8]
         obj["filter_2"] = splittedRow[9]
@@ -75,9 +75,9 @@ def giveMeSucces_score(values):
     return total_buyed_local
 
 if __name__ == '__main__':
-    succes_param = float(sys.argv[1])
-    print("succes param:",int(succes_param))
-    # succes_param = 70
+    # succes_param = float(sys.argv[1])
+    # print("succes param:",int(succes_param))
+    succes_param = 70
 
     print("succes:", succes_param)
 
@@ -118,7 +118,7 @@ if __name__ == '__main__':
     for a in grouped_by_params:
         check = True
         for b in a["values"]:
-            if b["succes_percent"] < succes_param or b["min_max_streching"] == 4 or b["min_max_streching"] == 7:
+            if b["succes_percent"] < succes_param or b["min_max_streching"] == 4 or b["min_max_streching"] == 7 or b["candles_size"] == 2 or b["candles_size"] == 3:
                 check = False
 
         if check:

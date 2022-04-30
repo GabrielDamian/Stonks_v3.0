@@ -8,13 +8,14 @@ import matplotlib.pyplot as plt
 #GLOBALS
 decisions = None
 tik_tok = 0.1 #clock intervals
-time_check_old_decisions = 10
+time_check_old_decisions = 20
 
 global_fake_api_next = []
 last_used = 0
+test_location = 'LastWeek5.csv'
 
 #temp declarations
-fake_current_time_stamp = 110  #magic number bcs you need offset
+fake_current_time_stamp = 111  #magic number bcs you need offset
 
 def readDataFromExcelFile(fileName):
     # print("Citesc date din fisier...")
@@ -50,14 +51,21 @@ def readDataFromExcelFile(fileName):
         return float_arr
 
 def fakeApi(last_x):
-    test_location = 'LastWeek3.csv'
+    # test_location = 'LastWeek5.csv'
     raw_data = readDataFromExcelFile('LastWeeks/'+test_location)
 
     add_time_stamp = []
     for index, a in enumerate(raw_data):
         add_time_stamp.append([a,index])
 
+    # print("last x:",last_x)
+    # print("fake_current_time_stamp:",fake_current_time_stamp)
+    # print("from:",fake_current_time_stamp-last_x)
+    # print("to:",fake_current_time_stamp)
+
     temp_state = add_time_stamp[fake_current_time_stamp-last_x:fake_current_time_stamp ]
+    # print("temp_state:",temp_state)
+
     just_y = []
     for a in temp_state:
         just_y.append(a[0])
@@ -71,24 +79,57 @@ def plotArr(arr, id):
 #end of temp declarations
 
 def integratedNarutoMain(points, candleSize,filter_candles_1,filter_candles_2):
+
+    print("Entry point graph handler")
+
+    print("[1].Raw data:\n",points)
+
+    # plotArr(points, 'data')
     graph = graphData()
 
     vector = points #wtf man
-    # plotArr(vector,'ceva');
 
+    #PLOT RAW DATA
+    plotArr(points,'ceva')
     graph.setInputData(vector)
 
     graph.inputToCandle(candleSize=candleSize)
     # print("input to candle:",len(graph.candlesData))
 
+    print("[2].Input to candle:\n", graph.candlesData)
+    #PLOT INPUT TO CANDLE
+    # for a in graph.candlesData:
+    #     plt.bar(a[0],a[1],0.5,a[2],color=a[3])
+
+    # plt.show()
+
     graph.filterCandles(filter_candles_1, filter_candles_2)
     # print("input to candle filtered:",len(graph.candlesData))
+    #PLOT FILTERED CANDLES
+    # plt.title('altceva')
+    for a in graph.candlesData:
+        plt.bar(a[0], a[1], 0.5, a[2], color=a[3])
+    print("[3].Filtered candles:\n",graph.candlesData)
 
     graph.candlesToFunctionWork(candleSize)
     # plotArr(graph.candlesToFunction,'ceva')
     # plt.show()
 
+    # candlesToFct_y = [a[1] for a in graph.candlesToFunction]
+    # plotArr(candlesToFct_y, 'ceva')
+
+    print("[4].Candles to function:\n",graph.candlesToFunction)
+    # for a in enumerate(graph.candlesToFunction):
+    #     if a[0] !=1:
+    #         a[0] +=1
+
+
     graph.generateInternPoints()
+
+    # candlesToFct_y = [a[1] for a in graph.candlesToFunction]
+    # plotArr(candlesToFct_y, 'ceva')
+
+    print("[5].Generate intern points:\n", graph.candlesToFunction)
 
     #FINAL DATA IN graph.candlesToFunction
     # for a in graph.candlesToFunction:
@@ -102,6 +143,9 @@ def integratedNarutoMain(points, candleSize,filter_candles_1,filter_candles_2):
     for a in graph.candlesToFunction:
         just_y.append(a[1])
 
+    plotArr(just_y,'ceva')
+    plt.show()
+
     return just_y
 
 def readFromFile(fileName):
@@ -114,6 +158,7 @@ def readFromFile(fileName):
 
         for b in pairs_str:
             split_point = b.split(",")
+            # print("p:",split_point[1])
             single_pattern.append(float(split_point[1]))
         patterns.append(single_pattern)
     return patterns
@@ -122,7 +167,6 @@ def terraFormPatterns(referinteTerraForm, size_seg_unic, candleSize, filter_1, f
     #citeste pattern din fisier si adauga in structura template pentru patterns
     patterns = readFromFile(referinteTerraForm)
 
-    print("len test:",len(patterns))
 
     obj = {}
 
@@ -222,10 +266,11 @@ def judgeDecisions(decisionsParam):
     for a in decisionsParam:
         if a.priceDiff() > 0:
             success +=1
-    print("Judge Decisions:")
+    print("Judge Decisions:",decisionsParam)
     print("Total:",total)
     print("Success:",success)
-    # print("Ratio:",(success*100)/total)
+    if total and success:
+        print("Ratio:",(success*100)/total)
 
 class EntityDecizie:
     def __init__(self,startDate,startPrice,endDate,endPrice,whichPatt,minCross):
@@ -249,23 +294,88 @@ class EntityDecizie:
         return self.end_date
 
     def priceDiff(self):
-        return self.end_price - self.start_price
+        if self.end_price is not None and self.start_price is not None:
+            return self.end_price - self.start_price
+        else:
+            return -1
     def printMe(self):
         print(self.start_price,self.end_price,self.start_date,self.end_date)
 
-if __name__ == '__main__':
+def testFunction():
+    raw_data = readDataFromExcelFile('LastWeeks/'+'LastWeek5.csv')
+    print("raw data len:",len(raw_data))
+    del raw_data[0]
 
+    for index,a in enumerate(raw_data):
+        print(index,a)
+
+    # print("before del:",raw_data[-1])
+    # del raw_data[-1]
+    # raw_data.insert(0,42873)
+    # print("after:",raw_data[-1])
+
+    terr_raw_data = integratedNarutoMain(raw_data,2,0.3,0.5)
+
+    print("terraFormed:")
+    for a in terr_raw_data:
+        print(a)
+
+    plotArr(raw_data[0:200],'test')
+    plotArr(terr_raw_data[0:200],'test')
+    plt.show()
+
+if __name__ == '__main__':
+    # testFunction()
     #------initializare patterns------
     referinteTerraForm = [
+        # {
+        #     "fileName": "Patterns/pattern_55.txt",
+        #     "size_seg_unic": 25,
+        #     "candle_size": 2,
+        #     "filter_1": 0.3,
+        #     "filter_2": 0.5,
+        #     "abatere_hard": 5000
+        # },
+        # {
+        #     "fileName": "Patterns/pattern_6.txt",
+        #     "size_seg_unic": 25,
+        #     "candle_size": 2,
+        #     "filter_1": 0.3,
+        #     "filter_2": 0.5,
+        #     "abatere_hard": 4000
+        # },
+        # {
+        #     "fileName": "Patterns/pattern_65.txt",
+        #     "size_seg_unic": 30,
+        #     "candle_size": 2,
+        #     "filter_1": 0.3,
+        #     "filter_2": 0.5,
+        #     "abatere_hard": 5000
+        # },
         {
-            "fileName": "Patterns/pattern_1.txt",
+            "fileName": "Patterns/pattern_7.txt",
             "size_seg_unic": 30,
-            "candle_size": 2,
+            "candle_size": 1,
             "filter_1": 0.3,
             "filter_2": 0.5,
-            "abatere_hard": 3000
+            "abatere_hard": 500
         },
-
+        # {
+        #     "fileName": "Patterns/pattern_8.txt",
+        #     "size_seg_unic": 25,
+        #     "candle_size": 1,
+        #     "filter_1": 0.3,
+        #     "filter_2": 0.5,
+        #     "abatere_hard": 1000
+        # },
+        # {
+        #     "fileName": "Patterns/pattern_9.txt",
+        #     "size_seg_unic": 25,
+        #     "candle_size": 1,
+        #     "filter_1": 0.3,
+        #     "filter_2": 0.5,
+        #     "abatere_hard": 200
+        # },
     ]
     patterns = []
     for a in referinteTerraForm:
@@ -277,16 +387,24 @@ if __name__ == '__main__':
     #------initializare Binance------ // not used yet // first pass old values iterator test
     # test = BiananceMaster()
 
+
+    # print("check patterns:")
+    # for a in patterns:
+    #     for b in a["values"]:
+    #         print(b)
+
     clock_time = 3
     while True:
-        print(clock_time)
+        #clock area--------------
         clock_time += 1
 
-        fake_current_time_stamp += 1
-        if fake_current_time_stamp > 4000:
+        # print("time stamp:",fake_current_time_stamp)
+        fake_current_time_stamp += 2
+        if fake_current_time_stamp > 7000:
             break
 
-        last_100_min = fakeApi(100)   #just_y
+        last_100_min = fakeApi(70)   #just_y
+
         #cu offset
         # last_100_min = [38991.11, 38969.7, 38978.67, 38998.08, 39000.57, 39013.83, 38991.98, 39007.43, 39015.68, 39016.62, 39009.29, 39016.84, 39016.1, 39008.17, 38996.75, 38973.26, 38996.36, 39012.07, 39043.11, 39055.01, 39054.44, 39050.87, 39050.09, 39060.59, 39085.52, 39097.88, 39076.16, 39092.67, 39080.77, 39100.0, 39097.75, 39059.1, 39045.0, 39041.93, 39012.35, 39018.75, 39025.4, 39058.71, 39017.98, 39015.06, 39027.67, 39049.01, 39041.9, 39036.99, 39052.55, 39032.8, 39014.96, 39029.86, 39025.47, 39076.96, 39113.7, 39108.11, 39094.62, 39108.26, 39103.33, 39103.69, 39070.01, 39069.08, 39083.67, 39097.58, 39044.72, 39092.96, 39081.2, 39075.27, 39058.98, 39066.43, 39059.25, 39035.74, 39050.15, 39054.73, 39047.76, 39029.99, 39035.03, 39010.03, 38953.0, 39004.2, 39000.01, 39029.57, 39065.4, 39050.67, 39055.91, 39077.46, 39092.23, 39070.47, 39050.02, 39030.98, 39031.13, 39063.29, 39025.26, 39000.01, 39023.69, 39013.92, 39005.45, 39152.21, 39181.15, 39217.55, 39233.44, 39217.0, 39210.72, 39228.08]
 
@@ -294,23 +412,35 @@ if __name__ == '__main__':
         #fara offset
         # last_100_min = [38938.75, 38935.04, 38991.11, 38969.7, 38978.67, 38998.08, 39000.57, 39013.83, 38991.98, 39007.43, 39015.68, 39016.62, 39009.29, 39016.84, 39016.1, 39008.17, 38996.75, 38973.26, 38996.36, 39012.07, 39043.11, 39055.01, 39054.44, 39050.87, 39050.09, 39060.59, 39085.52, 39097.88, 39076.16, 39092.67, 39080.77, 39100.0, 39097.75, 39059.1, 39045.0, 39041.93, 39012.35, 39018.75, 39025.4, 39058.71, 39017.98, 39015.06, 39027.67, 39049.01, 39041.9, 39036.99, 39052.55, 39032.8, 39014.96, 39029.86, 39025.47, 39076.96, 39113.7, 39108.11, 39094.62, 39108.26, 39103.33, 39103.69, 39070.01, 39069.08, 39083.67, 39097.58, 39044.72, 39092.96, 39081.2, 39075.27, 39058.98, 39066.43, 39059.25, 39035.74, 39050.15, 39054.73, 39047.76, 39029.99, 39035.03, 39010.03, 38953.0, 39004.2, 39000.01, 39029.57, 39065.4, 39050.67, 39055.91, 39077.46, 39092.23, 39070.47, 39050.02, 39030.98, 39031.13, 39063.29, 39025.26, 39000.01, 39023.69, 39013.92, 39005.45, 39152.21, 39181.15, 39217.55, 39233.44, 39217.0]
 
-        temp_last_x  = last_100_min[0:29]
-        completeOldDecisions(temp_last_x[-1],fake_current_time_stamp)
+        # temp_last_x  = last_100_min[0:29]
+        offset = 10
+        # completeOldDecisions(last_100_min[len(last_100_min)-1-offset],fake_current_time_stamp-offset)
 
         for index, a in enumerate(patterns):
             candle_size = float(a["pytonTerraForm"]["candle_size"])
             filter_1 = float(a["pytonTerraForm"]["filter_1"])
             filter_2 = float(a["pytonTerraForm"]["filter_2"])
 
-            # print("len--------:", len(last_100_min))
-            # print("last:", last_100_min[-1])
-            # print("last 100 min:", last_100_min)
-            # print("fake time stmp-----:",fake_current_time_stamp)
+            # print("emtry point naruto:")
+            # print("len:",len(last_100_min))
+            # print(candle_size,filter_1,filter_2)
+            # print(last_100_min)
+
+
             last_100_min_terraFormed = integratedNarutoMain(last_100_min,candle_size,filter_1,filter_2)
+            # print("out:",last_100_min_terraFormed)
+            # print("len out:", len(last_100_min_terraFormed))
+
+            # plotArr(last_100_min, index)
+            # plotArr(last_100_min_terraFormed, index)
+
+            # print("last 100 terra")
+            # for index, b in enumerate(last_100_min_terraFormed):
+            #     print(index,b)
             # print("last 100 terrra:",last_100_min_terraFormed)
 
             size = a["size"]
-            offset = 1
+            # offset =
             start_index = len(last_100_min_terraFormed)-size-offset-1
             end_index = start_index + size + 1
 
@@ -318,10 +448,9 @@ if __name__ == '__main__':
 
             last_x_points = last_100_min_terraFormed[start_index:end_index]
 
-            add_fake_zeros = [39000 for a in range(0,start_index)] + last_x_points
+            # add_fake_zeros = [39000 for a in range(0,start_index)] + last_x_points
 
-            # plotArr(last_100_min,index)
-            # plotArr(last_100_min_terraFormed,index)
+
             # plotArr(add_fake_zeros,index)
 
             # plotArr(last_x_points, index)
@@ -329,6 +458,8 @@ if __name__ == '__main__':
 
             # print("a 0 len:",len(a["values"][0]))
             # print("last x len:",len(last_x_points))
+
+            # print("last x points:", last_x_points)
 
             min_cross_cor = crossCorelation(a["values"][0], last_x_points)
 
@@ -342,7 +473,7 @@ if __name__ == '__main__':
             # print("min cross", min_cross_cor)
 
             if min_cross_cor < a["pytonTerraForm"]["abatere_hard"]:
-                print('patt found')
+                # print('patt found')
                 entitate_decizie = EntityDecizie(
                     # round(time.time() * 1000),
                     fake_current_time_stamp,
@@ -360,4 +491,10 @@ if __name__ == '__main__':
     for a in decisions:
         for b in decisions[a]:
             b.printMe()
-    judgeDecisions(decisions['Patterns/pattern_1.txt'])
+
+
+    for a in referinteTerraForm:
+        judgeDecisions(decisions[a["fileName"]])
+
+    # judgeDecisions(decisions['Patterns/pattern_1.txt'])
+    # judgeDecisions(decisions['Patterns/pattern_1.txt'])

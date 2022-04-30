@@ -1,4 +1,4 @@
-let ratio_plus_minus = [0.2,0.3,0.4]
+let ratio_plus_minus = [0.3,0.4]
 
 let generateFacts = (succes, defeat)=>{
     var arr = []
@@ -18,12 +18,14 @@ let calc_percentage = (sum)=>{
     return (percentage*sum)/100;
 }
 
-let succes = 58;
-let defeat = 42;
+let week_nr = 12*4;
+
+let succes = week_nr*57;
+let defeat = week_nr*43;
 let facts = generateFacts(succes,defeat)
 let scrambled_facts = facts.sort((a, b) => 0.5 - Math.random());
 
-let money = 100;
+let money = 5000;
 
 scrambled_facts.forEach((fact)=>{
     if(fact == 1)

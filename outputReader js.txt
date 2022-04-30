@@ -1,8 +1,8 @@
-let str = `55/1501/2729/5000/1500/75/2/30/0.3/0.5/10/7/1000/FarmLand/LastWeek.csv/
-52/791/1501/5000/1500/75/2/30/0.3/0.5/10/7/1000/FarmLand/LastWeek2.csv/
-52/1294/2477/5000/1500/75/2/30/0.3/0.5/10/7/1000/FarmLand/LastWeek3.csv/
-51/1874/3608/5000/1500/75/2/30/0.3/0.5/10/7/1000/FarmLand/LastWeek4.csv/
-49/1501/3046/5000/1500/75/2/30/0.3/0.5/10/7/1000/FarmLand/LastWeek5.csv/`
+let str =  `58/57/98/500/50/90/2/30/0.3/0.5/20/0/1000/FarmLand/LastWeek.csv/
+86/26/30/500/50/90/2/30/0.3/0.5/20/0/1000/FarmLand/LastWeek2.csv/
+52/61/116/500/50/90/2/30/0.3/0.5/20/0/1000/FarmLand/LastWeek3.csv/
+54/86/158/500/50/90/2/30/0.3/0.5/20/0/1000/FarmLand/LastWeek4.csv/
+61/94/152/500/50/90/2/30/0.3/0.5/20/0/1000/FarmLand/LastWeek5.csv/`
 
 let arr = str.split("\n")
 console.log(arr)
@@ -11,11 +11,14 @@ let succes = 0;
 let total = 0;
 
 arr.forEach((el)=>{
+    
     let elems = el.split("/")
 
     succes += Number(elems[1])
     total += Number(elems[2])
 })
+
+console.log("t:",total)
 
 let ratio = (succes * 100) / total
 console.log(ratio)
