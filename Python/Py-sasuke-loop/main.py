@@ -81,8 +81,8 @@ def plotArr(arr, id):
 def integratedNarutoMain(points, candleSize,filter_candles_1,filter_candles_2):
 
     print("Entry point graph handler")
-
     print("[1].Raw data:\n",points)
+    print("len raw data:", len(points))
 
     # plotArr(points, 'data')
     graph = graphData()
@@ -122,7 +122,6 @@ def integratedNarutoMain(points, candleSize,filter_candles_1,filter_candles_2):
     # for a in enumerate(graph.candlesToFunction):
     #     if a[0] !=1:
     #         a[0] +=1
-
 
     graph.generateInternPoints()
 

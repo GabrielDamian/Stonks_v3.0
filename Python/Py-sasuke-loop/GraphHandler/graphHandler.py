@@ -178,14 +178,14 @@ class graphData:
         size = len(self.candlesData)
         index = 0
         points = []
-
-
+        print("size:",size)
         while index < size-1 :
-            print("index=",index)
+
+            # print("index=",index)
             if self.candlesData[index][3] != self.candlesData[index + 1][3]:
-                print("case 1:")
+                # print("case 1:")
                 if self.candlesData[index][3] == 'red':
-                    print("case 1.1:")
+                    # print("case 1.1:")
                     # [x, height, bottom, direction]
                     x_B = self.candlesData[index][0]
                     y_B = self.candlesData[index][2]
@@ -196,21 +196,24 @@ class graphData:
                     points.append([x_A,y_A])
                     points.append([x_B,y_B])
                 else:
-                    print("case 1.2:")
+                    # print("case 1.2:")
                     x_B = self.candlesData[index][0]
                     y_B = self.candlesData[index][2] + self.candlesData[index][1]
 
                     x_A = x_B - candleSize
                     y_A = self.candlesData[index][2]
 
-                    print("append:", [x_A,y_A],[x_B,y_B])
+                    # print("append:", [x_A,y_A],[x_B,y_B])
 
                     points.append([x_A, y_A])
                     points.append([x_B, y_B])
 
                 index += 1
+                # print("index after:", index)
+
+
             else:
-                print("case 2")
+                # print("case 2")
                 try:
 
                     temp_index = index + 1
@@ -227,32 +230,39 @@ class graphData:
                 # [x, height, bottom, direction]
 
                 if self.candlesData[index][3] == 'red':
-                    print("case 2.1:")
+                    # print("case 2.1:")
                     x_A = self.candlesData[index][0] - candleSize
                     y_A = self.candlesData[index][2] + self.candlesData[index][1]
 
                     x_B = self.candlesData[temp_index][0]
                     y_B = self.candlesData[temp_index][2]
 
-                    print("append:", [x_A, y_A], [x_B, y_B])
+                    # print("append:", [x_A, y_A], [x_B, y_B])
                     points.append([x_A, y_A])
                     points.append([x_B, y_B])
 
                 else:
-                    print("case 2.2:")
+                    # print("case 2.2:")
                     x_A = self.candlesData[index][0]- candleSize
                     y_A = self.candlesData[index][2]
 
                     x_B = self.candlesData[temp_index][0]
                     y_B = self.candlesData[temp_index][2] + self.candlesData[temp_index][1]
 
-                    print("append:", [x_A, y_A], [x_B, y_B])
+                    # print("append:", [x_A, y_A], [x_B, y_B])
                     points.append([x_A, y_A])
                     points.append([x_B, y_B])
 
 
                 index = temp_index + 1
 
+            #here:
+            # print("index out:", index)
+            if index == size - 1:
+                x_ultim = self.candlesData[index][0]
+                y_ultim = self.candlesData[index][2]
+                # print("ultim:", x_ultim, y_ultim)
+                points.append([x_ultim, y_ultim])
 
         self.candlesToFunction = points
 
@@ -303,6 +313,18 @@ class graphData:
                     temp_index +=1
 
             index +=1
+
+        #add last point TEST:
+        print("before naruto:",index,len(self.candlesToFunction)-1,self.candlesToFunction[index][0],self.candlesToFunction[index][1])
+        if self.candlesToFunction[index][0] < len(self.candlesData):
+            print("naruto true")
+            print("expand:",self.candlesData[-1])
+            print("add:",[self.candlesData[-1][0], self.candlesData[-1][2] + self.candlesData[-1][1]])
+            if self.candlesData[-1][3] == 'green':
+                puncte_noi.append([self.candlesData[-1][0], self.candlesData[-1][2] + self.candlesData[-1][1]])
+            else:
+                puncte_noi.append([self.candlesData[-1][0], self.candlesData[-1][2]])
+
         final_list = self.candlesToFunction + puncte_noi
          #sorteaza dupa x
         final_list.sort(key=lambda x:x[0])
