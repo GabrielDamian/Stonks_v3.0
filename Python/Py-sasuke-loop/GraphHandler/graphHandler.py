@@ -170,7 +170,7 @@ class graphData:
         # print("Contor 2:", filter_2_contor)
 
     def candlesToFunctionWork(self,candleSize):
-        print("-----Entry point candlesToFunctionWork:")
+        # print("-----Entry point candlesToFunctionWork:")
         #foloseste data din candlesData
         #data din candlesData trebuie filtrata inainte  daca vr sa il folosim ca input in candles to function
 
@@ -178,7 +178,7 @@ class graphData:
         size = len(self.candlesData)
         index = 0
         points = []
-        print("size:",size)
+        # print("size:",size)
         while index < size-1 :
 
             # print("index=",index)
@@ -192,7 +192,7 @@ class graphData:
 
                     x_A = x_B - candleSize
                     y_A = self.candlesData[index][2] + self.candlesData[index][1]
-                    print("append:", [x_A,y_A],[x_B,y_B])
+                    # print("append:", [x_A,y_A],[x_B,y_B])
                     points.append([x_A,y_A])
                     points.append([x_B,y_B])
                 else:
@@ -315,11 +315,11 @@ class graphData:
             index +=1
 
         #add last point TEST:
-        print("before naruto:",index,len(self.candlesToFunction)-1,self.candlesToFunction[index][0],self.candlesToFunction[index][1])
+        # print("before naruto:",index,len(self.candlesToFunction)-1,self.candlesToFunction[index][0],self.candlesToFunction[index][1])
         if self.candlesToFunction[index][0] < len(self.candlesData):
-            print("naruto true")
-            print("expand:",self.candlesData[-1])
-            print("add:",[self.candlesData[-1][0], self.candlesData[-1][2] + self.candlesData[-1][1]])
+            # print("naruto true")
+            # print("expand:",self.candlesData[-1])
+            # print("add:",[self.candlesData[-1][0], self.candlesData[-1][2] + self.candlesData[-1][1]])
             if self.candlesData[-1][3] == 'green':
                 puncte_noi.append([self.candlesData[-1][0], self.candlesData[-1][2] + self.candlesData[-1][1]])
             else:
@@ -328,6 +328,7 @@ class graphData:
         final_list = self.candlesToFunction + puncte_noi
          #sorteaza dupa x
         final_list.sort(key=lambda x:x[0])
+        self.candlesToFunction = [[round(x[0],2),round(x[1],2)] for x in final_list]
         self.candlesToFunction = [[round(x[0],2),round(x[1],2)] for x in final_list]
         #bug
 

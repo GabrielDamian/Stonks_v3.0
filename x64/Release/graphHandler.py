@@ -1,6 +1,7 @@
 # import matplotlib.pyplot as plt
 import csv
 # import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 
 class graphData:
@@ -53,6 +54,11 @@ class graphData:
                     if height  <= 1:
                         height = 1
 
+                    #PLOTTTT
+
+                    # plt.scatter(xIndex-1,yValue)
+                    # print("y check:", yValue,direction)
+                    #
                     newCandle = [xIndex, height ,yValue,direction]
 
                     candles.append(newCandle)
@@ -64,7 +70,7 @@ class graphData:
                 xIndex +=1
 
                 #conditie care previne eroare la startPrice = self.inputData[xIndex + 1]// index arr out of bounds
-                if xIndex > len(self.inputData) - candleSize:
+                if xIndex > len(self.inputData):
                     break
             self.candlesData = candles
 
@@ -160,11 +166,11 @@ class graphData:
                             self.candlesData[index][3] = 'red'
 
         
-        #print("Contor 1:", filter_1_contor)
-
-        #print("Contor 2:", filter_2_contor)
+        # print("Contor 1:", filter_1_contor)
+        # print("Contor 2:", filter_2_contor)
 
     def candlesToFunctionWork(self,candleSize):
+        # print("-----Entry point candlesToFunctionWork:")
         #foloseste data din candlesData
         #data din candlesData trebuie filtrata inainte  daca vr sa il folosim ca input in candles to function
 
@@ -172,94 +178,99 @@ class graphData:
         size = len(self.candlesData)
         index = 0
         points = []
+        # print("size:",size)
+        while index < size-1 :
 
-
-        while index < size - 1:
+            # print("index=",index)
             if self.candlesData[index][3] != self.candlesData[index + 1][3]:
-
+                # print("case 1:")
                 if self.candlesData[index][3] == 'red':
+                    # print("case 1.1:")
                     # [x, height, bottom, direction]
-                    x_B = self.candlesData[index][0]+candleSize
+                    x_B = self.candlesData[index][0]
                     y_B = self.candlesData[index][2]
 
                     x_A = x_B - candleSize
                     y_A = self.candlesData[index][2] + self.candlesData[index][1]
+                    # print("append:", [x_A,y_A],[x_B,y_B])
                     points.append([x_A,y_A])
                     points.append([x_B,y_B])
                 else:
+                    # print("case 1.2:")
                     x_B = self.candlesData[index][0]
                     y_B = self.candlesData[index][2] + self.candlesData[index][1]
 
                     x_A = x_B - candleSize
                     y_A = self.candlesData[index][2]
 
+                    # print("append:", [x_A,y_A],[x_B,y_B])
+
                     points.append([x_A, y_A])
                     points.append([x_B, y_B])
 
                 index += 1
-            else:
-                try:
-                    
-                    temp_index = index + 1
-                    while temp_index < size - 2 and self.candlesData[temp_index][3] == self.candlesData[temp_index + 1][3]:
-                        temp_index += 1
+                # print("index after:", index)
 
+
+            else:
+                # print("case 2")
+                try:
+
+                    temp_index = index + 1
+                    #or self.candlesData[temp_index][2] == self.candlesData[temp_index + 1][2]
+                    # print("TEST:",self.candlesData[temp_index][2],self.candlesData[temp_index+1][2])
+                    while temp_index < size - 1 and self.candlesData[temp_index][3] == self.candlesData[temp_index + 1][3] :
+                        temp_index += 1
                 except:
                     print("EXCEPT!!!!!!!!!!:")
                     print("candlesData len:",len(self.candlesData))
                     print("temp_index:",temp_index)
-                
+
 
                 # [x, height, bottom, direction]
 
                 if self.candlesData[index][3] == 'red':
-                    x_A = self.candlesData[index][0]
+                    # print("case 2.1:")
+                    x_A = self.candlesData[index][0] - candleSize
                     y_A = self.candlesData[index][2] + self.candlesData[index][1]
 
                     x_B = self.candlesData[temp_index][0]
                     y_B = self.candlesData[temp_index][2]
 
+                    # print("append:", [x_A, y_A], [x_B, y_B])
                     points.append([x_A, y_A])
                     points.append([x_B, y_B])
 
                 else:
-                    x_A = self.candlesData[index][0]
+                    # print("case 2.2:")
+                    x_A = self.candlesData[index][0]- candleSize
                     y_A = self.candlesData[index][2]
 
                     x_B = self.candlesData[temp_index][0]
                     y_B = self.candlesData[temp_index][2] + self.candlesData[temp_index][1]
 
+                    # print("append:", [x_A, y_A], [x_B, y_B])
                     points.append([x_A, y_A])
                     points.append([x_B, y_B])
 
 
                 index = temp_index + 1
 
+            #here:
+            # print("index out:", index)
+            if index == size - 1:
+                x_ultim = self.candlesData[index][0]
+                y_ultim = self.candlesData[index][2]
+                # print("ultim:", x_ultim, y_ultim)
+                points.append([x_ultim, y_ultim])
 
         self.candlesToFunction = points
-
-
-#     def plotCandlesToFunction(self,code):
-#         plt.figure(code)
-#         arr_1 = []
-#         arr_2 = []
-#         for a in self.candlesToFunction:
-#             arr_1.append(a[0])
-#             arr_2.append(a[1])
-# #upsss
-#         # plt.plot(arr_1,arr_2,'r')
-#         # plt.plot(self.inputData,'b')
-#
-#         index = 0
-#         while index < len(self.candlesToFunction)-1:
-#             plt.scatter(int(self.candlesToFunction[index][0]), int(self.candlesToFunction[index][1]))
-#             index +=1
 
     #util function
     def filter_oven_indexes(self):
         new_arr = []
         for index, x in enumerate(self.candlesToFunction):
-            if index % 2 !=0 or index == 0:
+            if index % 2 != 0 or index == 0:
                 new_arr.append(x)
 
 
@@ -302,9 +313,22 @@ class graphData:
                     temp_index +=1
 
             index +=1
+
+        #add last point TEST:
+        # print("before naruto:",index,len(self.candlesToFunction)-1,self.candlesToFunction[index][0],self.candlesToFunction[index][1])
+        if self.candlesToFunction[index][0] < len(self.candlesData):
+            # print("naruto true")
+            # print("expand:",self.candlesData[-1])
+            # print("add:",[self.candlesData[-1][0], self.candlesData[-1][2] + self.candlesData[-1][1]])
+            if self.candlesData[-1][3] == 'green':
+                puncte_noi.append([self.candlesData[-1][0], self.candlesData[-1][2] + self.candlesData[-1][1]])
+            else:
+                puncte_noi.append([self.candlesData[-1][0], self.candlesData[-1][2]])
+
         final_list = self.candlesToFunction + puncte_noi
          #sorteaza dupa x
         final_list.sort(key=lambda x:x[0])
+        self.candlesToFunction = [[round(x[0],2),round(x[1],2)] for x in final_list]
         self.candlesToFunction = [[round(x[0],2),round(x[1],2)] for x in final_list]
         #bug
 
