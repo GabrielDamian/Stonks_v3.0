@@ -29,12 +29,10 @@ class BiananceMaster:
         # print("tesT:", test_stamp)
 
         # print("da:",datetime.datetime.fromtimestamp(test_stamp/1000.0))
-        last_x_minutes = self.extractLastIndexes(10,test_stamp)
+        last_x_minutes = self.extractLastIndexes(100,test_stamp)
 
-        print("\nnew 10min group:")
-        for a in last_x_minutes:
-            print(datetime.datetime.fromtimestamp(a[0]/1000.0), "-->",a[1])
-        return last_x_minutes
+        return [float(a[1]) for a in last_x_minutes]
+        # return last_x_minutes
 
     def extractLastIndexes(self,howMany, source):
         raw_prices = []

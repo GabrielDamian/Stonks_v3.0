@@ -7,9 +7,12 @@ import matplotlib.pyplot as plt
 # TODO: check future price custom based on the current patterns
 # GLOBALS
 decisions = None
-tik_tok = 0.1  # clock intervals
+tik_tok = 5  #while clock in second
 time_check_old_decisions = 20
+
 offset_to_ignore_decisions = 20
+
+offset = 15
 
 global_fake_api_next = []
 last_used = 0
@@ -17,7 +20,6 @@ test_location = 'LastWeek5.csv'
 
 # temp declarations
 fake_current_time_stamp = 111  # magic number bcs you need offset
-
 
 def readDataFromExcelFile(fileName):
     # print("Citesc date din fisier...")
@@ -51,8 +53,6 @@ def readDataFromExcelFile(fileName):
         for x in vector:
             float_arr.append(float(x))
         return float_arr
-
-
 def fakeApi(last_x):
     # test_location = 'LastWeek5.csv'
     raw_data = readDataFromExcelFile('LastWeeks/' + test_location)
@@ -73,14 +73,10 @@ def fakeApi(last_x):
     for a in temp_state:
         just_y.append(a[0])
     return just_y
-
-
 def plotArr(arr, id):
     # arr, just y's
     plt.figure(id)
     plt.plot(arr)
-
-
 # end of temp declarations
 
 def integratedNarutoMain(points, candleSize, filter_candles_1, filter_candles_2):
@@ -238,21 +234,13 @@ def crossCorelation(pattern, lastSnapTerraFormed):
 
 
 def completeOldDecisions(currentStockPrice, currentTime):
-    # TODO: function to fetch the current stock price
-    # currentStockPrice = None
 
     for a in decisions:
         for index, b in enumerate(decisions[a]):
-            # curentTimeStamp = round(time.time() * 1000)
-            curentTimeStamp = currentTime
 
-            if b.getEndDate() == None and curentTimeStamp - b.getStartDate() > time_check_old_decisions:
+            if b.getEndDate() == None and currentTime - b.getStartDate() > time_check_old_decisions * 60:
                 print("decision completed")
-                decisions[a][index].completeazaEndMomentum(curentTimeStamp, currentStockPrice)
-
-    # TODO: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    # overrwrite new decision into file (! not append)
-
+                decisions[a][index].completeazaEndMomentum(currentTime, currentStockPrice)
 
 def printFinalPattern(final_patterns):
     for a in final_patterns:
@@ -279,7 +267,6 @@ def judgeDecisions(decisionsParam):
     print("Success:", success)
     if total and success:
         print("Ratio:", (success * 100) / total)
-
 
 class EntityDecizie:
     def __init__(self, startDate, startPrice, endDate, endPrice, whichPatt, minCross):
@@ -352,9 +339,6 @@ def outputAtClock(newDecision, destination):
 
 def parsePatternIntoFile(source, destination):
     # write pattern into file format, overwrite each time
-
-    print("entry point parsePAtternIntoFile")
-    print(source)
 
     string = ""
     for a in source:
@@ -452,25 +436,27 @@ if __name__ == '__main__':
                               a["abatere_hard"]))
     decisions = initFormatDecisions(referinteTerraForm)
 
-    test = BiananceMaster()
+    binanceMasterNode = BiananceMaster()
 
     clock_time = 3
     while True:
-
-        parsePatternIntoFile(decisions, 'decisionsMars.txt')
-        # outputAtClock(decisions, 'decisionAtClock')
-
+        time.sleep(tik_tok)
         print("clock:", clock_time)
         clock_time += 1
-        fake_current_time_stamp += 1
-        if fake_current_time_stamp > 10950:
-            break
 
-        last_100_min = fakeApi(70)  # just_y
-        # print("last 100 min:", last_100_min)
+        # fake_current_time_stamp += 1    #production test mode
+        # if fake_current_time_stamp > 10950:
+        #     break
 
-        offset = 15
-        completeOldDecisions(last_100_min[-10], fake_current_time_stamp - offset)
+        parsePatternIntoFile(decisions, 'decisionsMars.txt')
+
+        # last_100_min = fakeApi(70)  # just_y #production test mode
+
+        last_100_min = binanceMasterNode.GetHistoricalData(1)
+        print("last 100:",last_100_min)
+
+        # completeOldDecisions(last_100_min[-10], fake_current_time_stamp - offset) #production test mode
+        completeOldDecisions(last_100_min[-1], time.time()) #(x,curent_time_in_second)
 
         for index, a in enumerate(patterns):
             candle_size = float(a["pytonTerraForm"]["candle_size"])
@@ -501,34 +487,33 @@ if __name__ == '__main__':
             if min_cross_cor < a["pytonTerraForm"]["abatere_hard"]:
                 print("patt found")
                 entitate_decizie = EntityDecizie(
-                    # round(time.time() * 1000),
-                    fake_current_time_stamp,
+                    round(time.time()) - offset * 60, #offset is in minutes
+                    # fake_current_time_stamp,
                     last_x_points[-1],
                     None,
                     None,
                     which_one_pattern_var,
                     min_cross_cor
                 )
-                print("TEST:")
                 if len(decisions[a["source"]]) > 0:
                     print("ignore new decision")
-                    if  entitate_decizie.getStartDate() - decisions[a["source"]][-1].getStartDate() < offset_to_ignore_decisions:
+                    if  entitate_decizie.getStartDate() - decisions[a["source"]][-1].getStartDate() < offset_to_ignore_decisions * 60: #offset_to_ignore are minutes
+                    # if  entitate_decizie.getStartDate() - decisions[a["source"]][-1].getStartDate() < offset_to_ignore_decisions:
                         print("IGNORE")
-                        print("TEST 1:",decisions[a["source"]][-1].getStartDate())
-                        print("TEST 2:",entitate_decizie.getStartDate())
                     else:
                         decisions[a["source"]].append(entitate_decizie)
                 else:
                     decisions[a["source"]].append(entitate_decizie)
                     outputAtClock(entitate_decizie, "outputAtClock.txt")
 
-    print("decision:", len(decisions))
-    print(decisions)
 
-    for a in decisions:
-        for b in decisions[a]:
-            b.printMe()
-
-    # for a in referinteTerraForm:
-    #     judgeDecisions(decisions[a["fileName"]])
-    judgeDecisions(decisions['Patterns/pattern_65.txt'])
+    # print("decision:", len(decisions))
+    # print(decisions)
+    #
+    # for a in decisions:
+    #     for b in decisions[a]:
+    #         b.printMe()
+    #
+    # # for a in referinteTerraForm:
+    # #     judgeDecisions(decisions[a["fileName"]])
+    # judgeDecisions(decisions['Patterns/pattern_65.txt'])
