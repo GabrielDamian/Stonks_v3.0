@@ -5,14 +5,24 @@ import time
 import matplotlib.pyplot as plt
 
 # TODO: check future price custom based on the current patterns
-# GLOBALS
+
+#Change tp move on fakeTimeStamp:
+#disable time.sleep(tik_tok)
+#enable while break for 10k points
+#get last_100_from from fakeApi
+#change completeOldDecisions call
+#change entitateDecison start_date
+#change offset_to_ignore check
+#
+#
+
 decisions = None
-tik_tok = 5  #while clock in second
-time_check_old_decisions = 20
+tik_tok = 5  #while clock, in second
+time_check_old_decisions = 10 #minutes
 
-offset_to_ignore_decisions = 20
+offset_to_ignore_decisions = 20 #minutes
 
-offset = 15
+offset = 3 #indexes
 
 global_fake_api_next = []
 last_used = 0
@@ -147,22 +157,23 @@ def integratedNarutoMain(points, candleSize, filter_candles_1, filter_candles_2)
 
     return just_y
 
-
 def readFromFile(fileName):
     file1 = open(fileName, 'r')
     lines = file1.readlines()
     patterns = []
     for a in lines:
-        pairs_str = a[0:len(a) - 2].split("/")
+        print("line:",a)
+        pairs_str = a.split("/")
+        del pairs_str[-1]
         single_pattern = []
 
         for b in pairs_str:
             split_point = b.split(",")
+            print("split_point:",split_point)
             # print("p:",split_point[1])
             single_pattern.append(float(split_point[1]))
         patterns.append(single_pattern)
     return patterns
-
 
 def terraFormPatterns(referinteTerraForm, size_seg_unic, candleSize, filter_1, filter_2, abatere_hard):
     # citeste pattern din fisier si adauga in structura template pentru patterns
@@ -181,7 +192,6 @@ def terraFormPatterns(referinteTerraForm, size_seg_unic, candleSize, filter_1, f
 
     return obj
 
-
 def findMinSizePattern(patterns):
     min = patterns[0]["size"]
     for a in patterns:
@@ -189,13 +199,11 @@ def findMinSizePattern(patterns):
             min = a["size"]
     return min
 
-
 def initFormatDecisions(referinteTerraForm):
     final = {}
     for a in referinteTerraForm:
         final[a["fileName"]] = []
     return final
-
 
 def crossCorelation(pattern, lastSnapTerraFormed):
     # yScallerEnaber and powerSum are default here
@@ -232,13 +240,13 @@ def crossCorelation(pattern, lastSnapTerraFormed):
 
     return suma_scaled
 
-
 def completeOldDecisions(currentStockPrice, currentTime):
 
     for a in decisions:
         for index, b in enumerate(decisions[a]):
 
-            if b.getEndDate() == None and currentTime - b.getStartDate() > time_check_old_decisions * 60:
+            # if b.getEndDate() == None and currentTime - b.getStartDate() > time_check_old_decisions * 60: #time_check_old_decisions is in minutes
+            if b.getEndDate() == None and currentTime - b.getStartDate() > time_check_old_decisions: #test production mode
                 print("decision completed")
                 decisions[a][index].completeazaEndMomentum(currentTime, currentStockPrice)
 
@@ -254,7 +262,6 @@ def printFinalPattern(final_patterns):
         for index, b in enumerate(a["values"]):
             if index < 5:
                 print(b)
-
 
 def judgeDecisions(decisionsParam):
     total = len(decisionsParam)
@@ -371,30 +378,22 @@ if __name__ == '__main__':
     # testFunction()
     # ------initializare patterns------
     referinteTerraForm = [
-        # {
-        #     "fileName": "Patterns/pattern_55.txt",
-        #     "size_seg_unic": 25,
-        #     "candle_size": 2,
-        #     "filter_1": 0.3,
-        #     "filter_2": 0.5,
-        #     "abatere_hard": 5000
-        # },
-        # {
-        #     "fileName": "Patterns/pattern_6.txt",
-        #     "size_seg_unic": 25,
-        #     "candle_size": 2,
-        #     "filter_1": 0.3,
-        #     "filter_2": 0.5,
-        #     "abatere_hard": 4000
-        # },
-        # {
-        #     "fileName": "Patterns/pattern_65.txt",
-        #     "size_seg_unic": 30,
-        #     "candle_size": 2,
-        #     "filter_1": 0.3,
-        #     "filter_2": 0.5,
-        #     "abatere_hard": 5000
-        # },
+        {
+            "fileName": "Patterns/pattern_55.txt",
+            "size_seg_unic": 25,
+            "candle_size": 2,
+            "filter_1": 0.3,
+            "filter_2": 0.5,
+            "abatere_hard": 5000
+        },
+        {
+            "fileName": "Patterns/pattern_60.txt",
+            "size_seg_unic": 25,
+            "candle_size": 2,
+            "filter_1": 0.3,
+            "filter_2": 0.5,
+            "abatere_hard": 4000
+        },
         {
             "fileName": "Patterns/pattern_65.txt",
             "size_seg_unic": 30,
@@ -404,33 +403,27 @@ if __name__ == '__main__':
             "abatere_hard": 5000
         },
         {
-            "fileName": "Patterns/pattern_6.txt",
+            "fileName": "Patterns/pattern_70.txt",
             "size_seg_unic": 30,
             "candle_size": 2,
             "filter_1": 0.3,
             "filter_2": 0.5,
-            "abatere_hard": 2000
+            "abatere_hard": 500
+            #future_price: 20 !!!!!
         },
-        # {
-        #     "fileName": "Patterns/pattern_8.txt",
-        #     "size_seg_unic": 25,
-        #     "candle_size": 1,
-        #     "filter_1": 0.3,
-        #     "filter_2": 0.5,
-        #     "abatere_hard": 1000
-        # },
-        # {
-        #     "fileName": "Patterns/pattern_9.txt",
-        #     "size_seg_unic": 25,
-        #     "candle_size": 1,
-        #     "filter_1": 0.3,
-        #     "filter_2": 0.5,
-        #     "abatere_hard": 200
-        # },
+        {
+            "fileName": "Patterns/pattern_80.txt",
+            "size_seg_unic": 25,
+            "candle_size": 1,
+            "filter_1": 0.3,
+            "filter_2": 0.5,
+            "abatere_hard": 1000
+        }
     ]
 
     patterns = []
     for a in referinteTerraForm:
+        print("A:",a)
         patterns.append(
             terraFormPatterns(a["fileName"], a["size_seg_unic"], a["candle_size"], a["filter_1"], a["filter_2"],
                               a["abatere_hard"]))
@@ -440,23 +433,22 @@ if __name__ == '__main__':
 
     clock_time = 3
     while True:
-        time.sleep(tik_tok)
+        # time.sleep(tik_tok)
         print("clock:", clock_time)
         clock_time += 1
 
-        # fake_current_time_stamp += 1    #production test mode
-        # if fake_current_time_stamp > 10950:
-        #     break
+        fake_current_time_stamp += 1    #production test mode
+        if fake_current_time_stamp > 10950:
+            break
 
         parsePatternIntoFile(decisions, 'decisionsMars.txt')
 
-        # last_100_min = fakeApi(70)  # just_y #production test mode
-
-        last_100_min = binanceMasterNode.GetHistoricalData(1)
+        last_100_min = fakeApi(70)  # just_y #production test mode
+        # last_100_min = binanceMasterNode.GetHistoricalData(1)
         print("last 100:",last_100_min)
 
-        # completeOldDecisions(last_100_min[-10], fake_current_time_stamp - offset) #production test mode
-        completeOldDecisions(last_100_min[-1], time.time()) #(x,curent_time_in_second)
+        completeOldDecisions(last_100_min[-1], fake_current_time_stamp) #production test mode
+        # completeOldDecisions(last_100_min[-1], time.time()) #(x,curent_time_in_second)
 
         for index, a in enumerate(patterns):
             candle_size = float(a["pytonTerraForm"]["candle_size"])
@@ -487,8 +479,8 @@ if __name__ == '__main__':
             if min_cross_cor < a["pytonTerraForm"]["abatere_hard"]:
                 print("patt found")
                 entitate_decizie = EntityDecizie(
-                    round(time.time()) - offset * 60, #offset is in minutes
-                    # fake_current_time_stamp,
+                    # round(time.time()) - offset * 60, #offset is in minutes
+                    fake_current_time_stamp - offset,
                     last_x_points[-1],
                     None,
                     None,
@@ -497,15 +489,14 @@ if __name__ == '__main__':
                 )
                 if len(decisions[a["source"]]) > 0:
                     print("ignore new decision")
-                    if  entitate_decizie.getStartDate() - decisions[a["source"]][-1].getStartDate() < offset_to_ignore_decisions * 60: #offset_to_ignore are minutes
-                    # if  entitate_decizie.getStartDate() - decisions[a["source"]][-1].getStartDate() < offset_to_ignore_decisions:
+                    # if  entitate_decizie.getStartDate() - decisions[a["source"]][-1].getStartDate() < offset_to_ignore_decisions * 60: #offset_to_ignore are minutes
+                    if  entitate_decizie.getStartDate() - decisions[a["source"]][-1].getStartDate() < offset_to_ignore_decisions: #test production mode
                         print("IGNORE")
                     else:
                         decisions[a["source"]].append(entitate_decizie)
                 else:
                     decisions[a["source"]].append(entitate_decizie)
                     outputAtClock(entitate_decizie, "outputAtClock.txt")
-
 
     # print("decision:", len(decisions))
     # print(decisions)

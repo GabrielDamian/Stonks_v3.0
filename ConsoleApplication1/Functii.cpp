@@ -697,9 +697,9 @@ void supremeTestMaster(vector<patterns> patternsParam, floatType succes_ratio_fi
 	};
 	
 	//vector<int> foamShrink = { 10,20,30,50,100,200,300,500,800,1000,1500,2000 };
-	vector<int> foamShrink = {10};
+	vector<int> foamShrink = {500};
 	//vector<int> abatereHard = { 200,500,1000,2000,3000,4000,5000/*,6000,7000,8000,9000,10000*/ };
-	vector<int> abatereHard = {5000};
+	vector<int> abatereHard = {1000};
 
 	vector<point> testData;
 	/*{
@@ -808,7 +808,8 @@ void supremeTest(int abatere_hard, int how_many_for_foam, vector<point> testData
 	//std::cout << endl << "S-au generat:" << segmente_baza.size() << " segment de baza pentru simulare";
 	
 	int index_global_input_data = -1;
-
+	int last_index_added = 0;
+	int offset_to_ignore = 20; //20 min
 	for (auto& a : segmente_baza)
 	{
 		//cout << "index_global" << index_global_input_data << endl;
@@ -833,22 +834,27 @@ void supremeTest(int abatere_hard, int how_many_for_foam, vector<point> testData
 
 		if (min_cross_cor <= abatere_hard )
 		{
-			//test with python
-			//cout << endl<< "new patt at:" << index_global_input_data << endl;
-
-			//simuleaza o cumparare
-			total_buyed++;
-
-			//check (index + size_seg_unic + future_price) > seg_now[last_index]
-			floatType last_price_live = inputData[index_global_input_data+size_seg_unic].y; //possible index out of range
-			
-			//TODO = check out of range case
-			floatType future_price_live = inputData[index_global_input_data + size_seg_unic + future_price].y; //possible index out of range
-			
-			//true ? increment succes_buyes
-			if (last_price_live < future_price_live)
+			if (last_index_added == 0 || index_global_input_data - last_index_added > offset_to_ignore)
 			{
-				succes_buyes++;
+				last_index_added = index_global_input_data;
+				cout << endl << "Add new :" << index_global_input_data;
+				//test with python
+				//cout << endl<< "new patt at:" << index_global_input_data << endl;
+
+				//simuleaza o cumparare
+				total_buyed++;
+
+				//check (index + size_seg_unic + future_price) > seg_now[last_index]
+				floatType last_price_live = inputData[index_global_input_data + size_seg_unic].y; //possible index out of range
+
+				//TODO = check out of range case
+				floatType future_price_live = inputData[index_global_input_data + size_seg_unic + future_price].y; //possible index out of range
+
+				//true ? increment succes_buyes
+				if (last_price_live < future_price_live)
+				{
+					succes_buyes++;
+				}
 			}
 		}
 	}
