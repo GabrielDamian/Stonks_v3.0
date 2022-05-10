@@ -18,16 +18,15 @@ def printFirsts(who, how_many):
 if __name__ == '__main__':
 
     #VARS:----------------
-    candles_size = [2,1,3]
+    candles_size = [1,2]
     # size_seg_unic = [40, 50, 60, 70, 80, 100, 120, 140]
-    size_seg_unic = [25,30,35]
-
+    size_seg_unic = [25,30,35,40]
 
     filter_1 = [0.3]
     filter_2 = [0.5]
-    future_price = [10,20]
+    future_price = [10,15,20]
 
-    min_max_streching = [0,4,7]
+    min_max_streching = [0]
     # abatere = [round(i,2) for i in range(1000,11000,1000)]
     # abatere.insert(0,500)
 

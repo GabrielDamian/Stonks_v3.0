@@ -77,7 +77,7 @@ def giveMeSucces_score(values):
 if __name__ == '__main__':
     # succes_param = float(sys.argv[1])
     # print("succes param:",int(succes_param))
-    succes_param = 70
+    succes_param = 60
 
     print("succes:", succes_param)
 
